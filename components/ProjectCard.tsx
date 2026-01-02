@@ -23,15 +23,25 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
     >
       <Link href={`/projects/${project.slug}`} className="group block">
         <div className="aspect-[16/10] bg-slate-100 rounded-2xl overflow-hidden mb-6 border border-gray-100 relative">
-          <div className="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/5 transition-colors duration-500"></div>
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 scale-95 group-hover:scale-100">
+          <div className="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/5 transition-colors duration-500 z-10"></div>
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 scale-95 group-hover:scale-100 z-20">
              <div className="bg-white px-6 py-3 rounded-full shadow-2xl border border-gray-100 text-[10px] font-bold uppercase tracking-widest flex items-center">
                View Case Study <ArrowUpRight size={14} className="ml-2" />
              </div>
           </div>
-          <div className="w-full h-full flex items-center justify-center font-mono text-slate-200 text-6xl font-black italic select-none">
-            {project.title.charAt(0)}
-          </div>
+          {project.demoUrl ? (
+            <iframe 
+              src={project.demoUrl}
+              className="w-full h-full border-0 scale-[0.25] origin-top-left pointer-events-none"
+              style={{ width: '400%', height: '400%' }}
+              loading="lazy"
+              title={project.title}
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center font-mono text-slate-200 text-6xl font-black italic select-none">
+              {project.title.charAt(0)}
+            </div>
+          )}
         </div>
         
         <div className="flex justify-between items-start">
