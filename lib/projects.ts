@@ -30,6 +30,7 @@ export const projects: Project[] = [
     shortDescription: 'Full-stack learning system with personalized learning plans, AI question generation, and automatic grading.',
     longDescription: 'A comprehensive learning platform for students, teachers, parents, and administrators. Provides personalized learning plans, AI-powered question generation, automatic grading, and learning feedback. Built using React 19 + Vite for the frontend, Node.js/Express for REST API, and Supabase for database and authentication with RLS security policies.',
     techStack: ['React', 'Node.js', 'Supabase', 'OpenAI', 'Express', 'Vite'],
+    demoUrl: 'https://ai-hsc-passion-oriented-study-plann.vercel.app/',
     context: 'Built to provide personalized learning assistance for high school students with AI-powered content generation and feedback.',
     systemDesign: 'Full-stack architecture with React frontend, Node.js backend, Supabase for database and authentication. Integrated OpenAI to build multi-agent AI workflow for subject recognition, learning plan generation, question creation, and grading.',
     llmWorkflow: 'Multi-agent AI workflow: Subject Recognition → Learning Plan Generation → Question Generation → Automatic Grading → Feedback Delivery.',
