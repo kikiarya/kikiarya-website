@@ -13,7 +13,7 @@ import Reveal from '../components/Reveal';
 
 export default function Home() {
   const featured = getFeaturedProjects();
-  const topSkills = ['TypeScript', 'Next.js', 'Go', 'Python', 'AWS', 'Kubernetes', 'OpenAI', 'Kafka'];
+  const topSkills = ['Java', 'Python', 'C/C++', 'JavaScript', 'Spring Boot', 'React', 'Node.js', 'Machine Learning'];
 
   return (
     <div className="pt-40 pb-20">
@@ -21,19 +21,19 @@ export default function Home() {
         <Reveal>
           <div className="max-w-4xl mb-40">
             <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-blue-600 font-bold mb-6 block">
-              Senior Full-Stack Engineer / Architect
+              Computer Science Student / Full-Stack Developer
             </span>
             <h1 className="text-6xl md:text-8xl font-semibold tracking-tighter leading-[0.9] text-slate-900 mb-10">
-              Crafting systems <br />
-              <span className="text-slate-400">with purpose</span> <br />
-              and <span className="italic">precision.</span>
+              Building projects <br />
+              <span className="text-slate-400">with passion</span> <br />
+              and <span className="italic">dedication.</span>
             </h1>
             
             <div className="flex flex-col md:flex-row md:items-center gap-10 mt-12">
               <p className="text-lg md:text-xl text-slate-500 leading-relaxed max-w-xl">
-                Qiyue Chen is a systems engineer dedicated to building high-performance, resilient web products. Combining deep backend logic with editorial-grade frontend aesthetics.
+                陈绮玥 (Qiyue Chen) is a computer science student passionate about full-stack development, machine learning, and building practical software solutions. Currently pursuing a Master's degree at the University of Sydney.
                 <br />
-                <span className="text-sm mt-4 block text-slate-400">专注于高并发分布式系统与精致前端体验。</span>
+                <span className="text-sm mt-4 block text-slate-400">专注于全栈开发、机器学习与分布式系统设计。</span>
               </p>
               
               <div className="flex flex-wrap gap-4">
@@ -73,8 +73,8 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <Reveal>
               <h2 className="text-4xl font-semibold tracking-tighter leading-tight">
-                Technical Mastery <br />
-                <span className="text-slate-400 italic">across the full stack.</span>
+                Technical Skills <br />
+                <span className="text-slate-400 italic">across multiple domains.</span>
               </h2>
             </Reveal>
             <Reveal delay={0.2}>

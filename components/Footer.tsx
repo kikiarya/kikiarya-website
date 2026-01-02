@@ -18,8 +18,8 @@ const Footer: React.FC = () => {
             <div className="space-y-4">
               <h4 className="font-mono text-[9px] uppercase tracking-[0.2em] text-slate-300">Contact</h4>
               <ul className="space-y-2">
-                <li><a href="mailto:hello@qiyue.com" className="text-xs font-bold hover:text-accent transition-colors">Email</a></li>
-                <li><a href="https://linkedin.com" target="_blank" className="text-xs font-bold hover:text-accent transition-colors">LinkedIn</a></li>
+                <li><a href="mailto:1014850831@qq.com" className="text-xs font-bold hover:text-accent transition-colors">Email</a></li>
+                <li><a href="tel:+8615052585358" className="text-xs font-bold hover:text-accent transition-colors">Phone</a></li>
               </ul>
             </div>
             <div className="space-y-4">
@@ -33,8 +33,8 @@ const Footer: React.FC = () => {
         </div>
         
         <div className="mt-24 flex justify-between items-center text-slate-300 font-mono text-[9px] uppercase tracking-widest">
-          <span>© {new Date().getFullYear()} Qiyue Chen</span>
-          <span>Silicon Valley</span>
+          <span>© {new Date().getFullYear()} 陈绮玥 (Qiyue Chen)</span>
+          <span>Sydney, Australia</span>
         </div>
       </Container>
     </footer>

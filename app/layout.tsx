@@ -5,8 +5,8 @@ import Footer from "../components/Footer";
 
 // Metadata for SEO (Next.js specific)
 export const metadata = {
-  title: "Qiyue Chen | Senior Full-Stack Engineer",
-  description: "Systems-focused Full Stack Engineer specializing in distributed architecture and AI products.",
+  title: "陈绮玥 | Qiyue Chen | Computer Science Student",
+  description: "Computer Science student at University of Sydney, passionate about full-stack development, machine learning, and distributed systems.",
 };
 
 export default function RootLayout({
