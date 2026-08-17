@@ -1,44 +1,16 @@
+import Container from "./Container";
 
-import React from 'react';
-import Container from './Container';
-
-const Footer: React.FC = () => {
+export default function Footer() {
   return (
-    <footer className="py-24 border-t border-border">
-      <Container>
-        <div className="flex flex-col md:flex-row justify-between items-start gap-12">
-          <div className="max-w-xs">
-            <h3 className="text-sm font-bold tracking-tighter mb-4">QY.CH <span className="text-accent">.</span></h3>
-            <p className="text-slate-400 text-[10px] uppercase tracking-widest leading-relaxed font-mono">
-              Engineering systems with <br /> deliberate design.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-20">
-            <div className="space-y-4">
-              <h4 className="font-mono text-[9px] uppercase tracking-[0.2em] text-slate-300">Contact</h4>
-              <ul className="space-y-2">
-                <li><a href="mailto:1014850831@qq.com" className="text-xs font-bold hover:text-accent transition-colors">Email</a></li>
-                <li><a href="tel:+8615052585358" className="text-xs font-bold hover:text-accent transition-colors">Phone</a></li>
-              </ul>
-            </div>
-            <div className="space-y-4">
-              <h4 className="font-mono text-[9px] uppercase tracking-[0.2em] text-slate-300">Social</h4>
-              <ul className="space-y-2">
-                <li><a href="https://github.com" target="_blank" className="text-xs font-bold hover:text-accent transition-colors">GitHub</a></li>
-                <li><a href="https://twitter.com" target="_blank" className="text-xs font-bold hover:text-accent transition-colors">X / Twitter</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        
-        <div className="mt-24 flex justify-between items-center text-slate-300 font-mono text-[9px] uppercase tracking-widest">
-          <span>© {new Date().getFullYear()} 陈绮玥 (Qiyue Chen)</span>
-          <span>Sydney, Australia</span>
+    <footer className="mt-24 border-t border-[var(--sakura-line-soft)]">
+      <Container className="py-10 flex flex-col sm:flex-row justify-between gap-4 text-[var(--sakura-muted)]">
+        <p className="font-display text-lg">Kikiarya · Qiyue Chen</p>
+        <div className="font-mono text-[10px] uppercase tracking-[.14em] flex flex-wrap gap-5">
+          <a href="mailto:kikiarya@163.com">Email</a>
+          <span>© 2026</span>
+          <span>Updated Aug 2026</span>
         </div>
       </Container>
     </footer>
   );
-};
-
-export default Footer;
+}

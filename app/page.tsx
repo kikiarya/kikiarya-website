@@ -1,94 +1,184 @@
-
 "use client";
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { ArrowUpRight, Download } from 'lucide-react';
-import { getFeaturedProjects } from '../lib/projects';
-import SectionHeader from '../components/SectionHeader';
-import ProjectCard from '../components/ProjectCard';
-import Container from '../components/Container';
-import Reveal from '../components/Reveal';
+import Link from "next/link";
+import { ArrowUpRight, Download } from "lucide-react";
+import Container from "../components/Container";
+import ProjectCard from "../components/ProjectCard";
+import Reveal from "../components/Reveal";
+import SectionHeader from "../components/SectionHeader";
+import { FadeUp, HeroLine } from "../components/HeroReveal";
+import { getFeaturedProjects } from "../lib/projects";
+
+const focus = [
+  [
+    "01",
+    "AI & Agent Systems",
+    "Model workflows, tool use, and product features that call LLMs.",
+  ],
+  [
+    "02",
+    "Applied Machine Learning",
+    "Feature work, training, evaluation, and comparing models on a defined task.",
+  ],
+  [
+    "03",
+    "Software Systems",
+    "APIs, messaging, transactions, and full-stack apps.",
+  ],
+];
 
 export default function Home() {
-  const featured = getFeaturedProjects();
-  const topSkills = ['Java', 'Python', 'C/C++', 'JavaScript', 'Spring Boot', 'React', 'Node.js', 'Machine Learning'];
-
   return (
-    <div className="pt-40 pb-20">
-      <Container>
-        <Reveal>
-          <div className="max-w-4xl mb-40">
-            <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-blue-600 font-bold mb-6 block">
-              Computer Science Student / Full-Stack Developer
-            </span>
-            <h1 className="text-6xl md:text-8xl font-semibold tracking-tighter leading-[0.9] text-slate-900 mb-10">
-              Building projects <br />
-              <span className="text-slate-400">with passion</span> <br />
-              and <span className="italic">dedication.</span>
-            </h1>
-            
-            <div className="flex flex-col md:flex-row md:items-center gap-10 mt-12">
-              <p className="text-lg md:text-xl text-slate-500 leading-relaxed max-w-xl">
-                陈绮玥 (Qiyue Chen) is a computer science student passionate about full-stack development, machine learning, and building practical software solutions. Currently pursuing a Master's degree at the University of Sydney.
-                <br />
-                <span className="text-sm mt-4 block text-slate-400">专注于全栈开发、机器学习与分布式系统设计。</span>
-              </p>
-              
-              <div className="flex flex-wrap gap-4">
-                <Link href="/projects" className="px-8 py-3.5 bg-slate-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-blue-600 transition-all hover:scale-105 active:scale-95 flex items-center group">
-                  View Work <ArrowUpRight size={14} className="ml-2 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <Link href="/resume" className="px-8 py-3.5 border border-slate-200 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white hover:shadow-xl transition-all flex items-center">
-                  Resume <Download size={14} className="ml-2" />
-                </Link>
-              </div>
+    <>
+      <section className="min-h-[92vh] pt-36 md:pt-44 flex items-center">
+        <Container>
+          <div className="grid lg:grid-cols-[1fr_18rem] gap-16 items-end">
+            <div>
+              <FadeUp>
+                <p className="eyebrow mb-7">Qiyue Chen · Computer Science</p>
+              </FadeUp>
+              <h1 className="font-display text-[clamp(3.6rem,8.5vw,8.8rem)] font-light leading-[.88] tracking-[-.045em]">
+                <HeroLine delay={0.08}>AI applications,</HeroLine>
+                <HeroLine delay={0.2}>machine learning,</HeroLine>
+                <HeroLine delay={0.32} className="text-[var(--sakura-accent-deep)]">
+                  software engineering.
+                </HeroLine>
+              </h1>
+              <FadeUp delay={0.5}>
+                <p className="mt-10 max-w-2xl text-lg md:text-xl leading-8 text-[var(--sakura-ink-soft)]">
+                  MSc Computer Science at the University of Sydney (software engineering · data
+                  science &amp; AI). Recently interned at AIsphere on real-time AI video.
+                </p>
+              </FadeUp>
+              <FadeUp delay={0.62}>
+                <div className="mt-10 flex flex-wrap gap-3">
+                  <Link href="/work" className="button-primary">
+                    View work <ArrowUpRight size={15} />
+                  </Link>
+                  <a href="/陈绮玥简历.pdf" className="button-ghost">
+                    Download résumé <Download size={15} />
+                  </a>
+                </div>
+              </FadeUp>
             </div>
+            <FadeUp delay={0.7} className="hidden lg:block pb-3">
+              <div className="sakura-glass rounded-[2rem] p-8">
+                <div
+                  aria-hidden="true"
+                  className="mx-auto mb-10 h-28 w-28 rounded-full border border-[var(--sakura-line-strong)] relative"
+                >
+                  <span className="absolute -right-5 top-10 h-11 w-11 rounded-full bg-[var(--sakura-surface-soft)] border border-[var(--sakura-line)]" />
+                </div>
+                <p className="eyebrow">Based in</p>
+                <p className="font-display text-2xl mt-3 leading-snug">Sydney, Australia</p>
+              </div>
+            </FadeUp>
           </div>
-        </Reveal>
+        </Container>
+      </section>
 
-        <section className="mb-40">
+      <section className="py-24 md:py-36">
+        <Container>
           <Reveal>
-            <div className="flex justify-between items-end mb-16">
-              <SectionHeader 
-                eyebrow="Portfolio" 
-                title="Featured Work" 
-                className="mb-0"
+            <div className="flex items-end justify-between gap-8">
+              <SectionHeader
+                eyebrow="Selected work"
+                title="Featured projects"
+                description="A short list across AI products, ML research, and backend systems."
               />
-              <Link href="/projects" className="hidden md:block text-[10px] font-bold uppercase tracking-widest border-b border-slate-900 pb-1 hover:text-blue-600 hover:border-blue-600 transition-all">
-                Browse Archive
+              <Link href="/work" className="hidden sm:inline-flex button-ghost shrink-0">
+                All work <ArrowUpRight size={15} />
               </Link>
             </div>
           </Reveal>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-20">
-            {featured.map((p, i) => (
-              <ProjectCard key={p.slug} project={p} index={i} />
+          {getFeaturedProjects().map((project, index) => (
+            <ProjectCard key={project.slug} project={project} index={index} />
+          ))}
+        </Container>
+      </section>
+
+      <section className="py-24 md:py-36 section-rule">
+        <Container>
+          <Reveal>
+            <SectionHeader
+              eyebrow="Focus"
+              title="What I work on"
+              description="Three directions that show up most in my projects."
+            />
+          </Reveal>
+          <div className="grid md:grid-cols-3 gap-px bg-[var(--sakura-line-soft)] border border-[var(--sakura-line-soft)] rounded-[2rem] overflow-hidden">
+            {focus.map(([number, title, copy], i) => (
+              <Reveal key={number} delay={i * 0.08}>
+                <div className="bg-[var(--sakura-bg-deep)]/80 p-8 md:p-10 h-full">
+                  <span className="font-display text-4xl text-[var(--sakura-muted-soft)]">{number}</span>
+                  <h3 className="font-display text-3xl mt-12">{title}</h3>
+                  <p className="mt-4 text-sm leading-7 text-[var(--sakura-ink-soft)]">{copy}</p>
+                </div>
+              </Reveal>
             ))}
           </div>
-        </section>
+        </Container>
+      </section>
 
-        <section className="py-32 border-t border-gray-100">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+      <section className="py-24 md:py-36">
+        <Container>
+          <div className="grid lg:grid-cols-2 gap-16">
             <Reveal>
-              <h2 className="text-4xl font-semibold tracking-tighter leading-tight">
-                Technical Skills <br />
-                <span className="text-slate-400 italic">across multiple domains.</span>
-              </h2>
+              <SectionHeader
+                eyebrow="Now"
+                title="Currently in Sydney"
+                description="MSc at the University of Sydney. Open to software engineering and AI application roles."
+              />
             </Reveal>
-            <Reveal delay={0.2}>
-              <div className="flex flex-wrap gap-3">
-                {topSkills.map(skill => (
-                  <div key={skill} className="px-6 py-3 bg-white border border-gray-100 rounded-xl font-mono text-xs font-bold uppercase tracking-widest text-slate-500 shadow-sm hover:shadow-md transition-shadow">
-                    {skill}
-                  </div>
-                ))}
+            <Reveal delay={0.1}>
+              <div className="space-y-8">
+                <div className="border-l-2 border-[var(--sakura-accent)] pl-7">
+                  <p className="eyebrow">Internship · Dec 2025 – Feb 2026</p>
+                  <h3 className="font-display text-3xl mt-3">AIsphere · AI Full-stack</h3>
+                  <p className="mt-3 text-[var(--sakura-ink-soft)] leading-7">
+                    Real-time AI video: FastAPI, Next.js, WebSocket / WebRTC. Prompt &amp; session
+                    work, plus reliability under weak network.
+                  </p>
+                </div>
+                <div className="border-l-2 border-[var(--sakura-line)] pl-7">
+                  <p className="eyebrow">Education · Jul 2024 – Dec 2026</p>
+                  <h3 className="font-display text-3xl mt-3">University of Sydney</h3>
+                  <p className="mt-3 text-[var(--sakura-ink-soft)] leading-7">
+                    Master of Computer Science · WAM 80+ (HD)
+                  </p>
+                </div>
+                <div className="sakura-glass rounded-3xl p-7">
+                  <p className="eyebrow">Status</p>
+                  <p className="font-display text-2xl mt-3 leading-snug">
+                    Open to software engineering and AI application roles.
+                  </p>
+                  <p className="font-mono text-[10px] uppercase tracking-[.12em] text-[var(--sakura-muted)] mt-5">
+                    Updated Aug 2026
+                  </p>
+                </div>
               </div>
             </Reveal>
           </div>
-        </section>
-      </Container>
-    </div>
+        </Container>
+      </section>
+
+      <section className="py-24 md:py-36 section-rule">
+        <Container>
+          <Reveal>
+            <div className="sakura-glass rounded-[2rem] md:rounded-[3rem] p-8 md:p-16 flex flex-col md:flex-row justify-between md:items-end gap-10">
+              <div>
+                <p className="eyebrow">Contact</p>
+                <h2 className="font-display text-5xl md:text-7xl mt-5 leading-none">
+                  Get in touch
+                </h2>
+              </div>
+              <a href="mailto:kikiarya@163.com" className="button-primary">
+                kikiarya@163.com <ArrowUpRight size={15} />
+              </a>
+            </div>
+          </Reveal>
+        </Container>
+      </section>
+    </>
   );
 }

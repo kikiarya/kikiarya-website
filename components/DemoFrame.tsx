@@ -10,10 +10,10 @@ interface DemoFrameProps {
 const DemoFrame: React.FC<DemoFrameProps> = ({ url, title }) => {
   if (!url) {
     return (
-      <div className="aspect-video bg-slate-50 border-2 border-dashed border-border rounded-3xl flex flex-col items-center justify-center p-12 text-center">
-        <MonitorOff className="text-slate-200 mb-4" size={48} />
-        <p className="text-slate-500 font-medium">Live demo not available yet.</p>
-        <p className="text-xs text-slate-400 mt-2">The environment is being migrated or is private enterprise software.</p>
+      <div className="aspect-video bg-[var(--sakura-surface-soft)] border border-dashed border-[var(--sakura-line)] rounded-3xl flex flex-col items-center justify-center p-12 text-center">
+        <MonitorOff className="text-[var(--sakura-muted-soft)] mb-4" size={48} />
+        <p className="text-[var(--sakura-ink-soft)] font-medium">Live demo not available yet.</p>
+        <p className="text-xs text-[var(--sakura-muted)] mt-2">The environment is being migrated or is private enterprise software.</p>
       </div>
     );
   }
@@ -22,19 +22,19 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ url, title }) => {
     <div className="space-y-6">
       <div className="flex justify-between items-center px-4">
         <div className="flex space-x-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-slate-200"></div>
-          <div className="w-2.5 h-2.5 rounded-full bg-slate-200"></div>
-          <div className="w-2.5 h-2.5 rounded-full bg-slate-200"></div>
+          <div className="w-2.5 h-2.5 rounded-full bg-[var(--sakura-line)]"></div>
+          <div className="w-2.5 h-2.5 rounded-full bg-[var(--sakura-line)]"></div>
+          <div className="w-2.5 h-2.5 rounded-full bg-[var(--sakura-line)]"></div>
         </div>
         <a 
           href={url} 
           target="_blank" 
-          className="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-accent flex items-center transition-colors"
+          className="text-[10px] font-bold uppercase tracking-widest text-[var(--sakura-muted)] hover:text-accent flex items-center transition-colors"
         >
           Open in new tab <ExternalLink size={12} className="ml-2" />
         </a>
       </div>
-      <div className="aspect-video bg-white hairline rounded-3xl overflow-hidden shadow-2xl">
+      <div className="aspect-video sakura-glass rounded-3xl overflow-hidden shadow-[0_24px_80px_rgba(123,62,82,.12)]">
         <iframe 
           src={url} 
           title={title}

@@ -14,7 +14,7 @@ interface ContainerProps {
 
 const Container: React.FC<ContainerProps> = ({ children, className }) => {
   return (
-    <div className={cn("max-w-[1200px] mx-auto px-6 md:px-12", className)}>
+    <div className={cn("max-w-[1440px] mx-auto px-[var(--page-pad)]", className)}>
       {children}
     </div>
   );

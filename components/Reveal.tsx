@@ -1,29 +1,30 @@
-
 "use client";
 
-import React from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion } from "framer-motion";
+import type { ReactNode } from "react";
 
-interface RevealProps {
-  children: React.ReactNode;
-  width?: "fit-content" | "100%";
+const ease = [0.16, 1, 0.3, 1] as const;
+
+export default function Reveal({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: ReactNode;
   delay?: number;
-}
-
-const Reveal: React.FC<RevealProps> = ({ children, width = "100%", delay = 0 }) => {
-  const shouldReduceMotion = useReducedMotion();
+  className?: string;
+}) {
+  const reduce = useReducedMotion();
 
   return (
     <motion.div
-      initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+      className={className}
+      initial={reduce ? { opacity: 0 } : { opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay }}
-      style={{ width }}
+      viewport={{ once: true, margin: "-12% 0px" }}
+      transition={{ duration: reduce ? 0.2 : 0.75, delay, ease }}
     >
       {children}
     </motion.div>
   );
-};
-
-export default Reveal;
+}

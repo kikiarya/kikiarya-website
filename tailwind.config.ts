@@ -10,13 +10,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        accent: "var(--accent)",
-        border: "var(--border)",
+        background: "var(--sakura-bg)",
+        foreground: "var(--sakura-ink)",
+        accent: "var(--sakura-accent-deep)",
+        border: "var(--sakura-line-soft)",
       },
       fontFamily: {
-        mono: ["var(--font-mono)", "monospace"],
+        display: ["var(--font-display)", "Georgia", "serif"],
+        body: ["var(--font-body)", "PingFang SC", "Noto Sans SC", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "monospace"],
       },
       letterSpacing: {
         tighter: "-0.05em",

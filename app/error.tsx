@@ -1,8 +1,7 @@
+"use client";
 
-'use client';
-
-import React, { useEffect } from 'react';
-import Container from '../components/Container';
+import { useEffect } from "react";
+import Container from "../components/Container";
 
 export default function Error({
   error,
@@ -16,14 +15,16 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center py-40">
-      <Container className="text-center">
-        <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-red-500 font-bold mb-8 block">Runtime Error</span>
-        <h2 className="text-5xl font-semibold tracking-tighter mb-10">Something went <br /><span className="text-slate-300 italic">unexpected.</span></h2>
-        <button
-          onClick={() => reset()}
-          className="px-10 py-4 bg-slate-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-blue-600 transition-all"
-        >
+    <div className="min-h-[85vh] flex items-center">
+      <Container>
+        <p className="eyebrow">Error</p>
+        <h2 className="font-display text-5xl md:text-7xl font-light mt-6 leading-none">
+          Something broke on this page.
+        </h2>
+        <p className="mt-6 max-w-md text-[var(--sakura-ink-soft)] leading-7">
+          You can retry, or leave and come back from the index.
+        </p>
+        <button onClick={reset} className="button-primary mt-10">
           Try again
         </button>
       </Container>

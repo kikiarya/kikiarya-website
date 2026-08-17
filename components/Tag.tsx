@@ -1,17 +1,1 @@
-
-import React from 'react';
-
-interface TagProps {
-  label: string;
-  className?: string;
-}
-
-const Tag: React.FC<TagProps> = ({ label, className }) => {
-  return (
-    <span className={`px-2.5 py-0.5 border border-border rounded-full text-[9px] font-bold uppercase tracking-widest text-slate-500 bg-white/50 inline-block ${className}`}>
-      {label}
-    </span>
-  );
-};
-
-export default Tag;
+export default function Tag({ label, className = "" }: { label: string; className?: string }) { return <span className={`inline-flex rounded-full border border-[var(--sakura-line-soft)] bg-[var(--sakura-surface-soft)] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[.09em] text-[var(--sakura-ink-soft)] ${className}`}>{label}</span>; }

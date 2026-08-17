@@ -1,17 +1,19 @@
-
-import React from 'react';
-import Link from 'next/link';
-import Container from '../components/Container';
+import Link from "next/link";
+import Container from "../components/Container";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center py-40">
-      <Container className="text-center">
-        <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-blue-600 font-bold mb-8 block">Error 404</span>
-        <h1 className="text-7xl md:text-9xl font-semibold tracking-tighter mb-10">Lost in <br /><span className="text-slate-300 italic">the void.</span></h1>
-        <p className="text-slate-500 max-w-sm mx-auto mb-12">The resource you are looking for has been moved or purged from the architecture.</p>
-        <Link href="/" className="px-10 py-4 bg-slate-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-blue-600 transition-all">
-          Return Home
+    <div className="min-h-[85vh] flex items-center">
+      <Container>
+        <p className="eyebrow">404</p>
+        <h1 className="font-display text-6xl md:text-8xl font-light mt-6 leading-none">
+          Page not found.
+        </h1>
+        <p className="mt-6 max-w-md text-[var(--sakura-ink-soft)] leading-7">
+          The URL may be outdated, or the page moved. Head back to the index.
+        </p>
+        <Link href="/" className="button-primary mt-10">
+          Back to home
         </Link>
       </Container>
     </div>
