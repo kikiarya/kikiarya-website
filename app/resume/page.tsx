@@ -27,9 +27,8 @@ export default function ResumePage() {
           <div>
             <p className="eyebrow">03 · Résumé</p>
             <h1 className="font-display text-[clamp(4rem,9vw,8rem)] font-light leading-none tracking-[-.05em] mt-5">
-              Qiyue Chen
+              Kikiarya
             </h1>
-            <p className="mt-3 text-[var(--sakura-ink-soft)]">陈绮玥</p>
             <div className="mt-7 flex flex-wrap gap-5 text-sm text-[var(--sakura-ink-soft)]">
               <span className="flex items-center gap-2">
                 <MapPin size={14} /> Sydney, Australia
@@ -103,7 +102,7 @@ export default function ResumePage() {
               <Entry
                 meta="May 2026 · CoRR"
                 title="Latent Action Reparameterization for Efficient Agent Inference"
-                subtitle="Co-author (Qiyue Chen). CoRR abs/2605.18597. Latent action spaces to cut action tokens and wall-clock inference time for LLM agents under a fixed compute budget."
+                subtitle="Co-author. CoRR abs/2605.18597. Latent action spaces to cut action tokens and wall-clock inference time for LLM agents under a fixed compute budget."
               />
             </ResumeSection>
 

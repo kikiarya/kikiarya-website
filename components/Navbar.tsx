@@ -54,7 +54,7 @@ export default function Navbar() {
           <Link
             href="/"
             className="font-display text-2xl tracking-[-.04em]"
-            aria-label="Qiyue Chen home"
+            aria-label="Kikiarya home"
           >
             Kikiarya<span className="text-[var(--sakura-accent-deep)]">.</span>
           </Link>

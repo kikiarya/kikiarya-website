@@ -28,11 +28,11 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Qiyue Chen — AI & Software Engineering",
-    template: "%s — Qiyue Chen",
+    default: "Kikiarya — AI & Software Engineering",
+    template: "%s — Kikiarya",
   },
   description:
-    "Portfolio of Qiyue Chen: AI applications, machine learning, and software systems — projects, résumé, and contact.",
+    "Portfolio of Kikiarya: AI applications, machine learning, and software systems — projects, résumé, and contact.",
 };
 
 export default function RootLayout({

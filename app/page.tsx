@@ -35,7 +35,7 @@ export default function Home() {
           <div className="grid lg:grid-cols-[1fr_18rem] gap-16 items-end">
             <div>
               <FadeUp>
-                <p className="eyebrow mb-7">Qiyue Chen · Computer Science</p>
+                <p className="eyebrow mb-7">Kikiarya · Computer Science</p>
               </FadeUp>
               <h1 className="font-display text-[clamp(3.6rem,8.5vw,8.8rem)] font-light leading-[.88] tracking-[-.045em]">
                 <HeroLine delay={0.08}>AI applications,</HeroLine>
