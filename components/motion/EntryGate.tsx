@@ -104,7 +104,7 @@ export default function EntryGate() {
               Kikiarya<span className="text-[var(--sakura-accent-deep)]">.</span>
             </h1>
             <p className="mx-auto mt-7 max-w-md font-display text-xl italic leading-snug text-[var(--sakura-ink-soft)] md:text-2xl">
-              A quiet interface for AI, software and experiments.
+              A small corner of the internet where I keep the things I make.
             </p>
             <button
               autoFocus

@@ -12,7 +12,7 @@ import { useSceneReady } from "./motion/MotionProvider";
 const links = [
   { number: "01", name: "Index", detail: "Home", href: "/" },
   { number: "02", name: "Work", detail: "Projects & Research", href: "/work" },
-  { number: "03", name: "Résumé", detail: "Education & Experience", href: "/resume" },
+  { number: "03", name: "Resume", detail: "Education & Experience", href: "/resume" },
   { number: "04", name: "Contact", detail: "Get in Touch", href: "/contact" },
 ];
 

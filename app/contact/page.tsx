@@ -12,7 +12,8 @@ export default function ContactPage() {
             <p className="eyebrow">04 · Contact</p>
             <h1 className="font-display text-hero font-light mt-7">Contact</h1>
             <p className="mt-10 max-w-xl text-lg leading-8 text-[var(--sakura-ink-soft)]">
-              Looking for software engineering and AI application roles. Email is the best way to reach me.
+              Roles, projects, questions about anything on this site — or just to say hi. Email
+              works best, and I actually reply.
             </p>
           </div>
           <div className="sakura-glass rounded-[2rem] p-8">

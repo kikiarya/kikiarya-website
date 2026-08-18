@@ -70,7 +70,8 @@ export const projects: Project[] = [
       "React 19 + Vite frontend",
       "Supabase auth, database, and RLS",
     ],
-    results: "Multi-role app with an end-to-end AI teaching workflow.",
+    results:
+      "The full loop runs end to end — from picking a subject to getting graded feedback. Live demo linked above.",
   },
   {
     slug: "distributed-ecommerce-microservices",
@@ -93,7 +94,8 @@ export const projects: Project[] = [
       "REST + gRPC between services",
       "Docker Compose multi-service deployment",
     ],
-    results: "Working microservices demo with Saga and durable messaging under Docker Compose.",
+    results:
+      "One docker compose up brings up all four services. Kill a payment mid-flow and you can watch the Saga compensation clean up after it.",
   },
   {
     slug: "reinforcement-learning-network-defense",

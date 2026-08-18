@@ -17,17 +17,32 @@ const focus = [
   [
     "01",
     "AI & Agent Systems",
-    "Model workflows, tool use, and product features that call LLMs.",
+    "Getting LLMs to do useful work: prompts, tool calls, agent loops, and the plumbing around them that nobody sees but everybody feels.",
   ],
   [
     "02",
     "Applied Machine Learning",
-    "Feature work, training, evaluation, and comparing models on a defined task.",
+    "Training and evaluating models on real data, then being honest about what the numbers actually say.",
   ],
   [
     "03",
     "Software Systems",
-    "APIs, messaging, transactions, and full-stack apps.",
+    "The backbone underneath: APIs, message queues, transactions, and frontends that don't fight the user.",
+  ],
+];
+
+const beyond = [
+  [
+    "Classical things",
+    "In undergrad I built a walk-through classical Chinese garden in Unity — falling leaves, a waterfall, scenery drawn from imagery in old poems. It won a national design prize, and it's part of why this site looks the way it does.",
+  ],
+  [
+    "Organising people",
+    "Years of class-committee and student-union work taught me the other kind of engineering: getting twenty people and one deadline to arrive at the same place.",
+  ],
+  [
+    "Two cities",
+    "Nanjing raised me; Sydney is where I live now. My seasons have been upside down since 2024, and I've stopped trying to fix that.",
   ],
 ];
 
@@ -59,7 +74,7 @@ export default function Home() {
           >
             <div>
               <FadeUp delay={0.1}>
-                <p className="eyebrow mb-7">Kikiarya · Computer Science</p>
+                <p className="eyebrow mb-7">Hi, I&apos;m Kiki · Sydney</p>
               </FadeUp>
               <h1 className="font-display text-hero font-light text-balance">
                 <HeroLine text="AI applications," delay={0.24} />
@@ -73,8 +88,10 @@ export default function Home() {
               <motion.div style={reduce ? undefined : { opacity: heroFade }}>
                 <FadeUp delay={0.82}>
                   <p className="mt-10 max-w-2xl text-lg md:text-xl leading-8 text-[var(--sakura-ink-soft)]">
-                    MSc Computer Science at the University of Sydney (software engineering · data
-                    science &amp; AI). Recently interned at AIsphere on real-time AI video.
+                    I&apos;m a master&apos;s student at the University of Sydney, finishing at the
+                    end of 2026. Last summer I helped build a real-time AI video product at
+                    AIsphere — mostly making it survive bad networks. I like my software fast and
+                    my interfaces soft pink.
                   </p>
                 </FadeUp>
                 <FadeUp delay={0.96}>
@@ -83,7 +100,7 @@ export default function Home() {
                       View work <ArrowUpRight size={15} />
                     </a>
                     <a href="/陈绮玥简历.pdf" className="button-ghost">
-                      Download résumé <Download size={15} />
+                      Download resume <Download size={15} />
                     </a>
                   </div>
                 </FadeUp>
@@ -121,7 +138,7 @@ export default function Home() {
               <SectionHeader
                 eyebrow="Selected work"
                 title="Featured projects"
-                description="A short list across AI products, ML research, and backend systems."
+                description="The projects I still like. Each one has a proper write-up — what it is, what broke, and what I'd do differently."
               />
               <Link href="/work" className="hidden sm:inline-flex button-ghost shrink-0">
                 All work <ArrowUpRight size={15} />
@@ -140,7 +157,7 @@ export default function Home() {
             <SectionHeader
               eyebrow="Focus"
               title="What I work on"
-              description="Three directions that show up most in my projects."
+              description="Roughly everything I make falls somewhere between these three."
             />
           </Reveal>
           <div className="grid md:grid-cols-3 gap-px bg-[var(--sakura-line-soft)] border border-[var(--sakura-line-soft)] rounded-[2rem] overflow-hidden">
@@ -166,7 +183,7 @@ export default function Home() {
               <SectionHeader
                 eyebrow="Now"
                 title="Currently in Sydney"
-                description="MSc at the University of Sydney. Open to software engineering and AI application roles."
+                description="The short version of what I'm up to. The long version lives on the resume page."
               />
             </Reveal>
             <Reveal delay={0.1}>
@@ -175,8 +192,8 @@ export default function Home() {
                   <p className="eyebrow">Internship · Dec 2025 – Feb 2026</p>
                   <h3 className="font-display text-card-title mt-3">AIsphere · AI Full-stack</h3>
                   <p className="mt-3 text-[var(--sakura-ink-soft)] leading-7">
-                    Real-time AI video: FastAPI, Next.js, WebSocket / WebRTC. Prompt &amp; session
-                    work, plus reliability under weak network.
+                    Real-time AI video over WebRTC. I spent most of my time on the unglamorous
+                    part: keeping sessions alive when the network isn&apos;t.
                   </p>
                 </div>
                 <div className="border-l-2 border-[var(--sakura-line)] pl-7">
@@ -189,7 +206,7 @@ export default function Home() {
                 <div className="sakura-glass rounded-3xl p-7">
                   <p className="eyebrow">Status</p>
                   <p className="font-display text-2xl mt-3 leading-snug">
-                    Open to software engineering and AI application roles.
+                    Looking for software engineering and AI roles — graduating December 2026.
                   </p>
                   <p className="font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-muted)] mt-5">
                     Updated Aug 2026
@@ -197,6 +214,28 @@ export default function Home() {
                 </div>
               </div>
             </Reveal>
+          </div>
+        </Container>
+      </section>
+
+      <section className="py-24 md:py-36 section-rule">
+        <Container>
+          <Reveal>
+            <SectionHeader
+              eyebrow="Beyond code"
+              title="A few non-technical facts"
+              description="Because a person is not a tech stack."
+            />
+          </Reveal>
+          <div className="grid md:grid-cols-3 gap-10 md:gap-14">
+            {beyond.map(([title, copy], i) => (
+              <Reveal key={title} delay={i * 0.08}>
+                <div className="border-t border-[var(--sakura-line)] pt-7 h-full">
+                  <h3 className="font-display text-card-title">{title}</h3>
+                  <p className="mt-4 text-sm leading-7 text-[var(--sakura-ink-soft)]">{copy}</p>
+                </div>
+              </Reveal>
+            ))}
           </div>
         </Container>
       </section>

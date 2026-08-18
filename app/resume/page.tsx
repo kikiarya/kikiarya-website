@@ -3,7 +3,7 @@ import Container from "../../components/Container";
 import Tag from "../../components/Tag";
 import Reveal from "../../components/motion/Reveal";
 
-export const metadata = { title: "Résumé" };
+export const metadata = { title: "Resume" };
 
 const skills = [
   "Python",
@@ -26,7 +26,7 @@ export default function ResumePage() {
       <Container>
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-16 border-b border-[var(--sakura-line-soft)]">
           <div>
-            <p className="eyebrow">03 · Résumé</p>
+            <p className="eyebrow">03 · Resume</p>
             <h1 className="font-display text-hero font-light mt-5">Kikiarya</h1>
             <div className="mt-7 flex flex-wrap gap-5 text-sm text-[var(--sakura-ink-soft)]">
               <span className="flex items-center gap-2">
@@ -45,7 +45,7 @@ export default function ResumePage() {
         <div className="grid lg:grid-cols-[15rem_minmax(0,1fr)] gap-14 lg:gap-24 py-20">
           <aside>
             <nav
-              aria-label="Résumé sections"
+              aria-label="Resume sections"
               className="lg:sticky lg:top-28 flex lg:flex-col flex-wrap gap-3 font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-muted)] [&>a]:transition-colors [&>a]:duration-200 [&>a:hover]:text-[var(--sakura-accent-deep)]"
             >
               <a href="#profile">Profile</a>
@@ -60,9 +60,9 @@ export default function ResumePage() {
           <div className="space-y-24">
             <ResumeSection id="profile" title="Profile">
               <p className="font-display text-2xl md:text-3xl italic leading-snug text-[var(--sakura-ink-soft)]">
-                MSc Computer Science at the University of Sydney (software engineering · data science
-                &amp; AI). Experience in AI full-stack products, LLM agent runtimes, and backend
-                systems.
+                Master&apos;s student in computer science at the University of Sydney, graduating
+                December 2026. I&apos;ve shipped AI product features, trained and evaluated models,
+                and built the backend systems underneath them.
               </p>
             </ResumeSection>
 
