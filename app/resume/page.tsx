@@ -1,6 +1,7 @@
 import { Download, Mail, MapPin } from "lucide-react";
 import Container from "../../components/Container";
 import Tag from "../../components/Tag";
+import Reveal from "../../components/motion/Reveal";
 
 export const metadata = { title: "Résumé" };
 
@@ -26,9 +27,7 @@ export default function ResumePage() {
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-16 border-b border-[var(--sakura-line-soft)]">
           <div>
             <p className="eyebrow">03 · Résumé</p>
-            <h1 className="font-display text-[clamp(4rem,9vw,8rem)] font-light leading-none tracking-[-.05em] mt-5">
-              Kikiarya
-            </h1>
+            <h1 className="font-display text-hero font-light mt-5">Kikiarya</h1>
             <div className="mt-7 flex flex-wrap gap-5 text-sm text-[var(--sakura-ink-soft)]">
               <span className="flex items-center gap-2">
                 <MapPin size={14} /> Sydney, Australia
@@ -47,7 +46,7 @@ export default function ResumePage() {
           <aside>
             <nav
               aria-label="Résumé sections"
-              className="lg:sticky lg:top-28 flex lg:flex-col flex-wrap gap-3 font-mono text-[10px] uppercase tracking-[.12em] text-[var(--sakura-muted)]"
+              className="lg:sticky lg:top-28 flex lg:flex-col flex-wrap gap-3 font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-muted)] [&>a]:transition-colors [&>a]:duration-200 [&>a:hover]:text-[var(--sakura-accent-deep)]"
             >
               <a href="#profile">Profile</a>
               <a href="#education">Education</a>
@@ -60,7 +59,7 @@ export default function ResumePage() {
 
           <div className="space-y-24">
             <ResumeSection id="profile" title="Profile">
-              <p className="font-display text-3xl md:text-4xl leading-tight text-[var(--sakura-ink-soft)]">
+              <p className="font-display text-2xl md:text-3xl italic leading-snug text-[var(--sakura-ink-soft)]">
                 MSc Computer Science at the University of Sydney (software engineering · data science
                 &amp; AI). Experience in AI full-stack products, LLM agent runtimes, and backend
                 systems.
@@ -149,8 +148,10 @@ function ResumeSection({
 }) {
   return (
     <section id={id} className="scroll-mt-28">
-      <p className="eyebrow mb-7">{title}</p>
-      <div className="space-y-12">{children}</div>
+      <Reveal>
+        <p className="eyebrow mb-7">{title}</p>
+        <div className="space-y-12">{children}</div>
+      </Reveal>
     </section>
   );
 }
@@ -166,11 +167,11 @@ function Entry({
 }) {
   return (
     <article className="grid md:grid-cols-[12rem_1fr] gap-3 md:gap-8 border-t border-[var(--sakura-line-soft)] pt-7">
-      <p className="font-mono text-[10px] uppercase tracking-[.1em] text-[var(--sakura-muted)]">
+      <p className="font-mono text-meta tabular-nums uppercase tracking-[.1em] text-[var(--sakura-muted)]">
         {meta}
       </p>
       <div>
-        <h3 className="font-display text-3xl">{title}</h3>
+        <h3 className="font-display text-card-title">{title}</h3>
         <p className="mt-2 leading-7 text-[var(--sakura-ink-soft)]">{subtitle}</p>
       </div>
     </article>

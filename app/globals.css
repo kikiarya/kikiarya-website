@@ -21,8 +21,26 @@
   --sakura-line-soft: rgba(177, 79, 113, 0.14);
   --sakura-line-strong: rgba(177, 79, 113, 0.4);
   --page-pad: clamp(1.25rem, 4.2vw, 5rem);
+
+  /* Motion tokens (ui-motion-plan2 §19) */
+  --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-expressive: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --dur-micro: 200ms;
+  --dur-short: 450ms;
+  --dur-route: 650ms;
+  --dur-reveal: 900ms;
+  --dur-hero: 1100ms;
+  --dur-enter: 850ms;
+
+  /* Typography tokens (ui-motion-plan2 §20) */
+  --fs-hero: clamp(3.4rem, 8vw, 8.2rem);
+  --fs-chapter: clamp(2.6rem, 5.5vw, 5.4rem);
+  --fs-title: clamp(1.6rem, 2.2vw, 2rem);
+  --fs-body: 1rem;
+  --fs-body-sm: 0.875rem;
+  --fs-meta: 0.75rem;
+  --fs-eyebrow: 0.75rem;
 }
 
 * { box-sizing: border-box; }
@@ -66,7 +84,7 @@ body::after {
 a, button, input { outline-color: var(--sakura-accent-deep); outline-offset: 4px; }
 ::selection { background: rgba(216,132,159,.32); color: var(--sakura-ink); }
 
-.font-display { font-family: var(--font-display), Georgia, serif; }
+.font-display { font-family: var(--font-display), "Songti SC", "STSong", "Noto Serif SC", Georgia, serif; }
 .font-body { font-family: var(--font-body), "PingFang SC", "Noto Sans SC", system-ui, sans-serif; }
 .font-mono { font-family: var(--font-mono), ui-monospace, monospace; }
 
@@ -79,7 +97,7 @@ a, button, input { outline-color: var(--sakura-accent-deep); outline-offset: 4px
 
 .eyebrow {
   font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: .6875rem;
+  font-size: var(--fs-eyebrow);
   letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--sakura-accent-deep);
@@ -95,10 +113,25 @@ a, button, input { outline-color: var(--sakura-accent-deep); outline-offset: 4px
   padding: .75rem 1.5rem;
   border-radius: 999px;
   font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: .7rem;
+  font-size: var(--fs-meta);
   letter-spacing: .12em;
   text-transform: uppercase;
-  transition: transform .2s var(--ease-standard), background .2s, border-color .2s;
+  transition:
+    transform var(--dur-micro) var(--ease-standard),
+    background var(--dur-micro) var(--ease-standard),
+    border-color var(--dur-micro) var(--ease-standard),
+    color var(--dur-micro) var(--ease-standard),
+    box-shadow var(--dur-micro) var(--ease-standard);
+}
+
+.button-primary svg,
+.button-ghost svg {
+  transition: transform var(--dur-micro) var(--ease-standard);
+}
+
+.button-primary:hover svg,
+.button-ghost:hover svg {
+  transform: translate(2px, -2px);
 }
 
 .button-primary {
@@ -108,13 +141,13 @@ a, button, input { outline-color: var(--sakura-accent-deep); outline-offset: 4px
 }
 
 .button-primary:hover {
-  background: #933956;
-  transform: translateY(-2px);
+  background: #b8547a;
+  box-shadow: 0 10px 28px -12px rgba(169, 71, 109, .5);
 }
 
 .button-primary:active,
 .button-ghost:active {
-  transform: translateY(1px);
+  transform: scale(.985);
 }
 
 .button-ghost {
@@ -124,11 +157,26 @@ a, button, input { outline-color: var(--sakura-accent-deep); outline-offset: 4px
 }
 
 .button-ghost:hover {
-  border-color: var(--sakura-line-strong);
-  transform: translateY(-2px);
+  border-color: var(--sakura-accent);
+  color: var(--sakura-accent-deep);
 }
 
 .section-rule { border-top: 1px solid var(--sakura-line-soft); }
+
+/* Petal cursor: hide native pointer, keep native cursor on text-editing surfaces (§4.6) */
+@media (pointer: fine) {
+  body.petal-cursor-on,
+  body.petal-cursor-on * {
+    cursor: none !important;
+  }
+  body.petal-cursor-on input,
+  body.petal-cursor-on textarea,
+  body.petal-cursor-on select,
+  body.petal-cursor-on [contenteditable],
+  body.petal-cursor-on iframe {
+    cursor: auto !important;
+  }
+}
 
 @keyframes sakura-breath {
   to { transform: translate3d(1.5%, -1%, 0) scale(1.03); }

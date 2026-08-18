@@ -29,7 +29,7 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ url, title }) => {
         <a 
           href={url} 
           target="_blank" 
-          className="text-[10px] font-bold uppercase tracking-widest text-[var(--sakura-muted)] hover:text-accent flex items-center transition-colors"
+          className="font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-muted)] hover:text-accent flex items-center transition-colors"
         >
           Open in new tab <ExternalLink size={12} className="ml-2" />
         </a>

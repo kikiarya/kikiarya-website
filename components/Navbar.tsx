@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Container from "./Container";
+import { useVeilNavigate } from "./motion/RouteVeil";
+import { useSceneReady } from "./motion/MotionProvider";
 
 const links = [
   { number: "01", name: "Index", detail: "Home", href: "/" },
@@ -21,6 +23,15 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const reduce = useReducedMotion();
+  const ready = useSceneReady();
+  const navigate = useVeilNavigate();
+
+  const handleNav =
+    (href: string) => (event: MouseEvent<HTMLAnchorElement>) => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      navigate(href);
+    };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -45,14 +56,18 @@ export default function Navbar() {
 
   return (
     <>
-      <header
+      <motion.header
         className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
           scrolled ? "sakura-glass border-x-0 border-t-0" : "bg-transparent"
         }`}
+        initial={reduce ? { opacity: 0 } : { opacity: 0, y: -14 }}
+        animate={ready ? { opacity: 1, y: 0 } : undefined}
+        transition={{ duration: reduce ? 0.15 : 0.7, ease }}
       >
         <Container className="h-20 flex items-center justify-between">
           <Link
             href="/"
+            onClick={handleNav("/")}
             className="font-display text-2xl tracking-[-.04em]"
             aria-label="Kikiarya home"
           >
@@ -69,14 +84,17 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  onClick={handleNav(link.href)}
                   aria-current={active ? "page" : undefined}
-                  className={`relative py-2 font-mono text-[10px] uppercase tracking-[.14em] ${
+                  className={`group relative py-2 font-mono text-meta uppercase tracking-[.12em] transition-colors duration-200 ${
                     active
                       ? "text-[var(--sakura-accent-deep)]"
                       : "text-[var(--sakura-muted)] hover:text-[var(--sakura-ink)]"
                   }`}
                 >
-                  <span className="mr-2 opacity-60">{link.number}</span>
+                  <span className="mr-2 tabular-nums opacity-60 transition-opacity duration-200 group-hover:opacity-100">
+                    {link.number}
+                  </span>
                   {link.name}
                   {active ? (
                     <motion.span
@@ -98,7 +116,7 @@ export default function Navbar() {
             <Menu size={20} />
           </button>
         </Container>
-      </header>
+      </motion.header>
 
       <AnimatePresence>
         {open ? (
@@ -134,9 +152,9 @@ export default function Navbar() {
                   >
                     <Link
                       href={link.href}
-                      className="grid grid-cols-[3rem_1fr] gap-4 py-5 border-b border-[var(--sakura-line-soft)]"
+                      className="group grid grid-cols-[3rem_1fr] gap-4 py-5 border-b border-[var(--sakura-line-soft)]"
                     >
-                      <span className="font-mono text-xs text-[var(--sakura-accent-deep)]">
+                      <span className="font-mono text-meta tabular-nums text-[var(--sakura-accent-deep)] transition-transform duration-200 group-hover:translate-x-1">
                         {link.number}
                       </span>
                       <span>

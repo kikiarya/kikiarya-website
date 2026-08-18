@@ -16,9 +16,15 @@ const config: Config = {
         border: "var(--sakura-line-soft)",
       },
       fontFamily: {
-        display: ["var(--font-display)", "Georgia", "serif"],
+        display: ["var(--font-display)", "Songti SC", "STSong", "Noto Serif SC", "Georgia", "serif"],
         body: ["var(--font-body)", "PingFang SC", "Noto Sans SC", "system-ui", "sans-serif"],
         mono: ["var(--font-mono)", "ui-monospace", "monospace"],
+      },
+      fontSize: {
+        hero: ["var(--fs-hero)", { lineHeight: ".92", letterSpacing: "-.045em" }],
+        chapter: ["var(--fs-chapter)", { lineHeight: "1.02", letterSpacing: "-.035em" }],
+        "card-title": ["var(--fs-title)", { lineHeight: "1.2" }],
+        meta: ["var(--fs-meta)", { lineHeight: "1.4" }],
       },
       letterSpacing: {
         tighter: "-0.05em",

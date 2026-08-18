@@ -10,9 +10,7 @@ export default function ContactPage() {
         <div className="grid lg:grid-cols-[1fr_24rem] gap-16 items-end">
           <div>
             <p className="eyebrow">04 · Contact</p>
-            <h1 className="font-display text-[clamp(3.5rem,9vw,8.5rem)] font-light leading-[.86] tracking-[-.05em] mt-7">
-              Contact
-            </h1>
+            <h1 className="font-display text-hero font-light mt-7">Contact</h1>
             <p className="mt-10 max-w-xl text-lg leading-8 text-[var(--sakura-ink-soft)]">
               Looking for software engineering and AI application roles. Email is the best way to reach me.
             </p>

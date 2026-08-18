@@ -27,7 +27,7 @@ export default async function WorkDetail({
         </Link>
         <header className="max-w-5xl">
           <p className="eyebrow">{project.categoryTags.join(" · ")}</p>
-          <h1 className="font-display text-[clamp(3.5rem,8vw,7.5rem)] font-light leading-[.88] tracking-[-.05em] mt-6">
+          <h1 className="font-display text-hero font-light text-balance mt-6">
             {project.title}
           </h1>
           <p className="mt-8 max-w-3xl text-xl leading-8 text-[var(--sakura-ink-soft)]">
@@ -134,7 +134,7 @@ function Meta({ label, value }: { label: string; value: string }) {
 function Content({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="font-display text-4xl md:text-5xl font-light mb-8">{title}</h2>
+      <h2 className="font-display text-chapter font-light mb-8">{title}</h2>
       <div className="space-y-6 leading-8 text-[var(--sakura-ink-soft)]">{children}</div>
     </section>
   );

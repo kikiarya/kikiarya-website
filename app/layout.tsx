@@ -3,6 +3,12 @@ import { Cormorant_Garamond, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import MotionProvider from "../components/motion/MotionProvider";
+import RouteVeilProvider from "../components/motion/RouteVeil";
+import EntryGate from "../components/motion/EntryGate";
+import PetalCursor from "../components/motion/PetalCursor";
+import PetalField from "../components/motion/PetalField";
+import SmoothScroll from "../components/motion/SmoothScroll";
 
 const display = Cormorant_Garamond({
   subsets: ["latin"],
@@ -45,11 +51,19 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="noise font-body">
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <main className="flex-grow">{children}</main>
-          <Footer />
-        </div>
+        <MotionProvider>
+          <RouteVeilProvider>
+            <SmoothScroll />
+            <PetalField />
+            <PetalCursor />
+            <EntryGate />
+            <div className="min-h-screen flex flex-col">
+              <Navbar />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+            </div>
+          </RouteVeilProvider>
+        </MotionProvider>
       </body>
     </html>
   );
