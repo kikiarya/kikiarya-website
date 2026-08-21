@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   createContext,
   useCallback,
@@ -14,24 +14,33 @@ import {
 import { useReducedMotion } from "framer-motion";
 
 /**
- * Scene state model (ui-motion-plan2 §22):
- * boot → entry → entering → ready
- * "ready" covers INDEX / WORK / RESUME / CONTACT; route changes are handled by RouteVeil.
+ * Cover is a first-class destination: Kikiarya. always returns here.
+ * ENTER → Work home (/). ✿ → Personal (/notes, /life, /bookshelf).
+ *
+ * `/` SSRs as Cover so the first paint is never an empty background.
+ * sessionStorage is only read after mount, to skip Cover for the same tab.
  */
-export type ScenePhase = "boot" | "entry" | "entering" | "ready";
+export type ScenePhase = "entry" | "entering" | "ready";
 
 const SESSION_KEY = "kikiarya-entered";
 
-// Runs before paint on the client so the gate never flashes for returning visitors.
-const useIsomorphicLayoutEffect =
-  typeof window !== "undefined" ? useLayoutEffect : useEffect;
-
 const MotionContext = createContext<{
   phase: ScenePhase;
+  isCover: boolean;
   sceneReady: boolean;
   cursorActive: boolean;
   enter: () => void;
-}>({ phase: "boot", sceneReady: false, cursorActive: false, enter: () => {} });
+  enterWork: () => void;
+  returnToCover: () => void;
+}>({
+  phase: "entry",
+  isCover: true,
+  sceneReady: false,
+  cursorActive: false,
+  enter: () => {},
+  enterWork: () => {},
+  returnToCover: () => {},
+});
 
 export function useMotionScene() {
   return useContext(MotionContext);
@@ -43,24 +52,32 @@ export function useSceneReady() {
 
 export default function MotionProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const reduce = useReducedMotion();
-  const [phase, setPhase] = useState<ScenePhase>("boot");
-  const [cursorActive, setCursorActive] = useState(false);
+  const [phase, setPhase] = useState<ScenePhase>(() =>
+    pathname === "/" ? "entry" : "ready"
+  );
+  const [cursorActive, setCursorActive] = useState(() => pathname !== "/");
   const phaseRef = useRef(phase);
   phaseRef.current = phase;
+  const pathnameRef = useRef(pathname);
+  pathnameRef.current = pathname;
   const timers = useRef<number[]>([]);
+  const booted = useRef(false);
 
-  useIsomorphicLayoutEffect(() => {
-    if (phaseRef.current !== "boot") return;
-    const entered = window.sessionStorage.getItem(SESSION_KEY) === "true";
-    if (entered || pathname !== "/") {
-      window.sessionStorage.setItem(SESSION_KEY, "true");
+  useLayoutEffect(() => {
+    if (booted.current) return;
+    booted.current = true;
+    if (pathnameRef.current !== "/") {
       setPhase("ready");
       setCursorActive(true);
-    } else {
-      setPhase("entry");
+      return;
     }
-  }, [pathname]);
+    if (window.sessionStorage.getItem(SESSION_KEY) === "true") {
+      setPhase("ready");
+      setCursorActive(true);
+    }
+  }, []);
 
   useEffect(() => {
     const pending = timers.current;
@@ -76,15 +93,37 @@ export default function MotionProvider({ children }: { children: ReactNode }) {
       return;
     }
     setPhase("entering");
-    // §3.2 timeline: hero starts revealing behind the dissolving veil (~380-700ms),
-    // petal cursor takes over once the index is the active scene (~900ms).
     timers.current.push(window.setTimeout(() => setPhase("ready"), 420));
     timers.current.push(window.setTimeout(() => setCursorActive(true), 900));
   }, [reduce]);
 
+  const enterWork = useCallback(() => {
+    if (pathnameRef.current !== "/") router.push("/");
+    enter();
+  }, [enter, router]);
+
+  const returnToCover = useCallback(() => {
+    if (phaseRef.current !== "entry" && phaseRef.current !== "entering") {
+      setPhase("entry");
+      setCursorActive(false);
+      window.scrollTo(0, 0);
+    }
+    if (pathnameRef.current !== "/") router.push("/");
+  }, [router]);
+
+  const isCover = phase === "entry" || phase === "entering";
+
   return (
     <MotionContext.Provider
-      value={{ phase, sceneReady: phase === "ready", cursorActive, enter }}
+      value={{
+        phase,
+        isCover,
+        sceneReady: phase === "ready",
+        cursorActive,
+        enter,
+        enterWork,
+        returnToCover,
+      }}
     >
       {children}
     </MotionContext.Provider>

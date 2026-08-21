@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     template: "%s — Kikiarya",
   },
   description:
-    "Kikiarya (Chen Qiyue) — AI and software engineering. Projects with honest write-ups, a resume, and a bit about the person behind them.",
+    "Kikiarya — AI and software engineering. Projects with honest write-ups, a resume, and a bit about the person behind them.",
 };
 
 export default function RootLayout({

@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowDownRight } from "lucide-react";
 import { useMotionScene } from "./MotionProvider";
+import WorldEntry from "./WorldEntry";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -13,10 +15,18 @@ const ease = [0.16, 1, 0.3, 1] as const;
  * transition, then the gate dissolves and the home opening sequence begins.
  */
 export default function EntryGate() {
-  const { phase, enter } = useMotionScene();
+  const { phase, enter, enterWork } = useMotionScene();
+  const router = useRouter();
   const reduce = useReducedMotion();
   const visible = phase === "entry" || phase === "entering";
   const entering = phase === "entering";
+
+  // Personal-world entrances: dissolve the gate and land on the world page
+  const goWorld = (href: string) => {
+    if (phase !== "entry") return;
+    enter();
+    router.push(href);
+  };
 
   useEffect(() => {
     if (!visible) return;
@@ -29,7 +39,7 @@ export default function EntryGate() {
   }, [visible]);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence initial={false}>
       {visible ? (
         <motion.div
           key="entry-gate"
@@ -38,8 +48,10 @@ export default function EntryGate() {
           aria-label="Enter Kikiarya"
           className="fixed inset-0 z-[70] flex items-center justify-center overflow-hidden"
           style={{ background: "var(--sakura-bg-gradient)" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: reduce ? 0.15 : 0.5, ease }}
+          transition={{ duration: reduce ? 0.15 : 0.4, ease }}
         >
           {/* Sakura glow, breathing (§2.2) */}
           <div
@@ -103,17 +115,30 @@ export default function EntryGate() {
             <h1 className="font-display text-[clamp(3.2rem,7vw,6.8rem)] font-light leading-none tracking-[-.04em]">
               Kikiarya<span className="text-[var(--sakura-accent-deep)]">.</span>
             </h1>
-            <p className="mx-auto mt-7 max-w-md font-display text-xl italic leading-snug text-[var(--sakura-ink-soft)] md:text-2xl">
-              A small corner of the internet where I keep the things I make.
+            <p className="mx-auto mt-7 whitespace-nowrap font-display text-xl italic leading-snug text-[var(--sakura-ink-soft)] md:text-2xl">
+              The things I make live here.
             </p>
             <button
               autoFocus
-              onClick={enter}
+              onClick={enterWork}
               disabled={entering}
               className="button-primary mt-14"
             >
               Enter <ArrowDownRight size={15} />
             </button>
+          </motion.div>
+
+          {/* Second-world entrance: one flower, revealed on approach (§WorldEntry) */}
+          <motion.div
+            className="absolute bottom-20 left-0 right-0 flex justify-center"
+            initial={{ opacity: 0 }}
+            animate={
+              entering
+                ? { opacity: 0, transition: { duration: 0.3, ease } }
+                : { opacity: 1, transition: { duration: 0.9, delay: 0.65, ease } }
+            }
+          >
+            <WorldEntry onNavigate={goWorld} />
           </motion.div>
 
           <motion.p

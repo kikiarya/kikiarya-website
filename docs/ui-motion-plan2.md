@@ -1369,3 +1369,412 @@ OPTIONAL WORLD
 而不是：
 
 > **“这个网站有很多动画。”**
+
+
+
+## 首页第二入口：Personal World
+
+首页继续保留现在的主入口：
+
+**ENTER ↘**
+→ 进入现有的 Work / Portfolio 网站。
+
+除此之外，在首页**底部正中央**新增一个独立的 Personal World 入口，交互参考 Unseen Studio 首页底部的 `UNSEEN ◉ WORLD` 按钮，但视觉语言改成 Kikiarya 自己的 Sakura 系统。
+
+---
+
+## 1. Default State
+
+默认状态下，页面底部只显示一个**白色圆形按钮**。
+
+圆形中央不是 globe，而是一朵极简的 Sakura / Flower icon：
+
+**✿**
+
+视觉结构：
+
+`　　　　✿　　　　`
+
+建议：
+
+* 圆形尺寸约 `48–54px`
+* 白色或略带暖粉的半透明背景
+* 极轻的 border
+* 极柔和阴影
+* 花朵使用当前网站的 berry / dusty rose 色
+* 放置于页面底部中央
+* 位于 `SYDNEY · AI & SOFTWARE · 2026` 上方
+* 与底部文字保留足够距离，不产生拥挤
+
+这里不要提前显示 `NOTES` 或 `LIFE`。
+
+默认状态必须保持现在首页的极简感。
+
+---
+
+## 2. Hover State
+
+鼠标移动到花朵按钮后，参考 Unseen 的交互：
+
+**中央圆形 icon 仍然留在原来的位置，不移动。**
+
+同时：
+
+* `NOTES` 从中央左侧出现
+* `LIFE` 从中央右侧出现
+* 两侧文字向外展开
+* 中央花朵成为左右两个世界之间的视觉分隔点
+
+最终：
+
+**NOTES　　✿　　LIFE**
+
+而不是：
+
+`[ NOTES ✿ LIFE ]`
+
+也就是说，**不要做成传统 capsule / pill button**。
+
+整体仍然应该像三个独立元素，只是在 Hover 时组成一组。
+
+---
+
+## 3. Central Flower Hover Transformation
+
+参考 Unseen 默认白色 globe button → Hover 后黑色中央 globe 的视觉反转。
+
+Kikiarya 可以做对应变化：
+
+### Default
+
+白色圆形背景
+＋
+berry / dusty rose 花朵
+
+### Hover
+
+圆形背景逐渐变成深 berry：
+
+**#8F3D5D / 当前网站主强调色**
+
+同时：
+
+花朵：
+
+**berry → ivory / white**
+
+形成非常轻微的反色效果。
+
+即：
+
+`○ ✿`
+
+↓
+
+`NOTES　 ●✿　 LIFE`
+
+中央 circle 仍然是整个 interaction 的 anchor。
+
+---
+
+## 4. Reveal Animation
+
+Hover 动画不要让 `NOTES` 和 `LIFE` 突然出现。
+
+动画过程：
+
+**Stage 01 — Flower reacts**
+
+花朵按钮轻微缩放：
+
+`scale(1) → scale(1.05)`
+
+同时背景颜色开始反转。
+
+约：
+
+`150–200ms`
+
+---
+
+**Stage 02 — Space opens**
+
+中央按钮左右逐渐产生视觉空间。
+
+不是 circle 本身被拉长，而是整个 interactive wrapper 的宽度：
+
+`52px → approximately 220–260px`
+
+中央花朵位置保持不变。
+
+---
+
+**Stage 03 — Typography appears**
+
+左侧：
+
+`NOTES`
+
+从中央附近：
+
+`translateX(+10px)`
+
+移动至正常位置：
+
+`translateX(0)`
+
+同时：
+
+`opacity: 0 → 1`
+
+右侧 `LIFE` 做镜像运动：
+
+`translateX(-10px) → 0`
+
+形成一种：
+
+**文字从花朵背后被释放出来**
+
+的感觉。
+
+---
+
+## 5. Final Hover Composition
+
+Hover 完成后：
+
+**NOTES　　　 ✿ 　　　LIFE**
+
+视觉上参考 Unseen：
+
+**UNSEEN　　◎　　WORLD**
+
+但不要完全复制其 typography。
+
+Kikiarya 版本应该更加 editorial、轻盈和 feminine。
+
+建议：
+
+`NOTES`
+
+* uppercase
+* 小字号
+* 微 letter-spacing
+* 当前网站 sans-serif
+
+`LIFE`
+
+同样处理。
+
+中央 Sakura 则作为唯一装饰元素。
+
+---
+
+## 6. Hover NOTES / LIFE
+
+整个区域展开以后，用户可以继续把鼠标移动到：
+
+**NOTES**
+
+或：
+
+**LIFE**
+
+### Hover NOTES
+
+NOTES：
+
+`opacity 0.65 → 1`
+
+并产生非常轻微的：
+
+`translateY(0 → -2px)`
+
+可以在文字下方出现一根极短、极细的线。
+
+中央花朵无需再次变化。
+
+点击：
+
+→ `/notes`
+
+---
+
+### Hover LIFE
+
+同样：
+
+`opacity 0.65 → 1`
+
+`translateY(0 → -2px)`
+
+点击：
+
+→ `/life`
+
+---
+
+## 7. Mouse Leave
+
+鼠标离开整个 interactive wrapper，而不是单独离开花朵 circle 后：
+
+先：
+
+`NOTES / LIFE opacity → 0`
+
+并轻微向中央收回。
+
+随后：
+
+中央 circle：
+
+深 berry → white
+
+花朵：
+
+white → berry
+
+wrapper：
+
+`220–260px → 52px`
+
+最终重新只剩：
+
+**✿**
+
+整个过程应该非常平滑。
+
+---
+
+## 8. Motion Timing
+
+不要使用普通 SaaS UI 那种非常快的 `150ms ease-in-out`。
+
+这个首页的氛围更接近 editorial / cinematic interface。
+
+推荐：
+
+**展开**
+
+`500–650ms`
+
+**文字出现 delay**
+
+`80–120ms`
+
+**收起**
+
+`400–500ms`
+
+Easing 可以使用偏自然、柔和的曲线，例如：
+
+`cubic-bezier(0.22, 1, 0.36, 1)`
+
+整体感觉应该是：
+
+**soft / floating / deliberate**
+
+而不是：
+
+**snappy / mechanical**
+
+---
+
+## 9. Information Architecture
+
+最终首页只承担三个一级入口：
+
+### ENTER ↘
+
+进入：
+
+**WORK**
+
+现有 AI / Software Engineering / Research / Projects 内容。
+
+---
+
+### NOTES
+
+进入：
+
+**THOUGHTS**
+
+包括：
+
+* Notes
+* AI / Tech
+* Design
+* Random thoughts
+* Bookmarks / Finds
+
+---
+
+### LIFE
+
+进入：
+
+**PERSONAL**
+
+包括：
+
+* About
+* Now
+* Photos
+* Travel
+* Favorites / Collections
+
+因此首页实际上形成三个维度：
+
+**WORK**
+*What I build.*
+
+**NOTES**
+*What I think.*
+
+**LIFE**
+*How I live.*
+
+---
+
+## 10. Final Homepage Interaction
+
+页面初始：
+
+`                         Kikiarya.`
+
+`          A quiet interface for AI, software and experiments.`
+
+`                         ENTER ↘`
+
+`                            ✿`
+
+`               SYDNEY · AI & SOFTWARE · 2026`
+
+鼠标移动到底部花朵：
+
+`                    NOTES　 ✿　 LIFE`
+
+鼠标离开：
+
+`                            ✿`
+
+---
+
+### Core Design Rule
+
+这个组件的重点不是增加一个“导航栏”。
+
+它应该像一个**隐藏在首页里的第二世界入口**。
+
+所以必须保持：
+
+**Default = one flower**
+
+**Hover = NOTES ✿ LIFE**
+
+**Leave = one flower**
+
+不要默认展示三个按钮，也不要把它做成明显的 navigation pill。
+
+首页仍然应该首先是一张安静、极简的 Kikiarya Cover；只有用户主动靠近花朵时，Personal World 才被揭示出来。
