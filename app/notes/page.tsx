@@ -18,8 +18,7 @@ export default function NotesPage() {
           <p className="eyebrow">Notes · What I think</p>
           <h1 className="font-display text-hero font-light text-balance mt-6">Notes</h1>
           <p className="mt-9 max-w-2xl text-lg leading-8 text-[var(--sakura-ink-soft)]">
-            Thoughts in progress — planted small, tended slowly. Not a feed, more like a garden
-            that grows at its own pace.
+            Short notes when I have them. Empty for now.
           </p>
           <div className="mt-8 flex flex-wrap gap-2">
             {topics.map((topic) => (
@@ -32,10 +31,10 @@ export default function NotesPage() {
           <div className="sakura-glass rounded-[2rem] p-8 md:p-12 max-w-2xl">
             <p className="eyebrow">Status</p>
             <p className="font-display text-2xl md:text-3xl mt-4 leading-snug">
-              Nothing published yet — the first notes are still being written.
+              Nothing here yet.
             </p>
             <p className="mt-4 text-base leading-7 text-[var(--sakura-ink-soft)]">
-              Meanwhile, the bookshelf is already alive.
+              The bookshelf has a few titles.
             </p>
             <Link href="/bookshelf" className="button-ghost mt-8">
               Visit the bookshelf <ArrowUpRight size={15} />

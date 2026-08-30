@@ -1,10 +1,11 @@
 "use client";
 
 import { useDeferredValue, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Search } from "lucide-react";
 import ProjectCard from "./ProjectCard";
 import { projects } from "../lib/projects";
+import { usePrefersReducedMotion } from "./motion/usePrefersReducedMotion";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -22,15 +23,15 @@ function matches(category: string, tags: string[]) {
   if (category === "AI / Agent") return /ai product|ai \/ agent|openai|agent/.test(value);
   if (category === "Machine Learning") return /ai\/ml|data\/ml|research/.test(value);
   if (category === "Software Engineering")
-    return /full-stack|distributed|backend|mean/.test(value);
-  return /research|data\/ml|distributed|full-stack|ai \/ agent/.test(value);
+    return /full-stack|distributed|backend|mean|interactive/.test(value);
+  return /research|data\/ml|distributed|full-stack|ai \/ agent|interactive/.test(value);
 }
 
 export default function ProjectIndex() {
   const [filter, setFilter] = useState("All");
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query.toLowerCase());
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
 
   const filtered = projects.filter(
     (project) =>

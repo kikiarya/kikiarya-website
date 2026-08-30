@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
 /**
  * Projects scene atmosphere (ui-motion-plan2 §8): extremely subtle rings and
@@ -8,7 +9,7 @@ import { motion, useReducedMotion } from "framer-motion";
  * stays at 100% prominence, forms at ~8-15%.
  */
 export default function SceneDecor({ className = "" }: { className?: string }) {
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
 
   return (
     <div

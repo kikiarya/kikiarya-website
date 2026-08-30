@@ -11,7 +11,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { useReducedMotion } from "framer-motion";
+import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
 /**
  * Cover is a first-class destination: Kikiarya. always returns here.
@@ -53,7 +53,7 @@ export function useSceneReady() {
 export default function MotionProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
   const [phase, setPhase] = useState<ScenePhase>(() =>
     pathname === "/" ? "entry" : "ready"
   );
@@ -93,8 +93,8 @@ export default function MotionProvider({ children }: { children: ReactNode }) {
       return;
     }
     setPhase("entering");
-    timers.current.push(window.setTimeout(() => setPhase("ready"), 420));
-    timers.current.push(window.setTimeout(() => setCursorActive(true), 900));
+    timers.current.push(window.setTimeout(() => setPhase("ready"), 680));
+    timers.current.push(window.setTimeout(() => setCursorActive(true), 980));
   }, [reduce]);
 
   const enterWork = useCallback(() => {

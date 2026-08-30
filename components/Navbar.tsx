@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type MouseEvent } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Container from "./Container";
 import { useVeilNavigate } from "./motion/RouteVeil";
 import { useMotionScene } from "./motion/MotionProvider";
+import { usePrefersReducedMotion } from "./motion/usePrefersReducedMotion";
 
 const workLinks = [
   { number: "01", name: "Index", detail: "Work home", href: "/" },
@@ -30,7 +31,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
   const { sceneReady, isCover, returnToCover } = useMotionScene();
   const navigate = useVeilNavigate();
   const isPersonal = PERSONAL_PREFIXES.some(

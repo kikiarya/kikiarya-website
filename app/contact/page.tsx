@@ -1,5 +1,8 @@
 import { ArrowUpRight, Mail, MapPin } from "lucide-react";
 import Container from "../../components/Container";
+import EnvelopeMark from "../../components/decor/EnvelopeMark";
+import WaxSeal from "../../components/decor/WaxSeal";
+import Pearl from "../../components/decor/Pearl";
 
 export const metadata = { title: "Contact" };
 
@@ -12,11 +15,20 @@ export default function ContactPage() {
             <p className="eyebrow">05 · Contact</p>
             <h1 className="font-display text-hero font-light mt-7">Contact</h1>
             <p className="mt-10 max-w-xl text-lg leading-8 text-[var(--sakura-ink-soft)]">
-              Roles, projects, questions about anything on this site — or just to say hi. Email
-              works best, and I actually reply.
+              Roles, a question about a project, or just hello. Email is the reliable way.
             </p>
           </div>
-          <div className="sakura-glass rounded-[2rem] p-8">
+          <div className="relative sakura-glass rounded-[2rem] p-8">
+            <div
+              aria-hidden="true"
+              className="absolute -top-5 right-7 flex items-center gap-3"
+            >
+              <EnvelopeMark
+                width={52}
+                className="text-[var(--sakura-accent)]/70"
+              />
+              <WaxSeal size={64} />
+            </div>
             <p className="eyebrow">Direct</p>
             <a
               href="mailto:kikiarya@163.com"
@@ -30,6 +42,14 @@ export default function ContactPage() {
               </p>
               <p className="flex items-center gap-3">
                 <Mail size={15} /> Open to relevant roles
+              </p>
+              <p
+                aria-hidden="true"
+                className="flex items-center gap-1.5 pt-1 text-[var(--sakura-accent)]"
+              >
+                <Pearl size={6} />
+                <Pearl size={6} />
+                <Pearl size={6} />
               </p>
             </div>
           </div>

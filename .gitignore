@@ -23,3 +23,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Resume source files — contain real name and phone number, never commit
+resume/
+*.pdf
+*.docx
+*.doc
+_resume_extract.txt

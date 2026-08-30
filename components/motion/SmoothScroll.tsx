@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
-import { useReducedMotion } from "framer-motion";
+import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
 declare global {
   interface Window {
@@ -33,7 +33,7 @@ export function smoothScrollTo(selector: string) {
 
 /** Lenis inertia scrolling — desktop fine-pointer only, off under reduced motion (§17). */
 export default function SmoothScroll() {
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
 
   useEffect(() => {
     if (reduce) return;

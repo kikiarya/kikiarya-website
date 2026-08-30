@@ -27,7 +27,7 @@ When restyling the portfolio, apply in this order:
 3. **Global atmosphere** — gradient background, blur orbs, optional noise overlay
 4. **Shell components** — `Navbar`, `Footer`, `Container`
 5. **Page sections** — Hero, cards, buttons, tags
-6. **Micro-interactions** — soft fade-up reveals, no sharp/bouncy motion
+6. **Motion** — layered: slow atmosphere, expressive interaction (see DESIGN-SYSTEM §8)
 
 ## Adaptation for portfolio (not desktop app)
 
@@ -45,12 +45,13 @@ This site is a **personal portfolio**, not the full pink-style desktop shell. Ad
 
 ## Do / Don't (quick)
 
-**Do:** blush pink palette, glass panels, 14–20px card radius, serif display titles, mono uppercase labels, soft 150–500ms transitions.
+**Do:** blush pink palette, glass panels, 14–20px card radius, serif display titles, mono uppercase labels. Motion with a point of view — scroll-driven parallax, per-word title reveals, spring-backed hover, layout transitions.
 
-**Don't:** slate-900 hero, corporate blue accents, sharp corners, dense dashboards, Material elevation shadows, Inter-only typography.
+**Don't:** slate-900 hero, corporate blue accents, sharp corners, dense dashboards, Material elevation shadows, Inter-only typography. Motion that is merely decorative, or so faint the visitor cannot tell it happened.
 
 ## Reference
 
 - Full design spec: [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md)
 - Source inspiration: [Nocturne-Memory-Core](https://github.com/Pyruslili/Nocturne-Memory-Core) `dashboard.html` (`sakura-milk` source theme)
-- Current stack: Next.js 14, Tailwind 3, Framer Motion, Lucide icons
+- Current stack: Next.js 16, React 19, Tailwind 3, Framer Motion, Lenis, Lucide icons
+- Existing motion components live in `components/motion/` — extend those before adding new ones

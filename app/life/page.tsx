@@ -15,7 +15,7 @@ export default function LifePage() {
           <p className="eyebrow">Life · How I live</p>
           <h1 className="font-display text-hero font-light text-balance mt-6">Life</h1>
           <p className="mt-9 max-w-2xl text-lg leading-8 text-[var(--sakura-ink-soft)]">
-            The person behind the commits — kept intentionally small.
+            A short page. I would rather keep it that way.
           </p>
         </header>
 
@@ -25,17 +25,16 @@ export default function LifePage() {
               <p className="eyebrow mb-7">About</p>
               <div className="space-y-5 text-base leading-8 text-[var(--sakura-ink-soft)]">
                 <p>
-                  Nanjing raised me; Sydney is where I live now. My seasons have been upside down
-                  since 2024, and I&apos;ve stopped trying to fix that.
+                  Grew up in China; live in Sydney now. Seasons have been backwards since 2024. I
+                  have given up correcting them.
                 </p>
                 <p>
-                  In undergrad I built a walk-through classical Chinese garden in Unity — falling
-                  leaves, a waterfall, scenery drawn from imagery in old poems. It won a national
-                  design prize, and it&apos;s part of why this site is pink.
+                  In undergrad I built a walk-through classical garden in Unity — falling leaves, a
+                  waterfall, courtyards from old poems. It is still why this site is pink.
                 </p>
                 <p>
-                  Years of class-committee and student-union work taught me the other kind of
-                  engineering: getting twenty people and one deadline to arrive at the same place.
+                  Student-union years taught a different kind of engineering: twenty people, one
+                  deadline, nobody is a git conflict but it feels like one.
                 </p>
               </div>
             </section>

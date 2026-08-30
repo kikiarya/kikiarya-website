@@ -404,9 +404,16 @@ body::before {
 
 ### Principles
 
-- Soft, slow, unhurried — never snappy or bouncy
-- Prefer fade + translateY over scale-heavy motion
-- Easing: `cubic-bezier(0.16, 1, 0.3, 1)` for reveals
+Motion runs on two layers. Do not apply one layer's rules to the other.
+
+**Atmosphere** — background orbs, petals, gradients. Slow, continuous, ignorable. 8s and up. This layer should never compete for attention.
+
+**Interaction & narrative** — reveals, hovers, page transitions, scroll effects. This layer is allowed to be felt. If a visitor cannot tell an animation happened, it is not restraint, it is a bug.
+
+- Easing: `cubic-bezier(0.16, 1, 0.3, 1)` for reveals; spring for anything the cursor touches
+- Displacement of 12px or less reads as noise — go 24px+ or drop the animation
+- Stagger sequences over animating a block as one unit
+- Always honour `prefers-reduced-motion` (`useReducedMotion`), already wired into every motion component
 
 ### Standard animations
 
@@ -417,15 +424,29 @@ body::before {
 | `titleIn` | 1.25s | Hero title |
 | `cosmicBreath` | 16s alternate infinite | Background orbs |
 | `tabUnderline` | 0.5s | Active tab indicator scaleX |
-| Hover scale | 150–200ms | Buttons, cards: scale(1.02–1.05) |
+| Hover | spring | Buttons, cards: lift + scale(1.02–1.05) |
+| Scroll parallax | scroll-linked | Decorative layers move slower than content |
+| Word stagger | 40–70ms per word | Hero and chapter titles |
 
 ### Framer Motion defaults (for this project)
 
 ```tsx
-// Reveal
-initial={{ opacity: 0, y: 20 }}
-animate={{ opacity: 1, y: 0 }}
+// Section reveal — 28px, not 12px
+initial={{ opacity: 0, y: 28 }}
+whileInView={{ opacity: 1, y: 0 }}
+viewport={{ once: true, margin: "-80px" }}
 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+
+// Anything the cursor touches — spring, not tween
+whileHover={{ y: -4, scale: 1.02 }}
+transition={{ type: "spring", stiffness: 320, damping: 26 }}
+
+// Staggered children
+transition={{ staggerChildren: 0.06 }}
+
+// Scroll-linked parallax
+const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+const y = useTransform(scrollYProgress, [0, 1], [0, -120]);
 
 // Nav underline (keep layoutId pattern)
 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
@@ -433,10 +454,11 @@ transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
 
 ### Avoid
 
-- Bounce easing
+- Cartoon overshoot: springs that visibly wobble past their target more than once
 - Duration < 100ms on layout changes
-- Parallax overload
-- Flashy gradient animations on text
+- Parallax on body copy — decorative and structural layers only, or it hurts to read
+- Rainbow or shifting gradients on text
+- Animating an entire section as one block when its children could stagger
 
 ---
 
@@ -603,8 +625,8 @@ Design a interface inspired by the pink-style "Unseen" design language. This is 
 - Glass: backdrop-filter blur(22px) saturate(112%)
 - Background: gradient + blur orbs + noise overlay (opacity 0.08)
 - Optional: sakura petals rgba(202,111,145,0.48)
-- Animations: revealUp 1s, cosmicBreath 16s, soft hover scale 150–200ms
-- NO bounce, NO sharp transitions
+- Motion, two layers: atmosphere slow and ignorable (8s+); interaction expressive — scroll parallax, word-staggered titles, spring hover, layout transitions
+- Reveals travel 24px+; springs settle without visible wobble; respect prefers-reduced-motion
 
 ## Avoid
 

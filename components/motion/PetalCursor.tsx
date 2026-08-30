@@ -5,11 +5,11 @@ import {
   AnimatePresence,
   motion,
   useMotionValue,
-  useReducedMotion,
   useSpring,
   type MotionValue,
 } from "framer-motion";
 import { useMotionScene } from "./MotionProvider";
+import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
 const INTERACTIVE_SELECTOR = "a, button, [role='button'], label, summary";
 const NATIVE_CURSOR_SELECTOR =
@@ -117,7 +117,7 @@ type Ghost = {
  */
 export default function PetalCursor() {
   const { cursorActive } = useMotionScene();
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
   const [enabled, setEnabled] = useState(false);
   const [hidden, setHidden] = useState(true);
   const [hovering, setHovering] = useState(false);

@@ -1,27 +1,38 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState, type MouseEvent, type PointerEvent } from "react";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ArrowDownRight } from "lucide-react";
 import { useMotionScene } from "./MotionProvider";
 import WorldEntry from "./WorldEntry";
+import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
+import {
+  CoverIdlePetals,
+  CoverLace,
+  CoverOpeningPetals,
+  CoverRibbonLayer,
+  CoverSweep,
+} from "./CoverAtmosphere";
 
-const ease = [0.16, 1, 0.3, 1] as const;
+const ease = [0.2, 0.7, 0.2, 1] as const;
 
-/**
- * Entry Gate (ui-motion-plan2 §2-3): a quiet "foyer" shown once per browser
- * session before the index. Clicking ENTER plays the Sakura aperture
- * transition, then the gate dissolves and the home opening sequence begins.
- */
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}
+
 export default function EntryGate() {
   const { phase, enter, enterWork } = useMotionScene();
   const router = useRouter();
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
   const visible = phase === "entry" || phase === "entering";
   const entering = phase === "entering";
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [parallax, setParallax] = useState({ x: 0, y: 0 });
+  const [magnet, setMagnet] = useState({ x: 0, y: 0 });
+  const [desktop, setDesktop] = useState(false);
+  const [compact, setCompact] = useState(false);
 
-  // Personal-world entrances: dissolve the gate and land on the world page
   const goWorld = (href: string) => {
     if (phase !== "entry") return;
     enter();
@@ -38,6 +49,52 @@ export default function EntryGate() {
     };
   }, [visible]);
 
+  useEffect(() => {
+    const fine = window.matchMedia("(min-width: 768px) and (pointer: fine)");
+    const narrow = window.matchMedia("(max-width: 767px)");
+    const sync = () => {
+      setDesktop(fine.matches);
+      setCompact(narrow.matches);
+    };
+    sync();
+    fine.addEventListener("change", sync);
+    narrow.addEventListener("change", sync);
+    return () => {
+      fine.removeEventListener("change", sync);
+      narrow.removeEventListener("change", sync);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!visible || reduce || !desktop) return;
+    const onMove = (event: globalThis.PointerEvent) => {
+      const nx = (event.clientX / window.innerWidth - 0.5) * 2;
+      const ny = (event.clientY / window.innerHeight - 0.5) * 2;
+      setParallax({ x: nx, y: ny });
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => window.removeEventListener("pointermove", onMove);
+  }, [visible, reduce, desktop]);
+
+  const handleMagnet = (event: PointerEvent<HTMLButtonElement>) => {
+    if (reduce || !desktop || entering) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const dx = event.clientX - (rect.left + rect.width / 2);
+    const dy = event.clientY - (rect.top + rect.height / 2);
+    setMagnet({
+      x: clamp(dx * 0.18, -6, 6),
+      y: clamp(dy * 0.18, -5, 5),
+    });
+  };
+
+  const resetMagnet = () => setMagnet({ x: 0, y: 0 });
+
+  const handleEnter = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (entering) return;
+    enterWork();
+  };
+
   return (
     <AnimatePresence initial={false}>
       {visible ? (
@@ -51,9 +108,8 @@ export default function EntryGate() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: reduce ? 0.15 : 0.4, ease }}
+          transition={{ duration: reduce ? 0.2 : 0.45, ease }}
         >
-          {/* Sakura glow, breathing (§2.2) */}
           <div
             aria-hidden="true"
             className="absolute inset-[-12%]"
@@ -61,97 +117,114 @@ export default function EntryGate() {
               background:
                 "radial-gradient(circle at 24% 24%, rgba(255,255,255,.72), transparent 22%), radial-gradient(circle at 72% 28%, rgba(216,132,159,.26), transparent 30%), radial-gradient(circle at 62% 78%, rgba(255,221,230,.6), transparent 32%)",
               filter: "blur(36px)",
-              animation: reduce
-                ? undefined
-                : "sakura-breath 14s ease-in-out infinite alternate",
+              animation: reduce ? undefined : "sakura-breath 14s ease-in-out infinite alternate",
             }}
           />
 
-          {/* Two faint decorative forms, very slow drift */}
-          <motion.div
-            aria-hidden="true"
-            className="absolute right-[12%] top-[16%] h-44 w-44 rounded-full border border-[var(--sakura-line)]"
-            animate={reduce ? undefined : { y: [0, -10, 0], rotate: [0, 3, 0] }}
-            transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+          <CoverOpeningPetals reduce={reduce} entering={entering} />
+          <CoverIdlePetals
+            reduce={reduce}
+            entering={entering}
+            parallax={desktop && !reduce ? parallax : { x: 0, y: 0 }}
+            mobile={compact}
           />
-          <motion.div
-            aria-hidden="true"
-            className="absolute bottom-[14%] left-[10%] h-24 w-24 rounded-full border border-[var(--sakura-line-soft)]"
-            style={{ background: "rgba(255,227,235,.4)" }}
-            animate={reduce ? undefined : { y: [0, 8, 0], rotate: [0, -3, 0] }}
-            transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+          <CoverRibbonLayer
+            side="left"
+            reduce={reduce}
+            entering={entering}
+            parallax={desktop && !reduce ? parallax : { x: 0, y: 0 }}
+            compact={compact}
           />
+          <CoverRibbonLayer
+            side="right"
+            reduce={reduce}
+            entering={entering}
+            parallax={desktop && !reduce ? parallax : { x: 0, y: 0 }}
+            compact={compact}
+          />
+          <CoverLace reduce={reduce} entering={entering} />
 
-          {/* Sakura aperture bloom, expands on ENTER (§3.3) */}
-          <motion.div
-            aria-hidden="true"
-            className="absolute left-1/2 top-1/2 h-80 w-80 -ml-40 -mt-40 rounded-full"
-            style={{
-              background:
-                "radial-gradient(circle, rgba(255,247,249,.96) 0%, rgba(216,132,159,.4) 46%, transparent 72%)",
-            }}
-            initial={{ scale: 0, opacity: 0 }}
-            animate={entering ? { scale: 9, opacity: 1 } : { scale: 0, opacity: 0 }}
-            transition={{ duration: 0.62, delay: 0.12, ease }}
-          />
-          <motion.div
-            aria-hidden="true"
-            className="absolute left-1/2 top-1/2 h-40 w-40 -ml-20 -mt-20 rounded-full border border-[var(--sakura-accent)]"
-            initial={{ scale: 0.4, opacity: 0 }}
-            animate={entering ? { scale: 10, opacity: [0, 0.5, 0] } : { scale: 0.4, opacity: 0 }}
-            transition={{ duration: 0.6, delay: 0.14, ease }}
-          />
-
-          {/* Content */}
-          <motion.div
-            className="relative px-6 text-center"
-            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 16 }}
-            animate={
-              entering
-                ? { opacity: 0, y: -8, transition: { duration: 0.4, delay: 0.08, ease } }
-                : { opacity: 1, y: 0, transition: { duration: 0.9, delay: 0.1, ease } }
-            }
-          >
-            <h1 className="font-display text-[clamp(3.2rem,7vw,6.8rem)] font-light leading-none tracking-[-.04em]">
-              Kikiarya<span className="text-[var(--sakura-accent-deep)]">.</span>
-            </h1>
-            <p className="mx-auto mt-7 whitespace-nowrap font-display text-xl italic leading-snug text-[var(--sakura-ink-soft)] md:text-2xl">
-              The things I make live here.
-            </p>
-            <button
-              autoFocus
-              onClick={enterWork}
-              disabled={entering}
-              className="button-primary mt-14"
+          <div className="relative z-10 px-6 text-center">
+            <motion.h1
+              className="font-display text-[clamp(3.2rem,7vw,6.8rem)] font-light leading-none tracking-[-.04em]"
+              initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8, filter: "blur(4px)" }}
+              animate={
+                entering
+                  ? { opacity: 0, y: -6, filter: "blur(2px)" }
+                  : { opacity: 1, y: 0, filter: "blur(0px)" }
+              }
+              transition={{ duration: reduce ? 0.25 : 0.7, delay: reduce ? 0 : 0.45, ease }}
             >
-              Enter <ArrowDownRight size={15} />
-            </button>
-          </motion.div>
+              Kikiarya<span className="text-[var(--sakura-accent-deep)]">.</span>
+            </motion.h1>
 
-          {/* Second-world entrance: one flower, revealed on approach (§WorldEntry) */}
+            <motion.p
+              className="mx-auto mt-7 whitespace-nowrap font-display text-xl italic leading-snug text-[var(--sakura-ink-soft)] md:text-2xl"
+              initial={{ opacity: 0, y: reduce ? 0 : 6 }}
+              animate={entering ? { opacity: 0 } : { opacity: 1, y: 0 }}
+              transition={{ duration: reduce ? 0.25 : 0.55, delay: reduce ? 0.05 : 0.8, ease }}
+            >
+              The things I make live here.
+            </motion.p>
+
+            <motion.div
+              className="mt-14 flex justify-center"
+              initial={{ opacity: 0, y: reduce ? 0 : 6 }}
+              animate={entering ? { opacity: 0 } : { opacity: 1, y: 0 }}
+              transition={{ duration: reduce ? 0.2 : 0.45, delay: reduce ? 0.08 : 1.05, ease }}
+            >
+              <motion.button
+                ref={buttonRef}
+                autoFocus
+                onClick={handleEnter}
+                disabled={entering}
+                onPointerMove={handleMagnet}
+                onPointerLeave={resetMagnet}
+                className="button-primary group"
+                animate={{ x: magnet.x, y: magnet.y, scale: entering ? 0.99 : 1 }}
+                whileHover={
+                  reduce ? undefined : { scale: 1.015, boxShadow: "0 12px 28px -12px rgba(169,71,109,.48)" }
+                }
+                transition={{ duration: 0.28, ease }}
+              >
+                Enter
+                <ArrowDownRight
+                  size={15}
+                  className="transition-transform duration-300 ease-out group-hover:translate-x-[3px] group-hover:translate-y-[3px]"
+                />
+              </motion.button>
+            </motion.div>
+
+            <motion.p
+              aria-hidden="true"
+              className="mt-8 font-display text-sm tracking-[0.45em] text-[var(--sakura-accent)]/45"
+              initial={{ opacity: 0 }}
+              animate={entering ? { opacity: 0 } : { opacity: 1 }}
+              transition={{ duration: 0.45, delay: reduce ? 0.1 : 1.22, ease }}
+            >
+              · ○ ·
+            </motion.p>
+          </div>
+
           <motion.div
-            className="absolute bottom-20 left-0 right-0 flex justify-center"
+            className="absolute bottom-[4.6rem] left-0 right-0 z-10 flex justify-center"
             initial={{ opacity: 0 }}
-            animate={
-              entering
-                ? { opacity: 0, transition: { duration: 0.3, ease } }
-                : { opacity: 1, transition: { duration: 0.9, delay: 0.65, ease } }
-            }
+            animate={entering ? { opacity: 0 } : { opacity: 1 }}
+            transition={{ duration: reduce ? 0.25 : 0.55, delay: reduce ? 0.12 : 0.28, ease }}
           >
             <WorldEntry onNavigate={goWorld} />
           </motion.div>
 
           <motion.p
-            className="absolute bottom-9 left-0 right-0 text-center font-mono text-meta uppercase tracking-[.22em] text-[var(--sakura-muted)]"
+            className="absolute bottom-7 left-0 right-0 z-10 text-center font-mono text-meta uppercase tracking-[.22em] text-[var(--sakura-muted)]"
             initial={{ opacity: 0 }}
-            animate={
-              entering
-                ? { opacity: 0, transition: { duration: 0.3, ease } }
-                : { opacity: 1, transition: { duration: 0.9, delay: 0.5, ease } }
-            }
+            animate={entering ? { opacity: 0 } : { opacity: 1 }}
+            transition={{ duration: reduce ? 0.2 : 0.5, delay: reduce ? 0.12 : 1.65, ease }}
           >
             Sydney · AI &amp; Software · 2026
           </motion.p>
+
+          <CoverSweep active={entering && !reduce} />
         </motion.div>
       ) : null}
     </AnimatePresence>

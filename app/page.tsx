@@ -2,8 +2,8 @@
 
 import { useRef, type MouseEvent } from "react";
 import Link from "next/link";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { ArrowUpRight, Download } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 import Container from "../components/Container";
 import ProjectCard from "../components/ProjectCard";
 import Reveal from "../components/motion/Reveal";
@@ -11,43 +11,48 @@ import SectionHeader from "../components/SectionHeader";
 import SceneDecor from "../components/motion/SceneDecor";
 import { FadeUp, HeroLine } from "../components/motion/HeroReveal";
 import { smoothScrollTo } from "../components/motion/SmoothScroll";
+import Bow from "../components/decor/Bow";
+import SilkRibbon from "../components/decor/SilkRibbon";
+import RoseWindow from "../components/decor/RoseWindow";
+import Pearl from "../components/decor/Pearl";
 import { getFeaturedProjects } from "../lib/projects";
+import { usePrefersReducedMotion } from "../components/motion/usePrefersReducedMotion";
 
 const focus = [
   [
     "01",
-    "AI & Agent Systems",
-    "Getting LLMs to do useful work: prompts, tool calls, agent loops, and the plumbing around them that nobody sees but everybody feels.",
+    "Agent algorithms",
+    "Post-training, harness policy, latent actions — making agents cheaper and less fragile on long runs.",
   ],
   [
     "02",
-    "Applied Machine Learning",
-    "Training and evaluating models on real data, then being honest about what the numbers actually say.",
+    "Agent applications",
+    "LangGraph workflows, RAG, tool calling, and the product layer that has to survive real networks.",
   ],
   [
     "03",
-    "Software Systems",
-    "The backbone underneath: APIs, message queues, transactions, and frontends that don't fight the user.",
+    "Systems underneath",
+    "Services, queues, transactions. The parts that still work when there is no model in the loop.",
   ],
 ];
 
 const beyond = [
   [
-    "Classical things",
-    "In undergrad I built a walk-through classical Chinese garden in Unity — falling leaves, a waterfall, scenery drawn from imagery in old poems. It won a national design prize, and it's part of why this site looks the way it does.",
+    "A garden in Unity",
+    "I once built a walk-through classical garden — falling leaves, a waterfall, courtyards from old poems. It is still the reason this site is pink.",
   ],
   [
-    "Organising people",
-    "Years of class-committee and student-union work taught me the other kind of engineering: getting twenty people and one deadline to arrive at the same place.",
+    "Group work, the other kind",
+    "Student-union years: twenty people, one deadline, nobody is a git conflict but it feels like one.",
   ],
   [
-    "Two cities",
-    "Nanjing raised me; Sydney is where I live now. My seasons have been upside down since 2024, and I've stopped trying to fix that.",
+    "Two hemispheres",
+    "Grew up in China; live in Sydney now. Seasons have been backwards since 2024. I have given up correcting them.",
   ],
 ];
 
 export default function Home() {
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
   const heroRef = useRef<HTMLElement>(null);
 
   // Hero → Work scene transition (§7): scroll progress drives the hero out
@@ -88,10 +93,10 @@ export default function Home() {
               <motion.div style={reduce ? undefined : { opacity: heroFade }}>
                 <FadeUp delay={0.82}>
                   <p className="mt-10 max-w-2xl text-lg md:text-xl leading-8 text-[var(--sakura-ink-soft)]">
-                    I&apos;m a master&apos;s student at the University of Sydney, finishing at the
-                    end of 2026. Last summer I helped build a real-time AI video product at
-                    AIsphere — mostly making it survive bad networks. I like my software fast and
-                    my interfaces soft pink.
+                    Master&apos;s student at the University of Sydney, finishing December 2026.
+                    Recent work: coding-agent post-training, OpenClaw runtime compression, a paper on
+                    latent actions under review. Last summer at AIsphere on PixVerse Game — live
+                    video that follows what the player types.
                   </p>
                 </FadeUp>
                 <FadeUp delay={0.96}>
@@ -99,31 +104,51 @@ export default function Home() {
                     <a href="#work" onClick={handleViewWork} className="button-primary">
                       View work <ArrowUpRight size={15} />
                     </a>
-                    <a href="/陈绮玥简历.pdf" className="button-ghost">
-                      Download resume <Download size={15} />
-                    </a>
+                    <Link href="/resume" className="button-ghost">
+                      Resume
+                    </Link>
                   </div>
                 </FadeUp>
               </motion.div>
             </div>
             <FadeUp delay={1.08} className="hidden lg:block pb-3">
               <motion.div
-                className="sakura-glass rounded-[2rem] p-8"
+                className="relative overflow-hidden sakura-glass rounded-[2rem] p-8"
                 whileHover={
                   reduce
                     ? undefined
-                    : { y: -2, boxShadow: "0 14px 36px -18px rgba(169,71,109,.35)" }
+                    : { y: -4, boxShadow: "0 14px 36px -18px rgba(169,71,109,.35)" }
                 }
-                transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}
+                transition={
+                  reduce
+                    ? { duration: 0.2 }
+                    : { type: "spring", stiffness: 320, damping: 26 }
+                }
               >
+                <RoseWindow
+                  size={220}
+                  className="pointer-events-none absolute -right-16 -top-16 text-[var(--sakura-accent-deep)] opacity-[0.1]"
+                />
                 <div
                   aria-hidden="true"
-                  className="mx-auto mb-10 h-28 w-28 rounded-full border border-[var(--sakura-line-strong)] relative"
+                  className="relative mx-auto mb-8 flex h-28 w-28 items-center justify-center"
                 >
-                  <span className="absolute -right-5 top-10 h-11 w-11 rounded-full bg-[var(--sakura-surface-soft)] border border-[var(--sakura-line)]" />
+                  <Bow
+                    size={72}
+                    variant="soft"
+                    className="text-[var(--sakura-accent-deep)]"
+                  />
+                  <Pearl
+                    size={8}
+                    className="absolute right-0 top-3 text-[var(--sakura-accent)]"
+                  />
                 </div>
                 <p className="eyebrow">Based in</p>
                 <p className="font-display text-2xl mt-3 leading-snug">Sydney, Australia</p>
+                <SilkRibbon
+                  width={150}
+                  className="mt-6 text-[var(--sakura-accent)]"
+                />
               </motion.div>
             </FadeUp>
           </motion.div>
@@ -138,7 +163,7 @@ export default function Home() {
               <SectionHeader
                 eyebrow="Selected work"
                 title="Featured projects"
-                description="The projects I still like. Each one has a proper write-up — what it is, what broke, and what I'd do differently."
+                description="Agent training, runtime compression, multi-agent apps. Write-ups on the work page."
               />
               <Link href="/work" className="hidden sm:inline-flex button-ghost shrink-0">
                 All work <ArrowUpRight size={15} />
@@ -157,7 +182,7 @@ export default function Home() {
             <SectionHeader
               eyebrow="Focus"
               title="What I work on"
-              description="Roughly everything I make falls somewhere between these three."
+              description="Three things I spend time on. They overlap."
             />
           </Reveal>
           <div className="grid md:grid-cols-3 gap-px bg-[var(--sakura-line-soft)] border border-[var(--sakura-line-soft)] rounded-[2rem] overflow-hidden">
@@ -183,30 +208,32 @@ export default function Home() {
               <SectionHeader
                 eyebrow="Now"
                 title="Currently in Sydney"
-                description="The short version of what I'm up to. The long version lives on the resume page."
+                description="Graduation project, one internship, a paper in review."
               />
             </Reveal>
             <Reveal delay={0.1}>
               <div className="space-y-8">
                 <div className="border-l-2 border-[var(--sakura-accent)] pl-7">
                   <p className="eyebrow">Internship · Dec 2025 – Feb 2026</p>
-                  <h3 className="font-display text-card-title mt-3">AIsphere · AI Full-stack</h3>
+                  <h3 className="font-display text-card-title mt-3">AIsphere · PixVerse Game</h3>
                   <p className="mt-3 text-[var(--sakura-ink-soft)] leading-7">
-                    Real-time AI video over WebRTC. I spent most of my time on the unglamorous
-                    part: keeping sessions alive when the network isn&apos;t.
+                    Generative interactive games: player text → task state → segmented video → live
+                    stream. Prompt and context built from game state; session recovery when the
+                    network or generation failed mid-run.
                   </p>
                 </div>
                 <div className="border-l-2 border-[var(--sakura-line)] pl-7">
                   <p className="eyebrow">Education · Jul 2024 – Dec 2026</p>
                   <h3 className="font-display text-card-title mt-3">University of Sydney</h3>
                   <p className="mt-3 text-[var(--sakura-ink-soft)] leading-7">
-                    Master of Computer Science · WAM 80+ (HD)
+                    Master of Computer Science. Dual stream: software engineering, and data
+                    science &amp; AI.
                   </p>
                 </div>
                 <div className="sakura-glass rounded-3xl p-7">
                   <p className="eyebrow">Status</p>
                   <p className="font-display text-2xl mt-3 leading-snug">
-                    Looking for software engineering and AI roles — graduating December 2026.
+                    Looking for agent algorithm and AI engineering roles — graduating December 2026.
                   </p>
                   <p className="font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-muted)] mt-5">
                     Updated Aug 2026
@@ -224,7 +251,8 @@ export default function Home() {
             <SectionHeader
               eyebrow="Beyond code"
               title="A few non-technical facts"
-              description="Because a person is not a tech stack."
+              description="Not a tech stack."
+              ornament
             />
           </Reveal>
           <div className="grid md:grid-cols-3 gap-10 md:gap-14">

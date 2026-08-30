@@ -10,7 +10,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -32,7 +33,7 @@ export function useVeilNavigate() {
 export default function RouteVeilProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
   const [state, setState] = useState<VeilState>("idle");
   const pendingRef = useRef(false);
   const timers = useRef<number[]>([]);

@@ -19,7 +19,7 @@ const sections: { status: Book["status"]; label: string; blurb: string }[] = [
   {
     status: "next",
     label: "Up next",
-    blurb: "The antilibrary — waiting patiently on the shelf.",
+    blurb: "In the pile. May stay there a while.",
   },
 ];
 
@@ -32,8 +32,7 @@ export default function BookshelfPage() {
           <p className="eyebrow">04 · Bookshelf</p>
           <h1 className="font-display text-hero font-light text-balance mt-6">Bookshelf</h1>
           <p className="mt-9 max-w-2xl text-lg leading-8 text-[var(--sakura-ink-soft)]">
-            Not everything I do is code. This is what I&apos;ve been reading — kept honest, one
-            line per book.
+            What I have been reading. One line each.
           </p>
         </header>
 

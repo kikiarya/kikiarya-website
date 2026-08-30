@@ -4,12 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import {
   motion,
   useMotionValue,
-  useReducedMotion,
   useScroll,
   useSpring,
   useTransform,
   type MotionValue,
 } from "framer-motion";
+import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
+import { useMotionScene } from "./MotionProvider";
 
 /**
  * Ambient petal field: a handful of soft sakura petals floating around the
@@ -178,7 +179,8 @@ function FieldPetal({
 }
 
 export default function PetalField() {
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
+  const { isCover } = useMotionScene();
   const [enabled, setEnabled] = useState(false);
   const mx = useMotionValue(-9999);
   const my = useMotionValue(-9999);
@@ -201,7 +203,7 @@ export default function PetalField() {
     return () => window.removeEventListener("pointermove", onMove);
   }, [enabled, mx, my]);
 
-  if (!enabled) return null;
+  if (!enabled || isCover) return null;
 
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[1]">

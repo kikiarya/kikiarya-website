@@ -4,10 +4,10 @@ import { ArrowLeft, ExternalLink, Github } from "lucide-react";
 import Container from "../../../components/Container";
 import Tag from "../../../components/Tag";
 import DemoFrame from "../../../components/DemoFrame";
-import { getProjectBySlug, projects } from "../../../lib/projects";
+import { getProjectBySlug, getAllProjectSlugs } from "../../../lib/projects";
 
 export function generateStaticParams() {
-  return projects.map(({ slug }) => ({ slug }));
+  return getAllProjectSlugs().map((slug) => ({ slug }));
 }
 
 export default async function WorkDetail({

@@ -1,8 +1,9 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import type { ReactNode } from "react";
 import { useSceneReady } from "./MotionProvider";
+import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -21,7 +22,7 @@ export function HeroLine({
   className?: string;
 }) {
   const ready = useSceneReady();
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
   const words = text.split(" ");
 
   return (
@@ -66,7 +67,7 @@ export function FadeUp({
   className?: string;
 }) {
   const ready = useSceneReady();
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
 
   return (
     <motion.div

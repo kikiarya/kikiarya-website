@@ -1,13 +1,14 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import type { ReactNode } from "react";
+import { usePrefersReducedMotion } from "../components/motion/usePrefersReducedMotion";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
 /** New-page entrance behind the dissolving Route Veil (ui-motion-plan2 §14). */
 export default function Template({ children }: { children: ReactNode }) {
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
 
   return (
     <motion.div

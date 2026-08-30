@@ -1,23 +1,32 @@
-import { Download, Mail, MapPin } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 import Container from "../../components/Container";
 import Tag from "../../components/Tag";
 import Reveal from "../../components/motion/Reveal";
+import WaxSeal from "../../components/decor/WaxSeal";
 
 export const metadata = { title: "Resume" };
 
 const skills = [
   "Python",
   "Java",
-  "JavaScript / TypeScript",
+  "TypeScript / JavaScript",
+  "SQL",
+  "C / C++",
   "PyTorch",
-  "LLM Agent",
-  "Prompt Engineering",
-  "PEFT / LoRA",
+  "LoRA / GRPO",
+  "LangChain / LangGraph",
+  "RAG",
+  "FastAPI",
+  "Next.js",
   "Node.js",
   "Spring Boot",
   "gRPC",
-  "Docker",
   "RabbitMQ",
+  "Docker",
+  "MySQL",
+  "Redis",
+  "Supabase",
+  "WebRTC",
 ];
 
 export default function ResumePage() {
@@ -37,9 +46,12 @@ export default function ResumePage() {
               </a>
             </div>
           </div>
-          <a href="/陈绮玥简历.pdf" className="button-primary">
-            <Download size={15} /> Download PDF
-          </a>
+          <div className="flex items-center gap-5">
+            <WaxSeal size={88} />
+            <p className="hidden sm:block max-w-[9rem] font-mono text-meta uppercase tracking-[.12em] leading-5 text-[var(--sakura-muted)]">
+              Letterhead. PDF when a public copy is ready.
+            </p>
+          </div>
         </header>
 
         <div className="grid lg:grid-cols-[15rem_minmax(0,1fr)] gap-14 lg:gap-24 py-20">
@@ -61,8 +73,9 @@ export default function ResumePage() {
             <ResumeSection id="profile" title="Profile">
               <p className="font-display text-2xl md:text-3xl italic leading-snug text-[var(--sakura-ink-soft)]">
                 Master&apos;s student in computer science at the University of Sydney, graduating
-                December 2026. I&apos;ve shipped AI product features, trained and evaluated models,
-                and built the backend systems underneath them.
+                December 2026. Recent work: agent post-training, harness policy for coding agents,
+                long-horizon runtime compression — plus the full-stack side that ships prompts and
+                keeps sessions alive over a bad network.
               </p>
             </ResumeSection>
 
@@ -70,56 +83,61 @@ export default function ResumePage() {
               <Entry
                 meta="Jul 2024 – Dec 2026 · Sydney"
                 title="University of Sydney"
-                subtitle="Master of Computer Science — dual streams: Software Engineering; Data Science & AI. WAM 80+ (High Distinction)."
+                subtitle="Master of Computer Science — software engineering, and data science & AI. Coursework in enterprise architecture, model-based software engineering, web apps, software quality, machine learning, and data engineering."
               />
               <Entry
-                meta="Sep 2020 – Jun 2024 · Nanjing"
-                title="Nanjing Normal University (211)"
-                subtitle="BSc Computer Science & Technology. GPA 3.48/4.0 (top 25%). Excellent undergraduate graduate; university first-class scholarship; excellent thesis."
+                meta="Sep 2020 – Jun 2024"
+                title="Nanjing Normal University"
+                subtitle="BSc Computer Science & Technology. Undergraduate thesis on reinforcement learning for simulated network attack–defense."
               />
             </ResumeSection>
 
             <ResumeSection id="experience" title="Experience">
               <Entry
                 meta="Dec 2025 – Feb 2026"
-                title="AIsphere (爱诗科技) · AI Full-stack Intern"
-                subtitle="Real-time AI video product: FastAPI, Next.js, WebSocket, Agora/WebRTC. Worked on LLM prompt / world-context generation, session lifecycle, and reliability under weak network (timeouts, WS drops, state recovery)."
+                title="AIsphere · AI Full-stack Intern"
+                subtitle="PixVerse Game — generative interactive games where player text, game state, and live video evolve together. Built the chain from prompt generation → task state update → segmented video → WebRTC stream. FastAPI, Next.js, WebSocket, Agora/WebRTC. Task orchestration, context management, dynamic prompt assembly from state. Model-output compatibility, graceful degradation. Session sync, rollback, and recovery for timeouts, dropped connections, and generation failures."
               />
               <Entry
                 meta="Jul 2022 – Sep 2022"
-                title="Jiangsu Ruiyun Industrial Internet · Java Engineer"
-                subtitle="Smart agriculture / livestock monitoring platform: IoT data, online metrics, bug fixes and feature work on existing modules."
+                title="Ruiyun · Java intern"
+                subtitle="Smart agriculture / irrigation IoT on Spring Boot, MySQL, Redis. Sensor ingest, environment monitoring, irrigation scheduling, remote pump and valve control. Offline detection, alerts, and task state when devices dropped or jobs failed."
               />
               <Entry
                 meta="Jun 2021 – Jul 2021"
-                title="Ruifeng IT · Product Manager Assistant"
-                subtitle="Competitive research and requirements for a smart irrigation platform; assisted with flows, prototypes, and UI."
+                title="Ruifeng IT · Product assistant"
+                subtitle="Competitor research for a smart irrigation platform. Requirements, flows, and prototypes for monitoring and control scenarios."
               />
             </ResumeSection>
 
             <ResumeSection id="research" title="Research">
               <Entry
-                meta="May 2026 · CoRR"
+                meta="Feb – Jul 2026 · third author"
                 title="Latent Action Reparameterization for Efficient Agent Inference"
-                subtitle="Co-author. CoRR abs/2605.18597. Latent action spaces to cut action tokens and wall-clock inference time for LLM agents under a fixed compute budget."
+                subtitle="NeurIPS 2026 under review · arXiv:2605.18597. Fine-grained text actions make agent trajectories long and expensive. LAR compresses high-frequency, low-entropy action spans into learnable latent actions while keeping query params and tool calls executable. Built latent-action vocabulary from trajectories via frequency/entropy filtering; LoRA + trajectory-level KL distillation; GRPO experiments on training stability. Evaluated on TriviaQA, KodCode, Mind2Web — action equivalence, compression strength, unseen-task transfer, Qwen3-32B scaling. Qwen3-8B on TriviaQA: accuracy 67.40% → 80.09%, action tokens −27.1%; throughput 127.8 → 150.2 tokens/s (+17.5%). Transfers to HumanEval and Qwen3-32B."
               />
             </ResumeSection>
 
             <ResumeSection id="projects" title="Selected Projects">
               <Entry
-                meta="Graduation design · 2026"
-                title="LatentMemory"
-                subtitle="Token efficiency and context reliability for OpenClaw. Latent prompt compression + compaction recovery; TriviaQA and fault-injection results documented on the project page."
+                meta="May – Aug 2026"
+                title="Coding Agent Policy Optimization"
+                subtitle="Repo-level coding agent. LoRA-SFT + GRPO on Qwen2.5-Coder-7B from failure-aware trajectories; harness adjusts tools, context, and verification by state. Joint optimization on SWE-bench Verified: +6pp resolve rate, ~10pp recovery, −15% tool calls."
               />
               <Entry
-                meta="Full-stack AI · 2025"
-                title="HSC Power AI Learning Platform"
-                subtitle="Plans, question generation, grading, feedback — React, Node, Supabase, OpenAI."
+                meta="Mar – Jul 2026"
+                title="OpenClaw Stateful Agent Runtime"
+                subtitle="Task-state compression and checkpoint recovery for long OpenClaw runs. LoRA/KL system-prompt compression on Qwen3-8B. Context tokens −46.7%, post-compression success +8.4pp, recovery +83.3pp vs. baselines."
               />
               <Entry
-                meta="Distributed systems · 2025"
+                meta="Sep – Dec 2025"
+                title="HSC Power"
+                subtitle="LangGraph multi-agent tutoring: diagnosis → plan → practice → evaluation. RAG + tool calling with schema constraints. React, Express, Supabase."
+              />
+              <Entry
+                meta="Sep – Nov 2025"
                 title="E-commerce Microservices"
-                subtitle="Saga, compensation, gRPC, RabbitMQ, Docker Compose."
+                subtitle="Four Spring Boot services, Saga compensation, gRPC, RabbitMQ, Docker Compose."
               />
             </ResumeSection>
 
