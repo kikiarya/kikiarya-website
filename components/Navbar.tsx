@@ -9,7 +9,7 @@ import Container from "./Container";
 import { useVeilNavigate } from "./motion/RouteVeil";
 import { useMotionScene } from "./motion/MotionProvider";
 import { usePrefersReducedMotion } from "./motion/usePrefersReducedMotion";
-import ShortcutHint from "./ShortcutHint";
+import SearchTrigger from "./SearchTrigger";
 
 const workLinks = [
   { number: "01", name: "Index", detail: "Work home", href: "/" },
@@ -101,7 +101,7 @@ export default function Navbar() {
           >
             Kikiarya<span className="text-[var(--sakura-accent-deep)]">.</span>
           </a>
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6 lg:gap-8">
             <nav aria-label={`${worldLabel} navigation`} className="flex items-center gap-8">
             {links.map((link) => {
               const active =
@@ -136,16 +136,19 @@ export default function Navbar() {
               );
             })}
             </nav>
-            <ShortcutHint className="text-[var(--sakura-muted-soft)]" />
+            <SearchTrigger />
           </div>
-          <button
-            onClick={() => setOpen(true)}
-            className="md:hidden min-h-11 min-w-11 inline-flex items-center justify-center"
-            aria-label="Open navigation"
-            aria-expanded={open}
-          >
-            <Menu size={20} />
-          </button>
+          <div className="md:hidden flex items-center">
+            <SearchTrigger compact />
+            <button
+              onClick={() => setOpen(true)}
+              className="min-h-11 min-w-11 inline-flex items-center justify-center"
+              aria-label="Open navigation"
+              aria-expanded={open}
+            >
+              <Menu size={20} />
+            </button>
+          </div>
         </Container>
       </motion.header>
 

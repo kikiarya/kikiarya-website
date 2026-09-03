@@ -22,26 +22,6 @@ export default function LifePage() {
         <div className="space-y-24 max-w-3xl">
           <Reveal>
             <section>
-              <p className="eyebrow mb-7">About</p>
-              <div className="space-y-5 text-base leading-8 text-[var(--sakura-ink-soft)]">
-                <p>
-                  Grew up in China; live in Sydney now. Seasons have been backwards since 2024. I
-                  have given up correcting them.
-                </p>
-                <p>
-                  In undergrad I built a walk-through classical garden in Unity — falling leaves, a
-                  waterfall, courtyards from old poems. It is still why this site is pink.
-                </p>
-                <p>
-                  Student-union years taught a different kind of engineering: twenty people, one
-                  deadline, nobody is a git conflict but it feels like one.
-                </p>
-              </div>
-            </section>
-          </Reveal>
-
-          <Reveal>
-            <section>
               <p className="eyebrow mb-7">Now</p>
               <div className="sakura-glass rounded-3xl p-7">
                 <p className="font-display text-2xl leading-snug">

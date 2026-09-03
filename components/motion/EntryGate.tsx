@@ -215,15 +215,6 @@ export default function EntryGate() {
             <WorldEntry onNavigate={goWorld} />
           </motion.div>
 
-          <motion.p
-            className="absolute bottom-7 left-0 right-0 z-10 text-center font-mono text-meta uppercase tracking-[.22em] text-[var(--sakura-muted)]"
-            initial={{ opacity: 0 }}
-            animate={entering ? { opacity: 0 } : { opacity: 1 }}
-            transition={{ duration: reduce ? 0.2 : 0.5, delay: reduce ? 0.12 : 1.65, ease }}
-          >
-            LLM Agents · 2026
-          </motion.p>
-
           <CoverSweep active={entering && !reduce} />
         </motion.div>
       ) : null}

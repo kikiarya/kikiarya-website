@@ -16,6 +16,7 @@
   --sakura-muted-soft: rgba(154, 113, 126, 0.56);
   --sakura-accent: #d8849f;
   --sakura-accent-deep: #a9476d;
+  --sakura-accent-deeper: #8a3358;
   --sakura-continuity: #a56643;
   --sakura-line: rgba(177, 79, 113, 0.26);
   --sakura-line-soft: rgba(177, 79, 113, 0.14);
@@ -215,6 +216,15 @@ a, button, input { outline-color: var(--sakura-accent-deep); outline-offset: 4px
 
 @keyframes sakura-breath {
   to { transform: translate3d(1.5%, -1%, 0) scale(1.03); }
+}
+
+@keyframes silk-drift {
+  to { stroke-dashoffset: -280; }
+}
+
+.silk-flow path:first-of-type {
+  stroke-dasharray: 72 220;
+  animation: silk-drift 18s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

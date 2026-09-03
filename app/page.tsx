@@ -11,10 +11,8 @@ import SectionHeader from "../components/SectionHeader";
 import SceneDecor from "../components/motion/SceneDecor";
 import { FadeUp, HeroLine } from "../components/motion/HeroReveal";
 import { smoothScrollTo } from "../components/motion/SmoothScroll";
-import Bow from "../components/decor/Bow";
-import SilkRibbon from "../components/decor/SilkRibbon";
-import RoseWindow from "../components/decor/RoseWindow";
-import Pearl from "../components/decor/Pearl";
+import HeroGlow from "../components/motion/HeroGlow";
+import HeroStatusCard from "../components/HeroStatusCard";
 import { getFeaturedProjects } from "../lib/projects";
 import { site } from "../lib/site";
 import { usePrefersReducedMotion } from "../components/motion/usePrefersReducedMotion";
@@ -37,21 +35,6 @@ const focus = [
   ],
 ];
 
-const beyond = [
-  [
-    "A garden in Unity",
-    "I once built a walk-through classical garden — falling leaves, a waterfall, courtyards from old poems. It is still the reason this site is pink.",
-  ],
-  [
-    "Group work, the other kind",
-    "Student-union years: twenty people, one deadline, nobody is a git conflict but it feels like one.",
-  ],
-  [
-    "Two hemispheres",
-    "Grew up in China; live in Sydney now. Seasons have been backwards since 2024. I have given up correcting them.",
-  ],
-];
-
 export default function Home() {
   const reduce = usePrefersReducedMotion();
   const heroRef = useRef<HTMLElement>(null);
@@ -71,9 +54,10 @@ export default function Home() {
   return (
     <>
       <section ref={heroRef} className="relative min-h-[92vh] pt-36 md:pt-44 flex items-center">
-        <Container>
+        <HeroGlow target={heroRef} />
+        <Container className="relative z-10">
           <motion.div
-            className="grid lg:grid-cols-[1fr_18rem] gap-16 items-end"
+            className="grid lg:grid-cols-[minmax(0,1fr)_6.25rem_17.5rem] gap-8 xl:gap-10 items-end"
             style={reduce ? undefined : { y: heroY }}
           >
             <div>
@@ -81,12 +65,14 @@ export default function Home() {
                 <p className="eyebrow mb-7">Hi, I&apos;m Kiki</p>
               </FadeUp>
               <h1 className="font-display text-hero font-light text-balance">
-                <HeroLine text="LLM Agents," delay={0.24} />
-                <HeroLine text="Post-training," delay={0.36} />
+                <HeroLine text="LLM Agents," delay={0.24} hoverLift />
+                <HeroLine text="Post-training," delay={0.36} hoverLift />
                 <HeroLine
                   text="and AI Systems."
                   delay={0.48}
                   className="text-[var(--sakura-accent-deep)]"
+                  hoverLift
+                  hoverDeepen
                 />
               </h1>
               <motion.div style={reduce ? undefined : { opacity: heroFade }}>
@@ -118,50 +104,37 @@ export default function Home() {
                 </FadeUp>
               </motion.div>
             </div>
-            <FadeUp delay={1.08} className="hidden lg:block pb-3">
+            <FadeUp
+              delay={1.02}
+              className="hidden lg:flex flex-col justify-end pb-6"
+            >
               <motion.div
-                className="relative overflow-hidden sakura-glass rounded-[2rem] p-8"
-                whileHover={
-                  reduce
-                    ? undefined
-                    : { y: -4, boxShadow: "0 14px 36px -18px rgba(169,71,109,.35)" }
-                }
+                className="flex flex-col gap-3"
+                animate={reduce ? undefined : { y: [0, -5, 0] }}
                 transition={
                   reduce
-                    ? { duration: 0.2 }
-                    : { type: "spring", stiffness: 320, damping: 26 }
+                    ? undefined
+                    : { duration: 9, repeat: Infinity, ease: "easeInOut" }
                 }
               >
-                <RoseWindow
-                  size={220}
-                  className="pointer-events-none absolute -right-16 -top-16 text-[var(--sakura-accent-deep)] opacity-[0.1]"
-                />
-                <div
+                <span
                   aria-hidden="true"
-                  className="relative mx-auto mb-8 flex h-28 w-28 items-center justify-center"
-                >
-                  <Bow
-                    size={72}
-                    variant="soft"
-                    className="text-[var(--sakura-accent-deep)]"
-                  />
-                  <Pearl
-                    size={8}
-                    className="absolute right-0 top-3 text-[var(--sakura-accent)]"
-                  />
-                </div>
-                <p className="eyebrow">Now</p>
-                <p className="font-display text-2xl mt-3 leading-snug">
-                  Open to agent algorithm and AI engineering roles
-                </p>
-                <p className="mt-4 font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-muted)]">
-                  Graduating Dec 2026
-                </p>
-                <SilkRibbon
-                  width={150}
-                  className="mt-6 text-[var(--sakura-accent)]"
+                  className="ml-1 h-10 w-px bg-[var(--sakura-line)]"
                 />
+                <Link
+                  href="/work/latent-action-reparameterization"
+                  className="font-mono text-[0.62rem] uppercase tracking-[.2em] leading-5 text-[var(--sakura-muted-soft)] transition-colors duration-200 hover:text-[var(--sakura-accent-deep)]"
+                >
+                  01
+                  <br />
+                  LAR
+                  <br />
+                  under review
+                </Link>
               </motion.div>
+            </FadeUp>
+            <FadeUp delay={1.08} className="mt-8 lg:mt-0 pb-3">
+              <HeroStatusCard />
             </FadeUp>
           </motion.div>
         </Container>
@@ -253,29 +226,6 @@ export default function Home() {
                 </div>
               </div>
             </Reveal>
-          </div>
-        </Container>
-      </section>
-
-      <section className="py-24 md:py-36 section-rule">
-        <Container>
-          <Reveal>
-            <SectionHeader
-              eyebrow="Beyond code"
-              title="A few non-technical facts"
-              description="Not a tech stack."
-              ornament
-            />
-          </Reveal>
-          <div className="grid md:grid-cols-3 gap-10 md:gap-14">
-            {beyond.map(([title, copy], i) => (
-              <Reveal key={title} delay={i * 0.08}>
-                <div className="border-t border-[var(--sakura-line)] pt-7 h-full">
-                  <h3 className="font-display text-card-title">{title}</h3>
-                  <p className="mt-4 text-sm leading-7 text-[var(--sakura-ink-soft)]">{copy}</p>
-                </div>
-              </Reveal>
-            ))}
           </div>
         </Container>
       </section>

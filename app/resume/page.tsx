@@ -2,7 +2,6 @@ import { Mail, MapPin } from "lucide-react";
 import Container from "../../components/Container";
 import Tag from "../../components/Tag";
 import Reveal from "../../components/motion/Reveal";
-import WaxSeal from "../../components/decor/WaxSeal";
 
 export const metadata = { title: "Resume" };
 
@@ -46,12 +45,9 @@ export default function ResumePage() {
               </a>
             </div>
           </div>
-          <div className="flex items-center gap-5">
-            <WaxSeal size={88} />
-            <p className="hidden sm:block max-w-[9rem] font-mono text-meta uppercase tracking-[.12em] leading-5 text-[var(--sakura-muted)]">
-              Letterhead. PDF when a public copy is ready.
-            </p>
-          </div>
+          <p className="hidden sm:block max-w-[9rem] font-mono text-meta uppercase tracking-[.12em] leading-5 text-[var(--sakura-muted)]">
+            Letterhead. PDF when a public copy is ready.
+          </p>
         </header>
 
         <div className="grid lg:grid-cols-[15rem_minmax(0,1fr)] gap-14 lg:gap-24 py-20">

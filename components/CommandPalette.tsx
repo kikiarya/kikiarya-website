@@ -6,6 +6,12 @@ import { projects } from "../lib/projects";
 import { useVeilNavigate } from "./motion/RouteVeil";
 import { useMotionScene } from "./motion/MotionProvider";
 
+export const PALETTE_OPEN_EVENT = "kikiarya:open-palette";
+
+export function openCommandPalette() {
+  window.dispatchEvent(new Event(PALETTE_OPEN_EVENT));
+}
+
 type PaletteItem = {
   href: string;
   title: string;
@@ -59,6 +65,15 @@ export default function CommandPalette() {
     },
     [close, navigate]
   );
+
+  useEffect(() => {
+    const onOpen = () => {
+      if (isCover) return;
+      setOpen(true);
+    };
+    window.addEventListener(PALETTE_OPEN_EVENT, onOpen);
+    return () => window.removeEventListener(PALETTE_OPEN_EVENT, onOpen);
+  }, [isCover]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {

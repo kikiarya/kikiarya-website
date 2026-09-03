@@ -1,7 +1,6 @@
 import { ArrowUpRight, Mail, MapPin } from "lucide-react";
 import Container from "../../components/Container";
 import EnvelopeMark from "../../components/decor/EnvelopeMark";
-import WaxSeal from "../../components/decor/WaxSeal";
 import Pearl from "../../components/decor/Pearl";
 
 export const metadata = { title: "Contact" };
@@ -27,7 +26,6 @@ export default function ContactPage() {
                 width={52}
                 className="text-[var(--sakura-accent)]/70"
               />
-              <WaxSeal size={64} />
             </div>
             <p className="eyebrow">Direct</p>
             <a

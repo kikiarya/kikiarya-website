@@ -3,7 +3,6 @@
 import type { MouseEvent } from "react";
 import Container from "./Container";
 import { useMotionScene } from "./motion/MotionProvider";
-import MonogramKA from "./decor/MonogramKA";
 import ShortcutHint from "./ShortcutHint";
 import { site } from "../lib/site";
 
@@ -26,10 +25,9 @@ export default function Footer() {
         <a
           href="/"
           onClick={handleCover}
-          className="inline-flex items-center gap-2.5 font-display text-lg transition-colors duration-200 hover:text-[var(--sakura-accent-deep)]"
+          className="inline-flex items-center font-display text-lg transition-colors duration-200 hover:text-[var(--sakura-accent-deep)]"
           aria-label="Back to cover"
         >
-          <MonogramKA size={22} className="text-[var(--sakura-accent-deep)]" />
           Kikiarya.
         </a>
         <div className="font-mono text-meta uppercase tracking-[.12em] flex flex-wrap items-center gap-5">

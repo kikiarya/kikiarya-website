@@ -16,21 +16,35 @@ export function HeroLine({
   text,
   delay = 0,
   className = "",
+  hoverLift = false,
+  hoverDeepen = false,
 }: {
   text: string;
   delay?: number;
   className?: string;
+  hoverLift?: boolean;
+  hoverDeepen?: boolean;
 }) {
   const ready = useSceneReady();
   const reduce = usePrefersReducedMotion();
   const words = text.split(" ");
 
   return (
-    <span className={`block ${className}`}>
+    <motion.span
+      className={`block ${className}`}
+      whileHover={
+        reduce || !hoverLift
+          ? undefined
+          : hoverDeepen
+            ? { y: -2, color: "var(--sakura-accent-deeper)" }
+            : { y: -2 }
+      }
+      transition={{ duration: 0.22, ease }}
+    >
       {words.map((word, index) => (
         <span
           key={`${word}-${index}`}
-          className="inline-block overflow-hidden pb-[.1em] -mb-[.1em] align-bottom"
+          className="inline-block overflow-hidden pb-[.18em] -mb-[.1em] align-bottom"
         >
           <motion.span
             className="inline-block will-change-transform"
@@ -53,7 +67,7 @@ export function HeroLine({
           </motion.span>
         </span>
       ))}
-    </span>
+    </motion.span>
   );
 }
 

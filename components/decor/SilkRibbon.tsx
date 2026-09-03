@@ -1,16 +1,21 @@
 export type SilkRibbonProps = {
   width?: number;
   className?: string;
+  flowing?: boolean;
 };
 
 /** One flowing sash. Sightline, not a bow. */
-export default function SilkRibbon({ width = 168, className = "" }: SilkRibbonProps) {
+export default function SilkRibbon({
+  width = 168,
+  className = "",
+  flowing = false,
+}: SilkRibbonProps) {
   return (
     <svg
       viewBox="0 0 180 36"
       width={width}
       height={(width * 36) / 180}
-      className={className}
+      className={`${flowing ? "silk-flow " : ""}${className}`}
       aria-hidden="true"
       focusable="false"
       fill="none"
