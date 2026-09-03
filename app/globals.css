@@ -163,6 +163,41 @@ a, button, input { outline-color: var(--sakura-accent-deep); outline-offset: 4px
 
 .section-rule { border-top: 1px solid var(--sakura-line-soft); }
 
+.trajectory-range {
+  appearance: none;
+  background: var(--sakura-line-soft);
+  height: 4px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.trajectory-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border-radius: 999px;
+  background: var(--sakura-accent-deep);
+  border: 2px solid var(--sakura-bg-deep);
+  box-shadow: 0 2px 8px -2px rgba(169, 71, 109, 0.45);
+}
+.trajectory-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: transparent;
+}
+.trajectory-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--sakura-accent-deep);
+  border: 2px solid var(--sakura-bg-deep);
+}
+.trajectory-range::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--sakura-line-soft);
+}
+
 /* Petal cursor: hide native pointer, keep native cursor on text-editing surfaces (§4.6) */
 @media (pointer: fine) {
   body.petal-cursor-on,

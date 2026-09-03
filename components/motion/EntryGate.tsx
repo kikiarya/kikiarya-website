@@ -221,7 +221,7 @@ export default function EntryGate() {
             animate={entering ? { opacity: 0 } : { opacity: 1 }}
             transition={{ duration: reduce ? 0.2 : 0.5, delay: reduce ? 0.12 : 1.65, ease }}
           >
-            Sydney · AI &amp; Software · 2026
+            LLM Agents · 2026
           </motion.p>
 
           <CoverSweep active={entering && !reduce} />

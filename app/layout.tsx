@@ -9,6 +9,8 @@ import EntryGate from "../components/motion/EntryGate";
 import PetalCursor from "../components/motion/PetalCursor";
 import PetalField from "../components/motion/PetalField";
 import SmoothScroll from "../components/motion/SmoothScroll";
+import CommandPalette from "../components/CommandPalette";
+import { site } from "../lib/site";
 
 const display = Cormorant_Garamond({
   subsets: ["latin"],
@@ -33,12 +35,29 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "http://localhost:3000"
+  ),
   title: {
-    default: "Kikiarya — AI & Software Engineering",
-    template: "%s — Kikiarya",
+    default: `${site.name} — ${site.tagline}`,
+    template: `%s — ${site.name}`,
   },
-  description:
-    "Kikiarya — projects in AI, agents, and software. Based in Sydney.",
+  description: site.description,
+  openGraph: {
+    title: `${site.name} — ${site.tagline}`,
+    description: site.description,
+    locale: "en_AU",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${site.name} — ${site.tagline}`,
+    description: site.description,
+  },
 };
 
 export default function RootLayout({
@@ -62,6 +81,7 @@ export default function RootLayout({
               <main className="flex-grow">{children}</main>
               <Footer />
             </div>
+            <CommandPalette />
           </RouteVeilProvider>
         </MotionProvider>
       </body>

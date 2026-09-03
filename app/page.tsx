@@ -3,7 +3,7 @@
 import { useRef, type MouseEvent } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Github } from "lucide-react";
 import Container from "../components/Container";
 import ProjectCard from "../components/ProjectCard";
 import Reveal from "../components/motion/Reveal";
@@ -16,6 +16,7 @@ import SilkRibbon from "../components/decor/SilkRibbon";
 import RoseWindow from "../components/decor/RoseWindow";
 import Pearl from "../components/decor/Pearl";
 import { getFeaturedProjects } from "../lib/projects";
+import { site } from "../lib/site";
 import { usePrefersReducedMotion } from "../components/motion/usePrefersReducedMotion";
 
 const focus = [
@@ -55,8 +56,6 @@ export default function Home() {
   const reduce = usePrefersReducedMotion();
   const heroRef = useRef<HTMLElement>(null);
 
-  // Hero → Work scene transition (§7): scroll progress drives the hero out
-  // while the Projects scene fades in below.
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
@@ -79,13 +78,13 @@ export default function Home() {
           >
             <div>
               <FadeUp delay={0.1}>
-                <p className="eyebrow mb-7">Hi, I&apos;m Kiki · Sydney</p>
+                <p className="eyebrow mb-7">Hi, I&apos;m Kiki</p>
               </FadeUp>
               <h1 className="font-display text-hero font-light text-balance">
-                <HeroLine text="AI applications," delay={0.24} />
-                <HeroLine text="machine learning," delay={0.36} />
+                <HeroLine text="LLM Agents," delay={0.24} />
+                <HeroLine text="Post-training," delay={0.36} />
                 <HeroLine
-                  text="software engineering."
+                  text="and AI Systems."
                   delay={0.48}
                   className="text-[var(--sakura-accent-deep)]"
                 />
@@ -94,15 +93,23 @@ export default function Home() {
                 <FadeUp delay={0.82}>
                   <p className="mt-10 max-w-2xl text-lg md:text-xl leading-8 text-[var(--sakura-ink-soft)]">
                     Master&apos;s student at the University of Sydney, finishing December 2026.
-                    Recent work: coding-agent post-training, OpenClaw runtime compression, a paper on
-                    latent actions under review. Last summer at AIsphere on PixVerse Game — live
-                    video that follows what the player types.
+                    Recent work: coding-agent post-training and OpenClaw runtime compression. Last
+                    summer at AIsphere on PixVerse Game — live video that follows what the player
+                    types.
                   </p>
                 </FadeUp>
                 <FadeUp delay={0.96}>
                   <div className="mt-10 flex flex-wrap gap-3">
                     <a href="#work" onClick={handleViewWork} className="button-primary">
                       View work <ArrowUpRight size={15} />
+                    </a>
+                    <a
+                      href={site.githubUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="button-ghost"
+                    >
+                      <Github size={15} /> GitHub
                     </a>
                     <Link href="/resume" className="button-ghost">
                       Resume
@@ -143,8 +150,13 @@ export default function Home() {
                     className="absolute right-0 top-3 text-[var(--sakura-accent)]"
                   />
                 </div>
-                <p className="eyebrow">Based in</p>
-                <p className="font-display text-2xl mt-3 leading-snug">Sydney, Australia</p>
+                <p className="eyebrow">Now</p>
+                <p className="font-display text-2xl mt-3 leading-snug">
+                  Open to agent algorithm and AI engineering roles
+                </p>
+                <p className="mt-4 font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-muted)]">
+                  Graduating Dec 2026
+                </p>
                 <SilkRibbon
                   width={150}
                   className="mt-6 text-[var(--sakura-accent)]"
@@ -163,7 +175,7 @@ export default function Home() {
               <SectionHeader
                 eyebrow="Selected work"
                 title="Featured projects"
-                description="Agent training, runtime compression, multi-agent apps. Write-ups on the work page."
+                description="A paper under review, coding-agent post-training, and runtime compression."
               />
               <Link href="/work" className="hidden sm:inline-flex button-ghost shrink-0">
                 All work <ArrowUpRight size={15} />
@@ -207,8 +219,8 @@ export default function Home() {
             <Reveal>
               <SectionHeader
                 eyebrow="Now"
-                title="Currently in Sydney"
-                description="Graduation project, one internship, a paper in review."
+                title="Internship and graduation"
+                description="Graduation project and one internship."
               />
             </Reveal>
             <Reveal delay={0.1}>
@@ -276,8 +288,8 @@ export default function Home() {
                 <p className="eyebrow">Contact</p>
                 <h2 className="font-display text-chapter mt-5">Get in touch</h2>
               </div>
-              <a href="mailto:kikiarya@163.com" className="button-primary">
-                kikiarya@163.com <ArrowUpRight size={15} />
+              <a href={`mailto:${site.email}`} className="button-primary">
+                {site.email} <ArrowUpRight size={15} />
               </a>
             </div>
           </Reveal>

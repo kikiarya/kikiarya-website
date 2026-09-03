@@ -1,13 +1,32 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { ArrowLeft, ExternalLink, Github } from "lucide-react";
 import Container from "../../../components/Container";
 import Tag from "../../../components/Tag";
 import DemoFrame from "../../../components/DemoFrame";
+import ProjectFigure from "../../../components/ProjectFigure";
+import TrajectoryReplay from "../../../components/TrajectoryReplay";
+import CopyBibtex from "../../../components/CopyBibtex";
 import { getProjectBySlug, getAllProjectSlugs } from "../../../lib/projects";
+import { site } from "../../../lib/site";
 
 export function generateStaticParams() {
   return getAllProjectSlugs().map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const project = getProjectBySlug(slug);
+  if (!project) return { title: "Work" };
+  return {
+    title: project.cardTitle ?? project.title,
+    description: project.shortDescription,
+  };
 }
 
 export default async function WorkDetail({
@@ -19,14 +38,44 @@ export default async function WorkDetail({
   const project = getProjectBySlug(slug);
   if (!project) notFound();
 
+  const architecture = project.diagrams?.filter((item) => item.kind === "architecture") ?? [];
+  const pipelineFigures = project.trajectory
+    ? []
+    : (project.diagrams?.filter((item) => item.kind === "pipeline") ?? []);
+  const evaluation = project.diagrams?.filter((item) => item.kind === "evaluation") ?? [];
+  const arxivUrl = project.arxivId ? `https://arxiv.org/abs/${project.arxivId}` : undefined;
+
   return (
     <article className="pt-32 md:pt-40 pb-20">
+      {project.arxivId ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ScholarlyArticle",
+              name: project.title,
+              author: { "@type": "Person", name: site.name },
+              datePublished: "2026-05",
+              identifier: `arXiv:${project.arxivId}`,
+              url: arxivUrl,
+              creativeWorkStatus: "UnderReview",
+              description: project.shortDescription,
+            }),
+          }}
+        />
+      ) : null}
       <Container>
         <Link href="/work" className="button-ghost mb-14">
           <ArrowLeft size={14} /> Back to work
         </Link>
         <header className="max-w-5xl">
-          <p className="eyebrow">{project.categoryTags.join(" · ")}</p>
+          <p className="eyebrow">{project.venue ?? project.categoryTags.join(" · ")}</p>
+          {project.cardTitle ? (
+            <p className="font-mono text-meta uppercase tracking-[.14em] text-[var(--sakura-muted)] mt-5">
+              {project.cardTitle}
+            </p>
+          ) : null}
           <h1 className="font-display text-hero font-light text-balance mt-6">
             {project.title}
           </h1>
@@ -48,7 +97,22 @@ export default async function WorkDetail({
               <p>{project.context || project.longDescription}</p>
               {project.context ? <p>{project.longDescription}</p> : null}
             </Content>
-            {project.systemDesign ? (
+            {architecture.length || pipelineFigures.length || project.trajectory ? (
+              <Content title="System approach">
+                {project.systemDesign ? <p>{project.systemDesign}</p> : null}
+                <div className="space-y-8">
+                  {architecture.map((diagram) => (
+                    <ProjectFigure key={diagram.caption} diagram={diagram} />
+                  ))}
+                  {project.trajectory ? (
+                    <TrajectoryReplay trajectory={project.trajectory} />
+                  ) : null}
+                  {pipelineFigures.map((diagram) => (
+                    <ProjectFigure key={diagram.caption} diagram={diagram} />
+                  ))}
+                </div>
+              </Content>
+            ) : project.systemDesign ? (
               <Content title="System approach">
                 <p>{project.systemDesign}</p>
                 {project.llmWorkflow ? (
@@ -71,11 +135,16 @@ export default async function WorkDetail({
                 ))}
               </ol>
             </Content>
-            {project.results ? (
+            {evaluation.length || project.results ? (
               <Content title="Evaluation & outcome">
-                <blockquote className="border-l-[3px] border-[var(--sakura-accent-deep)] pl-7 font-display text-3xl leading-tight">
-                  {project.results}
-                </blockquote>
+                {evaluation.map((diagram) => (
+                  <ProjectFigure key={diagram.caption} diagram={diagram} />
+                ))}
+                {project.results ? (
+                  <blockquote className="border-l-[3px] border-[var(--sakura-accent-deep)] pl-7 font-display text-3xl leading-tight">
+                    {project.results}
+                  </blockquote>
+                ) : null}
               </Content>
             ) : null}
             {project.demoUrl ? (
@@ -86,13 +155,26 @@ export default async function WorkDetail({
           </div>
           <aside>
             <div className="sticky top-28 sakura-glass rounded-3xl p-7">
-              <p className="eyebrow">Technology</p>
+              {project.venue ? (
+                <>
+                  <p className="eyebrow">Venue</p>
+                  <p className="font-display text-2xl mt-3 leading-snug">{project.venue}</p>
+                </>
+              ) : (
+                <p className="eyebrow">Technology</p>
+              )}
               <div className="flex flex-wrap gap-2 mt-5">
                 {project.techStack.map((item) => (
                   <Tag key={item} label={item} />
                 ))}
               </div>
               <div className="mt-8 space-y-3">
+                {arxivUrl ? (
+                  <a className="button-primary w-full" href={arxivUrl} target="_blank" rel="noreferrer">
+                    <ExternalLink size={14} /> arXiv:{project.arxivId}
+                  </a>
+                ) : null}
+                {project.bibtex ? <CopyBibtex bibtex={project.bibtex} /> : null}
                 {project.repoUrl ? (
                   <a
                     className="button-ghost w-full"

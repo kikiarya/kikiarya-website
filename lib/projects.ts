@@ -1,6 +1,47 @@
+export type ProjectMetric = {
+  numeric: number;
+  prefix: string;
+  suffix: string;
+  decimals: number;
+  label: string;
+};
+
+export type DiagramStep = {
+  label: string;
+  detail?: string;
+};
+
+export type EvaluationBar = {
+  label: string;
+  caption: string;
+  highlight?: boolean;
+};
+
+export type ProjectDiagram = {
+  kind: "architecture" | "pipeline" | "evaluation";
+  caption: string;
+  steps?: DiagramStep[];
+  bars?: EvaluationBar[];
+};
+
+export type TrajectoryStep = {
+  time: string;
+  title: string;
+  detail: string;
+  textAction?: string;
+  latentAction?: string;
+};
+
+export type ProjectTrajectory = {
+  kind: "coding-agent" | "lar";
+  label: string;
+  steps: TrajectoryStep[];
+};
+
 export type Project = {
   slug: string;
   title: string;
+  cardTitle?: string;
   shortDescription: string;
   longDescription: string;
   techStack: string[];
@@ -17,9 +58,108 @@ export type Project = {
   role?: string;
   architecture?: string;
   decisions?: string[];
+  venue?: string;
+  arxivId?: string;
+  bibtex?: string;
+  metrics?: ProjectMetric[];
+  diagrams?: ProjectDiagram[];
+  trajectory?: ProjectTrajectory;
 };
 
 export const projects: Project[] = [
+  {
+    slug: "latent-action-reparameterization",
+    title: "Latent Action Reparameterization for Efficient Agent Inference",
+    cardTitle: "LAR",
+    featured: true,
+    categoryTags: ["AI / Agent", "Research"],
+    venue: "NeurIPS 2026 · Under Review",
+    arxivId: "2605.18597",
+    role: "Feb – Jul 2026 · third author",
+    shortDescription:
+      "Compress high-frequency text actions into latent actions — cheaper inference, tools still executable.",
+    longDescription:
+      "Fine-grained text actions make agent trajectories long and expensive. LAR folds high-frequency, low-entropy action spans into learnable latent actions, while query parameters and tool calls stay in plain text so they remain executable.",
+    techStack: ["Python", "PyTorch", "LoRA", "GRPO", "KL distillation", "Qwen3-8B"],
+    context:
+      "Agent traces spend most of their tokens on repeated, low-entropy verbs. Those spans are expensive to generate and boring to supervise. The question is whether they can be reparameterized without breaking the tools that still need exact arguments.",
+    systemDesign:
+      "A latent-action vocabulary is mined from trajectories by frequency and entropy filters. LoRA plus trajectory-level KL distillation maps those spans onto learned tokens; GRPO probes whether the compressed policy stays stable. Query params and tool calls are left in text so the runtime can still execute them.",
+    llmWorkflow: "Filter actions → distill latents → keep tools executable → transfer",
+    highlights: [
+      "Latent-action vocabulary from frequency and entropy filtering on real traces",
+      "LoRA + trajectory-level KL distillation against the full-text teacher",
+      "GRPO runs to check training stability after compression",
+      "Evaluated on TriviaQA, KodCode, Mind2Web — equivalence, compression, transfer",
+      "Qwen3-8B TriviaQA: 67.40% → 80.09% accuracy, action tokens −27.1%, throughput +17.5%",
+    ],
+    results:
+      "Qwen3-8B on TriviaQA: accuracy 67.40% → 80.09%, action tokens −27.1%, throughput 127.8 → 150.2 tokens/s (+17.5%). Transfers to HumanEval and Qwen3-32B.",
+    bibtex: `@misc{lar2026,
+  title={Latent Action Reparameterization for Efficient Agent Inference},
+  author={Kikiarya},
+  year={2026},
+  eprint={2605.18597},
+  archivePrefix={arXiv},
+  primaryClass={cs.LG},
+  note={NeurIPS 2026 under review}
+}`,
+    metrics: [
+      { numeric: 80.09, prefix: "", suffix: "%", decimals: 2, label: "TriviaQA" },
+      { numeric: 27.1, prefix: "−", suffix: "%", decimals: 1, label: "action tokens" },
+      { numeric: 17.5, prefix: "+", suffix: "%", decimals: 1, label: "throughput" },
+    ],
+    diagrams: [
+      {
+        kind: "architecture",
+        caption: "Text verbs compress; tool arguments stay executable.",
+        steps: [
+          { label: "Text action", detail: "High-frequency, low-entropy spans" },
+          { label: "Latent vocab", detail: "Learned tokens from the trace" },
+          { label: "Tool / query", detail: "Arguments left in plain text" },
+        ],
+      },
+      {
+        kind: "evaluation",
+        caption: "Qwen3-8B on TriviaQA, before → after LAR.",
+        bars: [
+          { label: "Accuracy", caption: "67.40% → 80.09%", highlight: true },
+          { label: "Action tokens", caption: "−27.1%" },
+          { label: "Throughput", caption: "+17.5%" },
+        ],
+      },
+    ],
+    trajectory: {
+      kind: "lar",
+      label: "Illustrative run",
+      steps: [
+        {
+          time: "t₁",
+          title: "Retrieve",
+          detail:
+            "A repeated retrieve verb collapses to one latent. The query string stays in text so search still runs.",
+          textAction: 'search(query="capital of France")',
+          latentAction: "<a_retrieve> query=\"capital of France\"",
+        },
+        {
+          time: "t₂",
+          title: "Read",
+          detail:
+            "Another high-frequency span. The latent is shorter to generate; the document id is unchanged.",
+          textAction: "read_doc(id=wiki:paris#1)",
+          latentAction: "<a_read> id=wiki:paris#1",
+        },
+        {
+          time: "t₃",
+          title: "Answer",
+          detail:
+            "The final emit stays closer to text — low frequency, high entropy — so the answer does not get mashed into a code.",
+          textAction: "answer(\"Paris\")",
+          latentAction: "answer(\"Paris\")",
+        },
+      ],
+    },
+  },
   {
     slug: "coding-agent-policy-optimization",
     title: "Coding Agent Policy Optimization",
@@ -54,6 +194,62 @@ export const projects: Project[] = [
     ],
     results:
       "Joint optimization solved 3 more tasks than base (+6pp resolve rate), recovery rate up ~10pp, average tool calls down 15%. SWE-Explore used to separate gains from better code localization vs. context selection.",
+    metrics: [
+      { numeric: 6, prefix: "+", suffix: "pp", decimals: 0, label: "resolve" },
+      { numeric: 10, prefix: "~+", suffix: "pp", decimals: 0, label: "recovery" },
+      { numeric: 15, prefix: "−", suffix: "%", decimals: 0, label: "tool calls" },
+    ],
+    diagrams: [
+      {
+        kind: "architecture",
+        caption: "Two levers: the model policy, and the harness around it.",
+        steps: [
+          { label: "Model policy", detail: "LoRA-SFT + GRPO from traces" },
+          { label: "Harness", detail: "Tools, context, verify-by-state" },
+          { label: "Joint loop", detail: "Both optimized on the same tasks" },
+        ],
+      },
+      {
+        kind: "evaluation",
+        caption: "50 SWE-bench Verified tasks. Numbers reported only for joint vs. base.",
+        bars: [
+          { label: "Base", caption: "Reference run" },
+          { label: "Model-only", caption: "Post-training alone" },
+          { label: "Harness-only", caption: "Runtime policy alone" },
+          { label: "Joint", caption: "+6pp · ~+10pp · −15%", highlight: true },
+        ],
+      },
+    ],
+    trajectory: {
+      kind: "coding-agent",
+      label: "Illustrative run",
+      steps: [
+        {
+          time: "00:04",
+          title: "Locate",
+          detail:
+            "Search the SWE-bench repo for the failing test and the function it actually calls — not the first file that matches the issue title.",
+        },
+        {
+          time: "00:18",
+          title: "Edit",
+          detail:
+            "Patch the handler. The harness keeps the diff small enough for the verifier and drops unused files from context.",
+        },
+        {
+          time: "00:31",
+          title: "Test",
+          detail:
+            "Run the target tests. Failures go back into the trajectory as training signal, not as a reason to start over.",
+        },
+        {
+          time: "00:47",
+          title: "Recover",
+          detail:
+            "Progress detection fires a replan. Checkpoint restores the last green state instead of looping the same tool calls.",
+        },
+      ],
+    },
   },
   {
     slug: "openclaw-stateful-agent-runtime",
@@ -81,11 +277,46 @@ export const projects: Project[] = [
     ],
     results:
       "Context tokens down 46.7% vs. native OpenClaw. Task success after compression up 8.4pp. Recovery rate up 83.3pp under injected faults.",
+    metrics: [
+      { numeric: 46.7, prefix: "−", suffix: "%", decimals: 1, label: "tokens" },
+      { numeric: 8.4, prefix: "+", suffix: "pp", decimals: 1, label: "success" },
+      { numeric: 83.3, prefix: "+", suffix: "pp", decimals: 1, label: "recovery" },
+    ],
+    diagrams: [
+      {
+        kind: "architecture",
+        caption: "History folds into task state; checkpoints sit in front of compression.",
+        steps: [
+          { label: "Trajectory", detail: "Turns and tool results" },
+          { label: "Task state", detail: "Progress and dependencies" },
+          { label: "Checkpoint", detail: "Last good state to resume" },
+        ],
+      },
+      {
+        kind: "pipeline",
+        caption: "Compress, then survive the fault.",
+        steps: [
+          { label: "Compress", detail: "Drop what the task no longer needs" },
+          { label: "Checkpoint", detail: "Snapshot before the risky step" },
+          { label: "Recover", detail: "Resume instead of restarting" },
+        ],
+      },
+      {
+        kind: "evaluation",
+        caption: "Against native OpenClaw, truncation, and summarization.",
+        bars: [
+          { label: "Native", caption: "Full context" },
+          { label: "Truncation", caption: "Hard cut" },
+          { label: "Summarize", caption: "Lossy recap" },
+          { label: "Ours", caption: "−46.7% · +8.4pp · +83.3pp", highlight: true },
+        ],
+      },
+    ],
   },
   {
     slug: "hsc-power-ai-learning",
     title: "HSC Power",
-    featured: true,
+    featured: false,
     categoryTags: ["AI Product", "Full-Stack"],
     role: "Sep – Dec 2025",
     shortDescription:

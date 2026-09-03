@@ -14,7 +14,7 @@ export default function WorkPage() {
           <h1 className="font-display text-hero font-light text-balance mt-6">Projects</h1>
           <p className="mt-9 max-w-2xl text-lg leading-8 text-[var(--sakura-ink-soft)]">
             Agent training, runtime compression, multi-agent apps, and a few systems projects.
-            GitHub links coming project by project.
+            Repositories stay private; write-ups live here.
           </p>
         </header>
         <ProjectIndex />
