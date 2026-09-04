@@ -2,6 +2,7 @@ import { Mail, MapPin } from "lucide-react";
 import Container from "../../components/Container";
 import Tag from "../../components/Tag";
 import Reveal from "../../components/motion/Reveal";
+import ResumeUnfold from "../../components/ResumeUnfold";
 
 export const metadata = { title: "Resume" };
 
@@ -32,6 +33,7 @@ export default function ResumePage() {
   return (
     <div className="pt-36 md:pt-44 pb-20">
       <Container>
+        <ResumeUnfold>
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-16 border-b border-[var(--sakura-line-soft)]">
           <div>
             <p className="eyebrow">03 · Resume</p>
@@ -146,6 +148,7 @@ export default function ResumePage() {
             </ResumeSection>
           </div>
         </div>
+        </ResumeUnfold>
       </Container>
     </div>
   );

@@ -9,6 +9,7 @@ import EntryGate from "../components/motion/EntryGate";
 import PetalCursor from "../components/motion/PetalCursor";
 import PetalField from "../components/motion/PetalField";
 import SmoothScroll from "../components/motion/SmoothScroll";
+import SpecularRoot from "../components/motion/SpecularRoot";
 import CommandPalette from "../components/CommandPalette";
 import { site } from "../lib/site";
 
@@ -73,6 +74,7 @@ export default function RootLayout({
         <MotionProvider>
           <RouteVeilProvider>
             <SmoothScroll />
+            <SpecularRoot />
             <PetalField />
             <PetalCursor />
             <EntryGate />

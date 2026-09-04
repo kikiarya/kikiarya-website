@@ -206,7 +206,7 @@ export default function PetalField() {
   if (!enabled || isCover) return null;
 
   return (
-    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[1]">
+    <div aria-hidden="true" className="petal-field pointer-events-none fixed inset-0 z-[1]">
       {FIELD.map((config, index) => (
         <FieldPetal
           key={index}

@@ -1,11 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import Bow from "./decor/Bow";
 import SilkRibbon from "./decor/SilkRibbon";
 import { usePrefersReducedMotion } from "./motion/usePrefersReducedMotion";
 import { smoothScrollTo } from "./motion/SmoothScroll";
+import { navigateWithViewTransition } from "./motion/viewTransitionNav";
+
+const ease = [0.16, 1, 0.3, 1] as const;
 
 const rows = [
   {
@@ -17,11 +22,13 @@ const rows = [
     label: "Paper",
     value: "LAR · NeurIPS 2026 under review",
     href: "/work/latent-action-reparameterization",
+    preview: "TriviaQA 80.09%",
   },
   {
     label: "Latest",
     value: "Coding agent · OpenClaw",
     href: "#work",
+    preview: "+6pp resolve · Coding agent",
   },
   {
     label: "Graduation",
@@ -31,6 +38,8 @@ const rows = [
 
 export default function HeroStatusCard() {
   const reduce = usePrefersReducedMotion();
+  const [hovered, setHovered] = useState<string | null>(null);
+  const router = useRouter();
 
   return (
     <motion.aside
@@ -74,12 +83,30 @@ export default function HeroStatusCard() {
                 {row.label}
               </p>
               <p className="mt-1 font-display text-[1.15rem] leading-snug">{row.value}</p>
+              <AnimatePresence>
+                {row.preview && hovered === row.label ? (
+                  <motion.p
+                    key={row.preview}
+                    className="mt-2 font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-accent-deep)]"
+                    initial={reduce ? { opacity: 1 } : { opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 4 }}
+                    transition={{ duration: reduce ? 0.1 : 0.28, ease }}
+                  >
+                    {row.preview}
+                  </motion.p>
+                ) : null}
+              </AnimatePresence>
             </>
           );
           return (
             <li
               key={row.label}
               className="border-t border-[var(--sakura-line-soft)] py-3.5 first:border-t-0 first:pt-0 last:pb-0"
+              onMouseEnter={() => setHovered(row.label)}
+              onMouseLeave={() => setHovered(null)}
+              onFocus={() => setHovered(row.label)}
+              onBlur={() => setHovered(null)}
             >
               {row.href?.startsWith("#") ? (
                 <a
@@ -96,6 +123,12 @@ export default function HeroStatusCard() {
                 <Link
                   href={row.href}
                   className="block transition-colors duration-200 hover:text-[var(--sakura-accent-deep)]"
+                  onClick={(event) => {
+                    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                    if (!row.href.startsWith("/work/")) return;
+                    event.preventDefault();
+                    navigateWithViewTransition(router, row.href, reduce);
+                  }}
                 >
                   {body}
                 </Link>

@@ -1,40 +1,70 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { motion } from "framer-motion";
 import type { ProjectTrajectory } from "../lib/projects";
 import { usePrefersReducedMotion } from "./motion/usePrefersReducedMotion";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-export default function TrajectoryReplay({ trajectory }: { trajectory: ProjectTrajectory }) {
+export default function TrajectoryReplay({
+  trajectory,
+  featured = false,
+}: {
+  trajectory: ProjectTrajectory;
+  featured?: boolean;
+}) {
   const [index, setIndex] = useState(0);
+  const [playing, setPlaying] = useState(
+    () => featured && trajectory.kind === "coding-agent"
+  );
   const reduce = usePrefersReducedMotion();
+  const scrubId = useId();
   const step = trajectory.steps[index];
+  const pauseOn = trajectory.kind === "coding-agent" ? trajectory.steps.length - 1 : -1;
+
+  useEffect(() => {
+    if (reduce || !playing) return;
+    if (index >= pauseOn && pauseOn >= 0) {
+      setPlaying(false);
+      return;
+    }
+    const id = window.setTimeout(() => {
+      setIndex((value) => Math.min(value + 1, trajectory.steps.length - 1));
+    }, 1400);
+    return () => window.clearTimeout(id);
+  }, [index, pauseOn, playing, reduce, trajectory.steps.length]);
+
   if (!step) return null;
   const progress = trajectory.steps.length > 1 ? index / (trajectory.steps.length - 1) : 1;
+  const pausedHere = !playing && pauseOn >= 0 && index === pauseOn;
+
+  const jump = (next: number) => {
+    setPlaying(false);
+    setIndex(next);
+  };
 
   return (
-    <figure className="sakura-glass rounded-3xl p-6 md:p-8">
+    <figure className={`sakura-glass rounded-3xl ${featured ? "eval-theater p-7 md:p-10" : "p-6 md:p-8"}`}>
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <p className="eyebrow">Fig. Pipeline</p>
+        <p className="eyebrow">{featured ? "Fig. Eval theater" : "Fig. Pipeline"}</p>
         <p className="font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-muted)]">
-          {trajectory.label}
+          {pausedHere ? "Paused · recover" : trajectory.label}
         </p>
       </div>
 
       <div className="mt-8">
-        <label className="sr-only" htmlFor="trajectory-scrub">
+        <label className="sr-only" htmlFor={scrubId}>
           Scrub illustrative trajectory
         </label>
         <input
-          id="trajectory-scrub"
+          id={scrubId}
           type="range"
           min={0}
           max={trajectory.steps.length - 1}
           step={1}
           value={index}
-          onChange={(event) => setIndex(Number(event.target.value))}
+          onChange={(event) => jump(Number(event.target.value))}
           className="trajectory-range w-full"
           style={{
             background: `linear-gradient(to right, var(--sakura-accent-deep) ${progress * 100}%, var(--sakura-line-soft) ${progress * 100}%)`,
@@ -50,7 +80,7 @@ export default function TrajectoryReplay({ trajectory }: { trajectory: ProjectTr
             <li key={item.title}>
               <button
                 type="button"
-                onClick={() => setIndex(i)}
+                onClick={() => jump(i)}
                 aria-current={active ? "step" : undefined}
                 className={`min-h-11 rounded-full border px-4 font-mono text-meta uppercase tracking-[.1em] transition-colors duration-200 ${
                   active
@@ -68,7 +98,7 @@ export default function TrajectoryReplay({ trajectory }: { trajectory: ProjectTr
       <motion.div
         key={step.title}
         className="mt-8 grid lg:grid-cols-[7rem_minmax(0,1fr)] gap-4 lg:gap-8"
-        initial={reduce ? false : { opacity: 0, y: 8 }}
+        initial={reduce ? false : { opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: reduce ? 0.15 : 0.4, ease }}
       >
@@ -96,7 +126,9 @@ export default function TrajectoryReplay({ trajectory }: { trajectory: ProjectTr
       <figcaption className="mt-8 font-display italic text-base leading-7 text-[var(--sakura-ink-soft)]">
         {trajectory.kind === "lar"
           ? "Same trace, shorter verbs. Tool arguments stay in text."
-          : "Locate, edit, test, recover — one illustrative loop, not a raw log."}
+          : pausedHere
+            ? "The interesting step: recover instead of looping the same tools."
+            : "Locate, edit, test, recover — one illustrative loop, not a raw log."}
       </figcaption>
     </figure>
   );

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { projects } from "../lib/projects";
+import { site } from "../lib/site";
 import { useVeilNavigate } from "./motion/RouteVeil";
 import { useMotionScene } from "./motion/MotionProvider";
 
@@ -16,6 +17,8 @@ type PaletteItem = {
   href: string;
   title: string;
   hint: string;
+  answer?: string;
+  keywords?: string[];
 };
 
 const pages: PaletteItem[] = [
@@ -26,14 +29,49 @@ const pages: PaletteItem[] = [
   { href: "/notes", title: "Notes", hint: "Writing" },
 ];
 
-const items: PaletteItem[] = [
-  ...projects.map((project) => ({
-    href: `/work/${project.slug}`,
-    title: project.cardTitle ?? project.title,
-    hint: project.venue ?? project.shortDescription,
-  })),
-  ...pages,
+const citations: PaletteItem[] = [
+  {
+    href: "/work/latent-action-reparameterization",
+    title: "LAR",
+    hint: "Paper",
+    answer: "LAR is under review at NeurIPS 2026.",
+    keywords: ["lar", "neurips", "paper", "arxiv", "latent"],
+  },
+  {
+    href: "/work/coding-agent-policy-optimization",
+    title: "Coding agent",
+    hint: "Latest",
+    answer: "Joint optimization: +6pp resolve, ~+10pp recovery, −15% tool calls.",
+    keywords: ["coding", "swe", "harness"],
+  },
+  {
+    href: "/work/openclaw-stateful-agent-runtime",
+    title: "OpenClaw",
+    hint: "Runtime",
+    answer: "Long OpenClaw runs fold into task state — fewer tokens, better recovery.",
+    keywords: ["openclaw", "runtime", "compression"],
+  },
+  {
+    href: "/resume",
+    title: "Resume",
+    hint: "Graduation",
+    answer: "Master's at the University of Sydney, graduating December 2026.",
+    keywords: ["resume", "cv", "graduation", "graduating", "sydney", "intern"],
+  },
+  {
+    href: "/contact",
+    title: "Email",
+    hint: "Contact",
+    answer: site.email,
+    keywords: ["email", "mail", "contact", "write"],
+  },
 ];
+
+function matches(item: PaletteItem, q: string) {
+  if (item.title.toLowerCase().includes(q) || item.hint.toLowerCase().includes(q)) return true;
+  if (item.answer?.toLowerCase().includes(q)) return true;
+  return item.keywords?.some((word) => word.includes(q) || q.includes(word)) ?? false;
+}
 
 export default function CommandPalette() {
   const [open, setOpen] = useState(false);
@@ -45,11 +83,23 @@ export default function CommandPalette() {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return items;
-    return items.filter(
-      (item) =>
-        item.title.toLowerCase().includes(q) || item.hint.toLowerCase().includes(q)
-    );
+    const catalog: PaletteItem[] = [
+      ...projects.map((project) => ({
+        href: `/work/${project.slug}`,
+        title: project.cardTitle ?? project.title,
+        hint: project.venue ?? project.shortDescription,
+      })),
+      ...pages,
+    ];
+    if (!q) return catalog;
+    const seen = new Set<string>();
+    return [...citations, ...catalog].filter((item) => {
+      if (!matches(item, q)) return false;
+      const key = `${item.href}:${item.answer ?? item.title}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
   }, [query]);
 
   const close = useCallback(() => {
@@ -134,6 +184,8 @@ export default function CommandPalette() {
 
   if (!open || isCover) return null;
 
+  const citing = query.trim().length > 0;
+
   return (
     <div
       className="fixed inset-0 z-[60] flex items-start justify-center px-4 pt-[18vh]"
@@ -147,9 +199,7 @@ export default function CommandPalette() {
         aria-label="Close search"
         onClick={close}
       />
-      <div
-        className="relative w-full max-w-xl sakura-glass rounded-[1.75rem] overflow-hidden"
-      >
+      <div className="relative w-full max-w-xl sakura-glass rounded-[1.75rem] overflow-hidden">
         <div className="flex items-center gap-3 px-5 border-b border-[var(--sakura-line-soft)]">
           <Search size={16} className="text-[var(--sakura-muted)]" />
           <input
@@ -172,7 +222,7 @@ export default function CommandPalette() {
         <ul className="max-h-[min(22rem,50vh)] overflow-y-auto py-2" role="listbox">
           {filtered.length ? (
             filtered.map((item, index) => (
-              <li key={`${item.href}-${item.title}`}>
+              <li key={`${item.href}-${item.title}-${item.answer ?? ""}`}>
                 <button
                   type="button"
                   role="option"
@@ -183,9 +233,18 @@ export default function CommandPalette() {
                     index === active ? "bg-[var(--sakura-surface-soft)]" : ""
                   }`}
                 >
-                  <span className="font-display text-xl leading-tight">{item.title}</span>
-                  <span className="font-mono text-meta uppercase tracking-[.1em] text-[var(--sakura-muted)] truncate max-w-[40%]">
-                    {item.hint}
+                  <span className="min-w-0">
+                    <span className="font-display text-xl leading-tight block">
+                      {citing && item.answer ? item.answer : item.title}
+                    </span>
+                    {citing && item.answer ? (
+                      <span className="mt-1 block font-mono text-meta uppercase tracking-[.1em] text-[var(--sakura-muted)]">
+                        {item.title}
+                      </span>
+                    ) : null}
+                  </span>
+                  <span className="font-mono text-meta uppercase tracking-[.1em] text-[var(--sakura-muted)] truncate max-w-[40%] shrink-0">
+                    {citing && item.answer ? "Open" : item.hint}
                   </span>
                 </button>
               </li>

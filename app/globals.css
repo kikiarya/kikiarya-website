@@ -90,10 +90,33 @@ a, button, input { outline-color: var(--sakura-accent-deep); outline-offset: 4px
 .font-mono { font-family: var(--font-mono), ui-monospace, monospace; }
 
 .sakura-glass {
+  position: relative;
+  isolation: isolate;
   background: rgba(255,250,251,.9);
   border: 1px solid var(--sakura-line-soft);
   backdrop-filter: blur(18px) saturate(112%);
   -webkit-backdrop-filter: blur(18px) saturate(112%);
+}
+
+.sakura-glass::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle 14px at var(--spot-x, -20px) var(--spot-y, -20px),
+    rgba(255, 255, 255, 0.72),
+    transparent 70%
+  );
+  opacity: 0.85;
+  z-index: 2;
+  mix-blend-mode: overlay;
+}
+
+.sakura-glass > * {
+  position: relative;
+  z-index: 1;
 }
 
 .eyebrow {
@@ -162,7 +185,34 @@ a, button, input { outline-color: var(--sakura-accent-deep); outline-offset: 4px
   color: var(--sakura-accent-deep);
 }
 
-.section-rule { border-top: 1px solid var(--sakura-line-soft); }
+.section-rule {
+  position: relative;
+  border-top: none;
+}
+
+.section-rule::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: var(--sakura-line-soft);
+  transform-origin: left;
+}
+
+@supports (animation-timeline: view()) {
+  .section-rule::before {
+    transform: scaleX(0);
+    animation: hairline-draw linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 55%;
+  }
+}
+
+@keyframes hairline-draw {
+  to { transform: scaleX(1); }
+}
 
 .trajectory-range {
   appearance: none;
@@ -227,11 +277,208 @@ a, button, input { outline-color: var(--sakura-accent-deep); outline-offset: 4px
   animation: silk-drift 18s linear infinite;
 }
 
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.45s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html[data-vt="work"]::view-transition-old(root) {
+  animation: vt-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+html[data-vt="work"]::view-transition-new(root) {
+  animation: vt-rise 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes vt-fade {
+  to { opacity: 0; }
+}
+@keyframes vt-rise {
+  from { opacity: 0; }
+}
+
+.diagram-plate,
+.petal-field,
+.eval-theater {
+  view-transition-name: none;
+}
+
+/* Editorial architecture plates — paper figure, not a second glass card */
+.diagram-plate {
+  position: relative;
+  isolation: isolate;
+  background: var(--sakura-bg-deep);
+  border: 1px solid var(--sakura-line);
+  border-radius: 1.75rem;
+  box-shadow:
+    inset 0 0 0 4px var(--sakura-bg-deep),
+    inset 0 0 0 5px var(--sakura-line-soft),
+    0 10px 28px rgba(138, 51, 88, 0.05);
+}
+
+.diagram-plate-inner {
+  position: relative;
+  z-index: 1;
+  padding: 2.1rem 1.25rem 1.4rem;
+}
+
+@media (min-width: 768px) {
+  .diagram-plate-inner {
+    padding: 2.35rem 1.65rem 1.55rem;
+  }
+}
+
+.diagram-plate-lace {
+  position: absolute;
+  left: 1.5rem;
+  right: 1.5rem;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.diagram-plate-lace-top {
+  top: 0.55rem;
+}
+
+.diagram-plate-lace-bottom {
+  bottom: 0.55rem;
+  transform: rotate(180deg);
+}
+
+.diagram-card,
+.diagram-plaque {
+  position: relative;
+  background: color-mix(in srgb, var(--sakura-bg-deep) 70%, white);
+  border: 1px solid var(--sakura-line-soft);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 1px 0 rgba(177, 79, 113, 0.05);
+  transition:
+    transform var(--dur-micro) var(--ease-standard),
+    border-color var(--dur-micro) var(--ease-standard),
+    box-shadow var(--dur-micro) var(--ease-standard),
+    color var(--dur-micro) var(--ease-standard);
+}
+
+.diagram-card {
+  border-radius: 1rem;
+}
+
+.diagram-plaque {
+  border-radius: 1.05rem;
+  padding: 0.95rem 1rem 0.85rem;
+}
+
+.diagram-plaque-pearl {
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 30%, #fff, var(--sakura-accent) 70%);
+  box-shadow: 0 0 0 1px rgba(177, 79, 113, 0.22);
+  transform: translateX(-50%);
+}
+
+.diagram-card[data-diagram-active="true"],
+.diagram-plaque[data-diagram-active="true"] {
+  border-color: var(--sakura-accent-deep);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 2px 0 rgba(177, 79, 113, 0.08);
+}
+
+.diagram-card[data-diagram-source="true"],
+.diagram-plaque[data-diagram-source="true"] {
+  transform: translateY(-2px);
+}
+
+.diagram-panel {
+  border: 1px solid var(--sakura-line-soft);
+  border-radius: 1.15rem;
+  background: color-mix(in srgb, var(--sakura-paper-soft) 80%, white);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  transition:
+    border-color var(--dur-micro) var(--ease-standard),
+    box-shadow var(--dur-micro) var(--ease-standard);
+}
+
+.diagram-panel[data-diagram-active="true"] {
+  border-color: var(--sakura-accent-deep);
+}
+
+.diagram-edge-svg,
+.diagram-edge-path {
+  stroke: var(--sakura-ink);
+  stroke-opacity: 0.42;
+  stroke-width: 1.25;
+  fill: none;
+  color: color-mix(in srgb, var(--sakura-ink) 42%, transparent);
+  transition:
+    stroke var(--dur-micro) var(--ease-standard),
+    stroke-opacity var(--dur-micro) var(--ease-standard),
+    stroke-width var(--dur-micro) var(--ease-standard),
+    color var(--dur-micro) var(--ease-standard);
+}
+
+.diagram-edge-svg[data-diagram-dashed="true"],
+.diagram-edge-path[data-diagram-dashed="true"] {
+  stroke: var(--sakura-accent-deep);
+  stroke-opacity: 0.55;
+  stroke-dasharray: 4 3;
+  color: var(--sakura-accent-deep);
+}
+
+.diagram-edge-svg[data-diagram-active="true"],
+.diagram-edge-path[data-diagram-active="true"] {
+  stroke: var(--sakura-accent-deep);
+  stroke-opacity: 1;
+  stroke-width: 1.75;
+  color: var(--sakura-accent-deep);
+}
+
+.diagram-note {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sakura-accent-deep);
+  transition: color var(--dur-micro) var(--ease-standard);
+}
+
+.diagram-note[data-diagram-active="true"] {
+  color: var(--sakura-accent-deeper);
+}
+
+.diagram-bracket {
+  border: 1px dashed var(--sakura-accent-deep);
+  border-top: 0;
+  border-radius: 0 0 10px 10px;
+  opacity: 0.55;
+  transition: opacity var(--dur-micro) var(--ease-standard), border-color var(--dur-micro) var(--ease-standard);
+}
+
+.diagram-bracket[data-diagram-active="true"] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .diagram-card[data-diagram-source="true"],
+  .diagram-plaque[data-diagram-source="true"] {
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     scroll-behavior: auto !important;
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
+  }
+  .sakura-glass::after {
+    display: none;
   }
 }

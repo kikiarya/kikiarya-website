@@ -17,11 +17,16 @@ export type EvaluationBar = {
   highlight?: boolean;
 };
 
+export type EditorialFigureId = "coding-agent" | "latent-memory" | "latent-action";
+
 export type ProjectDiagram = {
-  kind: "architecture" | "pipeline" | "evaluation";
+  kind: "architecture" | "pipeline" | "evaluation" | "editorial";
+  figure?: EditorialFigureId;
   caption: string;
   steps?: DiagramStep[];
   bars?: EvaluationBar[];
+  /** Click/hover stepper — used for the LAR explorable figure. */
+  explorable?: boolean;
 };
 
 export type TrajectoryStep = {
@@ -111,13 +116,9 @@ export const projects: Project[] = [
     ],
     diagrams: [
       {
-        kind: "architecture",
+        kind: "editorial",
+        figure: "latent-action",
         caption: "Text verbs compress; tool arguments stay executable.",
-        steps: [
-          { label: "Text action", detail: "High-frequency, low-entropy spans" },
-          { label: "Latent vocab", detail: "Learned tokens from the trace" },
-          { label: "Tool / query", detail: "Arguments left in plain text" },
-        ],
       },
       {
         kind: "evaluation",
@@ -201,13 +202,9 @@ export const projects: Project[] = [
     ],
     diagrams: [
       {
-        kind: "architecture",
-        caption: "Two levers: the model policy, and the harness around it.",
-        steps: [
-          { label: "Model policy", detail: "LoRA-SFT + GRPO from traces" },
-          { label: "Harness", detail: "Tools, context, verify-by-state" },
-          { label: "Joint loop", detail: "Both optimized on the same tasks" },
-        ],
+        kind: "editorial",
+        figure: "coding-agent",
+        caption: "Execute, recover, collect trajectories, then update the policy.",
       },
       {
         kind: "evaluation",
@@ -284,13 +281,9 @@ export const projects: Project[] = [
     ],
     diagrams: [
       {
-        kind: "architecture",
+        kind: "editorial",
+        figure: "latent-memory",
         caption: "History folds into task state; checkpoints sit in front of compression.",
-        steps: [
-          { label: "Trajectory", detail: "Turns and tool results" },
-          { label: "Task state", detail: "Progress and dependencies" },
-          { label: "Checkpoint", detail: "Last good state to resume" },
-        ],
       },
       {
         kind: "pipeline",

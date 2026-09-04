@@ -16,6 +16,8 @@ import HeroStatusCard from "../components/HeroStatusCard";
 import { getFeaturedProjects } from "../lib/projects";
 import { site } from "../lib/site";
 import { usePrefersReducedMotion } from "../components/motion/usePrefersReducedMotion";
+import { navigateWithViewTransition } from "../components/motion/viewTransitionNav";
+import { useRouter } from "next/navigation";
 
 const focus = [
   [
@@ -38,6 +40,7 @@ const focus = [
 export default function Home() {
   const reduce = usePrefersReducedMotion();
   const heroRef = useRef<HTMLElement>(null);
+  const router = useRouter();
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -105,7 +108,7 @@ export default function Home() {
               </motion.div>
             </div>
             <FadeUp
-              delay={1.02}
+              delay={1.35}
               className="hidden lg:flex flex-col justify-end pb-6"
             >
               <motion.div
@@ -124,6 +127,15 @@ export default function Home() {
                 <Link
                   href="/work/latent-action-reparameterization"
                   className="font-mono text-[0.62rem] uppercase tracking-[.2em] leading-5 text-[var(--sakura-muted-soft)] transition-colors duration-200 hover:text-[var(--sakura-accent-deep)]"
+                  onClick={(event) => {
+                    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                    event.preventDefault();
+                    navigateWithViewTransition(
+                      router,
+                      "/work/latent-action-reparameterization",
+                      reduce
+                    );
+                  }}
                 >
                   01
                   <br />
@@ -133,7 +145,7 @@ export default function Home() {
                 </Link>
               </motion.div>
             </FadeUp>
-            <FadeUp delay={1.08} className="mt-8 lg:mt-0 pb-3">
+            <FadeUp delay={1.55} className="mt-8 lg:mt-0 pb-3">
               <HeroStatusCard />
             </FadeUp>
           </motion.div>

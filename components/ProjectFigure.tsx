@@ -1,16 +1,19 @@
 "use client";
 
+import { useState, type KeyboardEvent } from "react";
 import { motion } from "framer-motion";
 import type { ProjectDiagram } from "../lib/projects";
 import { usePrefersReducedMotion } from "./motion/usePrefersReducedMotion";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-function Connector() {
+function Connector({ active }: { active?: boolean }) {
   const reduce = usePrefersReducedMotion();
   return (
     <svg
-      className="hidden sm:block shrink-0 text-[var(--sakura-accent)]"
+      className={`hidden sm:block shrink-0 ${
+        active ? "text-[var(--sakura-accent-deep)]" : "text-[var(--sakura-accent)]"
+      }`}
       width="48"
       height="16"
       viewBox="0 0 48 16"
@@ -45,6 +48,68 @@ function Connector() {
   );
 }
 
+function ExplorableSteps({ diagram }: { diagram: ProjectDiagram }) {
+  const reduce = usePrefersReducedMotion();
+  const steps = diagram.steps ?? [];
+  const [active, setActive] = useState(0);
+  const current = steps[active];
+
+  const onKey = (event: KeyboardEvent) => {
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      event.preventDefault();
+      setActive((value) => Math.min(value + 1, steps.length - 1));
+    }
+    if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      event.preventDefault();
+      setActive((value) => Math.max(value - 1, 0));
+    }
+  };
+
+  return (
+    <div onKeyDown={onKey}>
+      <div className="mt-6 flex flex-col sm:flex-row sm:flex-wrap sm:items-stretch gap-3">
+        {steps.map((step, index) => (
+          <div key={step.label} className="contents">
+            {index > 0 ? <Connector active={index <= active} /> : null}
+            <motion.button
+              type="button"
+              aria-pressed={index === active}
+              onMouseEnter={() => setActive(index)}
+              onFocus={() => setActive(index)}
+              onClick={() => setActive(index)}
+              className={`flex-1 min-w-[9rem] rounded-2xl border px-5 py-5 text-left transition-colors duration-200 ${
+                index === active
+                  ? "border-[var(--sakura-line)] bg-[var(--sakura-surface-soft)]"
+                  : "border-[var(--sakura-line-soft)] bg-[var(--sakura-bg-deep)]/70 opacity-55 hover:opacity-100"
+              }`}
+              initial={reduce ? false : { y: 24 }}
+              whileInView={{ y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: reduce ? 0.15 : 0.55, delay: reduce ? 0 : index * 0.08, ease }}
+            >
+              <p className="font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-muted)]">
+                {String(index + 1).padStart(2, "0")}
+              </p>
+              <p className="font-display text-xl leading-tight mt-2">{step.label}</p>
+            </motion.button>
+          </div>
+        ))}
+      </div>
+      {current?.detail ? (
+        <motion.p
+          key={current.label}
+          className="mt-6 font-display text-2xl md:text-[1.65rem] leading-snug text-[var(--sakura-ink)]"
+          initial={reduce ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: reduce ? 0.12 : 0.4, ease }}
+        >
+          {current.detail}
+        </motion.p>
+      ) : null}
+    </div>
+  );
+}
+
 export default function ProjectFigure({ diagram }: { diagram: ProjectDiagram }) {
   const reduce = usePrefersReducedMotion();
   const kindLabel =
@@ -57,14 +122,16 @@ export default function ProjectFigure({ diagram }: { diagram: ProjectDiagram }) 
   return (
     <figure className="sakura-glass rounded-3xl p-6 md:p-8">
       <p className="eyebrow">{kindLabel}</p>
-      {diagram.steps ? (
+      {diagram.explorable && diagram.steps?.length ? (
+        <ExplorableSteps diagram={diagram} />
+      ) : diagram.steps ? (
         <div className="mt-6 flex flex-col sm:flex-row sm:flex-wrap sm:items-stretch gap-3">
           {diagram.steps.map((step, index) => (
             <div key={step.label} className="contents sm:contents">
               {index > 0 ? <Connector /> : null}
               <motion.div
                 className="flex-1 min-w-[9rem] rounded-2xl border border-[var(--sakura-line-soft)] bg-[var(--sakura-bg-deep)]/70 px-5 py-5"
-                initial={reduce ? false : { opacity: 0, y: 10 }}
+                initial={reduce ? false : { opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: reduce ? 0.15 : 0.55, delay: reduce ? 0 : index * 0.08, ease }}
@@ -88,7 +155,7 @@ export default function ProjectFigure({ diagram }: { diagram: ProjectDiagram }) 
                   ? "border-[var(--sakura-line)] bg-[var(--sakura-surface-soft)]"
                   : "border-[var(--sakura-line-soft)] bg-[var(--sakura-bg-deep)]/70"
               }`}
-              initial={reduce ? false : { opacity: 0, y: 10 }}
+              initial={reduce ? false : { opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: reduce ? 0.15 : 0.55, delay: reduce ? 0 : index * 0.08, ease }}

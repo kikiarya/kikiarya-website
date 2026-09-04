@@ -6,10 +6,13 @@ import Container from "../../../components/Container";
 import Tag from "../../../components/Tag";
 import DemoFrame from "../../../components/DemoFrame";
 import ProjectFigure from "../../../components/ProjectFigure";
+import WorkEditorialFigure from "../../../components/diagrams/WorkEditorialFigure";
 import TrajectoryReplay from "../../../components/TrajectoryReplay";
 import CopyBibtex from "../../../components/CopyBibtex";
+import WorkChapters from "../../../components/WorkChapters";
 import { getProjectBySlug, getAllProjectSlugs } from "../../../lib/projects";
 import { site } from "../../../lib/site";
+import { workTitleVtName } from "../../../lib/workTitle";
 
 export function generateStaticParams() {
   return getAllProjectSlugs().map((slug) => ({ slug }));
@@ -38,12 +41,18 @@ export default async function WorkDetail({
   const project = getProjectBySlug(slug);
   if (!project) notFound();
 
-  const architecture = project.diagrams?.filter((item) => item.kind === "architecture") ?? [];
-  const pipelineFigures = project.trajectory
-    ? []
-    : (project.diagrams?.filter((item) => item.kind === "pipeline") ?? []);
+  const architecture =
+    project.diagrams?.filter(
+      (item) => item.kind === "architecture" || item.kind === "editorial",
+    ) ?? [];
+  const pipelineFigures =
+    project.trajectory || architecture.some((item) => item.kind === "editorial")
+      ? []
+      : (project.diagrams?.filter((item) => item.kind === "pipeline") ?? []);
   const evaluation = project.diagrams?.filter((item) => item.kind === "evaluation") ?? [];
   const arxivUrl = project.arxivId ? `https://arxiv.org/abs/${project.arxivId}` : undefined;
+  const theater = project.trajectory?.kind === "coding-agent";
+  const title = project.cardTitle ?? project.title;
 
   return (
     <article className="pt-32 md:pt-40 pb-20">
@@ -71,14 +80,17 @@ export default async function WorkDetail({
         </Link>
         <header className="max-w-5xl">
           <p className="eyebrow">{project.venue ?? project.categoryTags.join(" · ")}</p>
+          <h1
+            className="font-display text-hero font-light text-balance mt-6"
+            style={{ viewTransitionName: workTitleVtName(project.slug) }}
+          >
+            {title}
+          </h1>
           {project.cardTitle ? (
-            <p className="font-mono text-meta uppercase tracking-[.14em] text-[var(--sakura-muted)] mt-5">
-              {project.cardTitle}
+            <p className="mt-5 max-w-3xl font-display text-2xl italic leading-snug text-[var(--sakura-ink-soft)]">
+              {project.title}
             </p>
           ) : null}
-          <h1 className="font-display text-hero font-light text-balance mt-6">
-            {project.title}
-          </h1>
           <p className="mt-8 max-w-3xl text-xl leading-8 text-[var(--sakura-ink-soft)]">
             {project.shortDescription}
           </p>
@@ -92,67 +104,94 @@ export default async function WorkDetail({
           <Meta label="Core stack" value={project.techStack.slice(0, 3).join(" · ")} />
         </div>
         <div className="grid lg:grid-cols-[minmax(0,1fr)_20rem] gap-16">
-          <div className="space-y-20">
-            <Content title="Context & problem">
-              <p>{project.context || project.longDescription}</p>
-              {project.context ? <p>{project.longDescription}</p> : null}
-            </Content>
-            {architecture.length || pipelineFigures.length || project.trajectory ? (
-              <Content title="System approach">
-                {project.systemDesign ? <p>{project.systemDesign}</p> : null}
-                <div className="space-y-8">
-                  {architecture.map((diagram) => (
-                    <ProjectFigure key={diagram.caption} diagram={diagram} />
-                  ))}
-                  {project.trajectory ? (
-                    <TrajectoryReplay trajectory={project.trajectory} />
-                  ) : null}
-                  {pipelineFigures.map((diagram) => (
-                    <ProjectFigure key={diagram.caption} diagram={diagram} />
-                  ))}
-                </div>
+          <WorkChapters>
+            <div className="space-y-20">
+              {theater && project.trajectory ? (
+                <Content title="Eval theater" chapter="01 Loop">
+                  <TrajectoryReplay trajectory={project.trajectory} featured />
+                </Content>
+              ) : null}
+              <Content
+                title="Context & problem"
+                chapter={theater ? "02 Context" : "01 Context"}
+              >
+                <p>{project.context || project.longDescription}</p>
+                {project.context ? <p>{project.longDescription}</p> : null}
               </Content>
-            ) : project.systemDesign ? (
-              <Content title="System approach">
-                <p>{project.systemDesign}</p>
-                {project.llmWorkflow ? (
-                  <div className="sakura-glass rounded-3xl p-7 mt-8">
-                    <p className="eyebrow">Workflow</p>
-                    <p className="font-display text-2xl mt-3">{project.llmWorkflow}</p>
+              {architecture.length || pipelineFigures.length || (!theater && project.trajectory) ? (
+                <Content
+                  title="System approach"
+                  chapter={theater ? "03 System" : "02 System"}
+                >
+                  {project.systemDesign ? <p>{project.systemDesign}</p> : null}
+                  <div className="space-y-8">
+                    {architecture.map((diagram) =>
+                      diagram.kind === "editorial" ? (
+                        <WorkEditorialFigure key={diagram.caption} diagram={diagram} />
+                      ) : (
+                        <ProjectFigure key={diagram.caption} diagram={diagram} />
+                      ),
+                    )}
+                    {!theater && project.trajectory ? (
+                      <TrajectoryReplay trajectory={project.trajectory} />
+                    ) : null}
+                    {pipelineFigures.map((diagram) => (
+                      <ProjectFigure key={diagram.caption} diagram={diagram} />
+                    ))}
                   </div>
-                ) : null}
+                </Content>
+              ) : project.systemDesign ? (
+                <Content
+                  title="System approach"
+                  chapter={theater ? "03 System" : "02 System"}
+                >
+                  <p>{project.systemDesign}</p>
+                  {project.llmWorkflow ? (
+                    <div className="sakura-glass rounded-3xl p-7 mt-8">
+                      <p className="eyebrow">Workflow</p>
+                      <p className="font-display text-2xl mt-3">{project.llmWorkflow}</p>
+                    </div>
+                  ) : null}
+                </Content>
+              ) : null}
+              <Content
+                title="Key implementation"
+                chapter={theater ? "04 Build" : "03 Build"}
+              >
+                <ol className="space-y-5">
+                  {project.highlights.map((item, index) => (
+                    <li key={item} className="grid grid-cols-[2rem_1fr] gap-4">
+                      <span className="font-display text-2xl text-[var(--sakura-accent-deep)]">
+                        {index + 1}
+                      </span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ol>
               </Content>
-            ) : null}
-            <Content title="Key implementation">
-              <ol className="space-y-5">
-                {project.highlights.map((item, index) => (
-                  <li key={item} className="grid grid-cols-[2rem_1fr] gap-4">
-                    <span className="font-display text-2xl text-[var(--sakura-accent-deep)]">
-                      {index + 1}
-                    </span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ol>
-            </Content>
-            {evaluation.length || project.results ? (
-              <Content title="Evaluation & outcome">
-                {evaluation.map((diagram) => (
-                  <ProjectFigure key={diagram.caption} diagram={diagram} />
-                ))}
-                {project.results ? (
-                  <blockquote className="border-l-[3px] border-[var(--sakura-accent-deep)] pl-7 font-display text-3xl leading-tight">
-                    {project.results}
-                  </blockquote>
-                ) : null}
-              </Content>
-            ) : null}
-            {project.demoUrl ? (
-              <Content title="Live environment">
-                <DemoFrame url={project.demoUrl} title={project.title} />
-              </Content>
-            ) : null}
-          </div>
+              {evaluation.length || project.results ? (
+                <Content
+                  title="Evaluation & outcome"
+                  chapter={theater ? "05 Evaluation" : "04 Evaluation"}
+                  id="evaluation"
+                >
+                  {evaluation.map((diagram) => (
+                    <ProjectFigure key={diagram.caption} diagram={diagram} />
+                  ))}
+                  {project.results ? (
+                    <blockquote className="border-l-[3px] border-[var(--sakura-accent-deep)] pl-7 font-display text-3xl leading-tight">
+                      {project.results}
+                    </blockquote>
+                  ) : null}
+                </Content>
+              ) : null}
+              {project.demoUrl ? (
+                <Content title="Live environment" chapter="05 Demo">
+                  <DemoFrame url={project.demoUrl} title={project.title} />
+                </Content>
+              ) : null}
+            </div>
+          </WorkChapters>
           <aside>
             <div className="sticky top-28 sakura-glass rounded-3xl p-7">
               {project.venue ? (
@@ -213,9 +252,19 @@ function Meta({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Content({ title, children }: { title: string; children: React.ReactNode }) {
+function Content({
+  title,
+  chapter,
+  id,
+  children,
+}: {
+  title: string;
+  chapter: string;
+  id?: string;
+  children: React.ReactNode;
+}) {
   return (
-    <section>
+    <section data-chapter={chapter} id={id}>
       <h2 className="font-display text-chapter font-light mb-8">{title}</h2>
       <div className="space-y-6 leading-8 text-[var(--sakura-ink-soft)]">{children}</div>
     </section>

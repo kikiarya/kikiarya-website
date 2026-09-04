@@ -164,7 +164,7 @@ export default function EntryGate() {
               animate={entering ? { opacity: 0 } : { opacity: 1, y: 0 }}
               transition={{ duration: reduce ? 0.25 : 0.55, delay: reduce ? 0.05 : 0.8, ease }}
             >
-              The things I make live here.
+              Desire is the prophet of the soul.
             </motion.p>
 
             <motion.div

@@ -46,15 +46,6 @@ export default function LifePage() {
               </Link>
             </section>
           </Reveal>
-
-          <Reveal>
-            <section>
-              <p className="eyebrow mb-7">Photos &amp; Travel</p>
-              <p className="text-base leading-8 text-[var(--sakura-ink-soft)]">
-                Someday — once I find a way to share places without sharing coordinates.
-              </p>
-            </section>
-          </Reveal>
         </div>
       </Container>
     </div>

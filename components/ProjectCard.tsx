@@ -1,26 +1,42 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import Tag from "./Tag";
 import MetricRow from "./MetricRow";
 import type { Project } from "../lib/projects";
+import { usePrefersReducedMotion } from "./motion/usePrefersReducedMotion";
+import {
+  navigateWithViewTransition,
+} from "./motion/viewTransitionNav";
+import { workTitleVtName } from "../lib/workTitle";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
 export default function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const router = useRouter();
+  const reduce = usePrefersReducedMotion();
+  const href = `/work/${project.slug}`;
+  const title = project.cardTitle ?? project.title;
+
   return (
     <motion.article
       layout
-      initial={{ opacity: 0, y: 18 }}
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, transition: { duration: 0.18 } }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.7, delay: Math.min(index * 0.06, 0.24), ease }}
     >
       <Link
-        href={`/work/${project.slug}`}
+        href={href}
+        onClick={(event) => {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          event.preventDefault();
+          navigateWithViewTransition(router, href, reduce);
+        }}
         className="group grid md:grid-cols-[5rem_minmax(0,1fr)_auto] gap-4 md:gap-8 items-start py-8 md:py-10 px-4 -mx-4 rounded-2xl border-t border-[var(--sakura-line-soft)] transition-[background-color,transform] duration-300 hover:bg-[var(--sakura-surface-soft)] hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-[var(--sakura-accent-deep)]"
       >
         <span className="font-display text-3xl tabular-nums text-[var(--sakura-muted-soft)] transition-colors duration-300 group-hover:text-[var(--sakura-accent-deep)]">
@@ -30,9 +46,12 @@ export default function ProjectCard({ project, index }: { project: Project; inde
           <p className="eyebrow mb-3">
             {project.venue ?? project.categoryTags.slice(0, 2).join(" · ")}
           </p>
-          <h3 className="font-display text-card-title font-normal">
+          <h3
+            className="font-display text-card-title font-normal"
+            style={{ viewTransitionName: workTitleVtName(project.slug) }}
+          >
             <span className="bg-gradient-to-r from-[var(--sakura-accent-deep)] to-[var(--sakura-accent-deep)] bg-no-repeat bg-left-bottom bg-[length:0%_1px] transition-[background-size] duration-[450ms] group-hover:bg-[length:100%_1px]">
-              {project.cardTitle ?? project.title}
+              {title}
             </span>
           </h3>
           {project.cardTitle ? (
