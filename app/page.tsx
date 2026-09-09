@@ -13,10 +13,12 @@ import { FadeUp, HeroLine } from "../components/motion/HeroReveal";
 import { smoothScrollTo } from "../components/motion/SmoothScroll";
 import HeroGlow from "../components/motion/HeroGlow";
 import HeroStatusCard from "../components/HeroStatusCard";
+import HeroSignal from "../components/HeroSignal";
+import TraceTheater from "../components/TraceTheater";
 import FolioCorners from "../components/decor/FolioCorners";
-import Bow from "../components/decor/Bow";
 import LaceDivider from "../components/decor/LaceDivider";
 import Pearl from "../components/decor/Pearl";
+import EnvelopeMark from "../components/decor/EnvelopeMark";
 import Magnetic from "../components/motion/Magnetic";
 import { getFeaturedProjects } from "../lib/projects";
 import { site } from "../lib/site";
@@ -25,35 +27,50 @@ import { navigateWithViewTransition } from "../components/motion/viewTransitionN
 import { useRouter } from "next/navigation";
 
 const focus = [
-  [
-    "01",
-    "Agent algorithms",
-    "Post-training, harness policy, latent actions — making agents cheaper and less fragile on long runs.",
-  ],
-  [
-    "02",
-    "Agent applications",
-    "LangGraph workflows, RAG, tool calling, and the product layer that has to survive real networks.",
-  ],
-  [
-    "03",
-    "Systems underneath",
-    "Services, queues, transactions. The parts that still work when there is no model in the loop.",
-  ],
+  {
+    number: "01",
+    title: "Agent algorithms",
+    copy: "Post-training, harness policy, latent actions — making agents cheaper and less fragile on long runs.",
+    related: {
+      href: "/work/latent-action-reparameterization",
+      label: "See LAR",
+    },
+  },
+  {
+    number: "02",
+    title: "Agent applications",
+    copy: "LangGraph workflows, RAG, tool calling, and the product layer that has to survive real networks.",
+    related: {
+      href: "/work/coding-agent-policy-optimization",
+      label: "See coding agent",
+    },
+  },
+  {
+    number: "03",
+    title: "Systems underneath",
+    copy: "Services, queues, transactions. The parts that still work when there is no model in the loop.",
+    related: {
+      href: "/work/openclaw-stateful-agent-runtime",
+      label: "See OpenClaw",
+    },
+  },
 ];
 
 function FocusTile({
   number,
   title,
   copy,
+  related,
   delay,
 }: {
   number: string;
   title: string;
   copy: string;
+  related: { href: string; label: string };
   delay: number;
 }) {
   const reduce = usePrefersReducedMotion();
+  const router = useRouter();
 
   const onMove = (event: PointerEvent<HTMLDivElement>) => {
     if (reduce) return;
@@ -91,6 +108,17 @@ function FocusTile({
         </span>
         <h3 className="relative font-display text-2xl mt-12">{title}</h3>
         <p className="relative mt-4 text-sm leading-[1.65] text-[var(--sakura-ink-soft)]">{copy}</p>
+        <Link
+          href={related.href}
+          onClick={(event) => {
+            if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
+            navigateWithViewTransition(router, related.href, reduce);
+          }}
+          className="relative mt-8 inline-flex items-center gap-2 font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-accent-deep)] opacity-80 transition-[opacity,transform] duration-300 md:translate-y-1 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 md:group-focus-within:translate-y-0 md:group-focus-within:opacity-100"
+        >
+          {related.label} <ArrowUpRight size={13} />
+        </Link>
       </div>
     </Reveal>
   );
@@ -147,6 +175,7 @@ export default function Home() {
                     summer at AIsphere on PixVerse Game — live video that follows what the player
                     types.
                   </p>
+                  <HeroSignal />
                 </FadeUp>
                 <FadeUp delay={0.76}>
                   <div ref={ctaRef} className="mt-10 flex flex-wrap gap-3">
@@ -219,6 +248,20 @@ export default function Home() {
         </Container>
       </section>
 
+      <section id="trace" className="relative py-24 md:py-36 scroll-mt-24">
+        <SceneDecor />
+        <Container className="relative">
+          <Reveal>
+            <SectionHeader
+              eyebrow="Trace"
+              title="How it works"
+              description="Click a station to pause."
+            />
+          </Reveal>
+          <TraceTheater />
+        </Container>
+      </section>
+
       <section id="work" className="relative py-24 md:py-36 scroll-mt-24">
         <SceneDecor />
         <Container className="relative">
@@ -250,9 +293,9 @@ export default function Home() {
             />
           </Reveal>
           <div className="grid md:grid-cols-3 gap-px bg-[var(--sakura-line-soft)] border border-[var(--sakura-line-soft)] rounded-[2rem] overflow-hidden">
-            {focus.map(([number, title, copy], i) => (
-              <FocusTile key={number} number={number} title={title} copy={copy} delay={i * 0.08} />
-            ))}
+            {focus.map((item, i) => (
+            <FocusTile key={item.number} {...item} delay={i * 0.08} />
+          ))}
           </div>
         </Container>
       </section>
@@ -270,7 +313,10 @@ export default function Home() {
             </Reveal>
             <Reveal delay={0.1}>
               <div className="space-y-8">
-                <div className="border-l-2 border-[var(--sakura-accent)] pl-7">
+                <div className="relative border-l-2 border-[var(--sakura-accent)] pl-7">
+                  <span className="sakura-live-pulse pointer-events-none absolute -left-[5px] top-1 text-[var(--sakura-accent-deep)]">
+                    <Pearl size={9} />
+                  </span>
                   <p className="eyebrow">Internship · Dec 2025 – Feb 2026</p>
                   <h3 className="font-display text-card-title mt-3">AIsphere · PixVerse Game</h3>
                   <p className="mt-3 text-[var(--sakura-ink-soft)] leading-7">
@@ -305,12 +351,12 @@ export default function Home() {
       <section className="py-24 md:py-36 section-rule">
         <Container>
           <Reveal>
-            <div className="relative sakura-glass rounded-[2rem] md:rounded-[3rem] px-8 pb-8 pt-14 md:px-16 md:pb-16 md:pt-20 flex flex-col md:flex-row justify-between md:items-end gap-10 overflow-hidden">
+            <div className="group relative sakura-glass rounded-[2rem] md:rounded-[3rem] px-8 pb-8 pt-14 md:px-16 md:pb-16 md:pt-20 flex flex-col md:flex-row justify-between md:items-end gap-10 overflow-hidden">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute left-1/2 top-1 z-[1] -translate-x-1/2 text-[var(--sakura-accent-deep)]"
               >
-                <Bow size={36} variant="soft" />
+                <EnvelopeMark width={44} />
               </div>
               <div aria-hidden="true" className="pointer-events-none absolute inset-x-10 top-7 opacity-45">
                 <LaceDivider scallop={16} picots />

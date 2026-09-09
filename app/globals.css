@@ -497,6 +497,27 @@ html[data-vt="work"]::view-transition-new(root) {
   }
 }
 
+.sakura-live-pulse {
+  display: inline-flex;
+  animation: sakura-live 2.8s ease-in-out infinite;
+}
+
+@keyframes sakura-live {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.18); }
+}
+
+.envelope-mark .envelope-flap {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+  transition: transform 0.45s var(--ease-reveal);
+}
+
+.group:hover .envelope-mark .envelope-flap,
+.group:focus-within .envelope-mark .envelope-flap {
+  transform: translateY(-5px);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     scroll-behavior: auto !important;

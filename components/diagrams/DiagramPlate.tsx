@@ -20,11 +20,13 @@ export function OrnamentDivider() {
 }
 
 export default function DiagramPlate({
+  eyebrow = "Fig. Architecture",
   title,
   subtitle,
   caption,
   children,
 }: {
+  eyebrow?: string;
   title: ReactNode;
   subtitle: string;
   caption: string;
@@ -55,7 +57,7 @@ export default function DiagramPlate({
       </div>
 
       <div className="diagram-plate-inner">
-        <p className="eyebrow">Fig. Architecture</p>
+        <p className="eyebrow">{eyebrow}</p>
         <h3 className="mt-4 text-center font-display text-2xl font-light leading-tight md:text-[1.85rem]">
           {title}
         </h3>
