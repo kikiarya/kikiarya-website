@@ -5,7 +5,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import Bow from "./decor/Bow";
 import LaceDivider from "./decor/LaceDivider";
 import Pearl from "./decor/Pearl";
-import SilkRibbon from "./decor/SilkRibbon";
 import WaxSeal from "./decor/WaxSeal";
 import { MetricValue } from "./MetricRow";
 import { usePrefersReducedMotion } from "./motion/usePrefersReducedMotion";
@@ -135,11 +134,6 @@ export default function HighlightBoard({
                 {step}
               </motion.blockquote>
             </AnimatePresence>
-            <SilkRibbon
-              variant="sash"
-              flowing={!reduce}
-              className="mt-2 w-full text-[var(--sakura-accent-deep)]"
-            />
             {glance ? (
               <ul className="mt-8 grid grid-cols-3 justify-items-center gap-x-3 gap-y-6 pt-1">
                 {glance.map((metric, i) => (

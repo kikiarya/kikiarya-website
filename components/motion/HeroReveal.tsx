@@ -31,7 +31,9 @@ export function HeroLine({
 
   return (
     <motion.span
-      className={`block ${className}`}
+      className={`block origin-left ${className}`}
+      initial={reduce ? undefined : { scale: 1.04 }}
+      animate={ready ? { scale: 1 } : undefined}
       whileHover={
         reduce || !hoverLift
           ? undefined
@@ -39,7 +41,11 @@ export function HeroLine({
             ? { y: -2, color: "var(--sakura-accent-deeper)" }
             : { y: -2 }
       }
-      transition={{ duration: 0.22, ease }}
+      transition={{
+        scale: { duration: reduce ? 0.15 : 0.9, delay: reduce ? 0 : delay, ease },
+        y: { duration: 0.22, ease },
+        color: { duration: 0.22, ease },
+      }}
     >
       {words.map((word, index) => (
         <span

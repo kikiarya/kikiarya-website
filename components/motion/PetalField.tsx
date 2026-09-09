@@ -178,7 +178,7 @@ function FieldPetal({
   );
 }
 
-export default function PetalField() {
+export default function PetalField({ nested = false }: { nested?: boolean }) {
   const reduce = usePrefersReducedMotion();
   const { isCover } = useMotionScene();
   const [enabled, setEnabled] = useState(false);
@@ -203,10 +203,16 @@ export default function PetalField() {
     return () => window.removeEventListener("pointermove", onMove);
   }, [enabled, mx, my]);
 
-  if (!enabled || isCover) return null;
+  if (!enabled) return null;
+  if (!nested && isCover) return null;
 
   return (
-    <div aria-hidden="true" className="petal-field pointer-events-none fixed inset-0 z-[1]">
+    <div
+      aria-hidden="true"
+      className={`petal-field pointer-events-none ${
+        nested ? "absolute inset-0 z-[6]" : "fixed inset-0 z-[1]"
+      }`}
+    >
       {FIELD.map((config, index) => (
         <FieldPetal
           key={index}

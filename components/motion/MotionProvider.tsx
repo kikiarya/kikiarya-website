@@ -18,17 +18,16 @@ import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
  * ENTER → Work home (/). ✿ → Personal (/notes, /life, /bookshelf).
  *
  * `/` SSRs as Cover so the first paint is never an empty background.
- * sessionStorage is only read after mount, to skip Cover for the same tab.
+ * A full reload of `/` always starts on Cover. Enter is in-session only.
  */
 export type ScenePhase = "entry" | "entering" | "ready";
-
-const SESSION_KEY = "kikiarya-entered";
 
 const MotionContext = createContext<{
   phase: ScenePhase;
   isCover: boolean;
   sceneReady: boolean;
   cursorActive: boolean;
+  arriveFrom: "load" | "world";
   enter: () => void;
   enterWork: () => void;
   returnToCover: () => void;
@@ -36,7 +35,8 @@ const MotionContext = createContext<{
   phase: "entry",
   isCover: true,
   sceneReady: false,
-  cursorActive: false,
+  cursorActive: true,
+  arriveFrom: "load",
   enter: () => {},
   enterWork: () => {},
   returnToCover: () => {},
@@ -57,7 +57,8 @@ export default function MotionProvider({ children }: { children: ReactNode }) {
   const [phase, setPhase] = useState<ScenePhase>(() =>
     pathname === "/" ? "entry" : "ready"
   );
-  const [cursorActive, setCursorActive] = useState(() => pathname !== "/");
+  const cursorActive = true;
+  const [arriveFrom, setArriveFrom] = useState<"load" | "world">("load");
   const phaseRef = useRef(phase);
   phaseRef.current = phase;
   const pathnameRef = useRef(pathname);
@@ -70,12 +71,6 @@ export default function MotionProvider({ children }: { children: ReactNode }) {
     booted.current = true;
     if (pathnameRef.current !== "/") {
       setPhase("ready");
-      setCursorActive(true);
-      return;
-    }
-    if (window.sessionStorage.getItem(SESSION_KEY) === "true") {
-      setPhase("ready");
-      setCursorActive(true);
     }
   }, []);
 
@@ -86,15 +81,12 @@ export default function MotionProvider({ children }: { children: ReactNode }) {
 
   const enter = useCallback(() => {
     if (phaseRef.current !== "entry") return;
-    window.sessionStorage.setItem(SESSION_KEY, "true");
     if (reduce) {
       setPhase("ready");
-      setCursorActive(true);
       return;
     }
     setPhase("entering");
-    timers.current.push(window.setTimeout(() => setPhase("ready"), 680));
-    timers.current.push(window.setTimeout(() => setCursorActive(true), 980));
+    timers.current.push(window.setTimeout(() => setPhase("ready"), 720));
   }, [reduce]);
 
   const enterWork = useCallback(() => {
@@ -104,8 +96,8 @@ export default function MotionProvider({ children }: { children: ReactNode }) {
 
   const returnToCover = useCallback(() => {
     if (phaseRef.current !== "entry" && phaseRef.current !== "entering") {
+      setArriveFrom("world");
       setPhase("entry");
-      setCursorActive(false);
       window.scrollTo(0, 0);
     }
     if (pathnameRef.current !== "/") router.push("/");
@@ -120,6 +112,7 @@ export default function MotionProvider({ children }: { children: ReactNode }) {
         isCover,
         sceneReady: phase === "ready",
         cursorActive,
+        arriveFrom,
         enter,
         enterWork,
         returnToCover,

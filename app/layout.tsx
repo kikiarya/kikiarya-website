@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Great_Vibes, Inter, JetBrains_Mono } from "next/font/google";
+import { Cormorant_Garamond, Great_Vibes, Inter, JetBrains_Mono, Noto_Serif_SC } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -11,6 +11,7 @@ import PetalField from "../components/motion/PetalField";
 import SmoothScroll from "../components/motion/SmoothScroll";
 import SpecularRoot from "../components/motion/SpecularRoot";
 import CommandPalette from "../components/CommandPalette";
+import SiteFrame from "../components/SiteFrame";
 import { site } from "../lib/site";
 
 const display = Cormorant_Garamond({
@@ -40,6 +41,17 @@ const script = Great_Vibes({
   weight: "400",
   variable: "--font-script",
   display: "swap",
+});
+
+/** Cover Chinese motto only — Song serif, not applied site-wide. */
+const coverCjk = Noto_Serif_SC({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-cover-cjk",
+  display: "swap",
+  preload: false,
+  adjustFontFallback: false,
+  fallback: ["Songti SC", "STSong"],
 });
 
 export const metadata: Metadata = {
@@ -74,7 +86,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${display.variable} ${body.variable} ${mono.variable} ${script.variable}`}
+      className={`${display.variable} ${body.variable} ${mono.variable} ${script.variable} ${coverCjk.variable}`}
       suppressHydrationWarning
     >
       <body className="noise font-body">
@@ -85,11 +97,11 @@ export default function RootLayout({
             <PetalField />
             <PetalCursor />
             <EntryGate />
-            <div className="min-h-screen flex flex-col">
+            <SiteFrame>
               <Navbar />
               <main className="flex-grow">{children}</main>
               <Footer />
-            </div>
+            </SiteFrame>
             <CommandPalette />
           </RouteVeilProvider>
         </MotionProvider>

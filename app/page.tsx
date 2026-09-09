@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, type MouseEvent } from "react";
+import { useRef, type CSSProperties, type MouseEvent, type PointerEvent } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight, Github } from "lucide-react";
@@ -42,9 +42,64 @@ const focus = [
   ],
 ];
 
+function FocusTile({
+  number,
+  title,
+  copy,
+  delay,
+}: {
+  number: string;
+  title: string;
+  copy: string;
+  delay: number;
+}) {
+  const reduce = usePrefersReducedMotion();
+
+  const onMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (reduce) return;
+    const box = event.currentTarget.getBoundingClientRect();
+    event.currentTarget.style.setProperty(
+      "--sx",
+      `${((event.clientX - box.left) / box.width) * 100}%`
+    );
+    event.currentTarget.style.setProperty(
+      "--sy",
+      `${((event.clientY - box.top) / box.height) * 100}%`
+    );
+  };
+
+  return (
+    <Reveal delay={delay}>
+      <div
+        onPointerMove={onMove}
+        className="group relative h-full overflow-hidden bg-[var(--sakura-bg-deep)]/80 p-8 md:p-10"
+        style={{ "--sx": "50%", "--sy": "32%" } as CSSProperties}
+      >
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          style={{
+            background:
+              "radial-gradient(circle 11rem at var(--sx) var(--sy), rgba(216,132,159,.12), transparent 62%)",
+          }}
+        />
+        <span className="pointer-events-none absolute right-7 top-7 text-[var(--sakura-accent)] opacity-0 transition-opacity duration-300 group-hover:opacity-80">
+          <Pearl size={7} />
+        </span>
+        <span className="relative font-display text-4xl tabular-nums text-[var(--sakura-muted-soft)] transition-[color,transform] duration-300 group-hover:translate-x-1 group-hover:text-[var(--sakura-accent-deep)]">
+          {number}
+        </span>
+        <h3 className="relative font-display text-2xl mt-12">{title}</h3>
+        <p className="relative mt-4 text-sm leading-[1.65] text-[var(--sakura-ink-soft)]">{copy}</p>
+      </div>
+    </Reveal>
+  );
+}
+
 export default function Home() {
   const reduce = usePrefersReducedMotion();
   const heroRef = useRef<HTMLElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const { scrollYProgress } = useScroll({
@@ -62,7 +117,7 @@ export default function Home() {
   return (
     <>
       <section ref={heroRef} className="relative min-h-[92vh] pt-36 md:pt-44 flex items-center">
-        <HeroGlow target={heroRef} />
+        <HeroGlow target={heroRef} anchor={ctaRef} />
         <FolioCorners className="mx-[min(4vw,2.5rem)] my-8" />
         <Container className="relative z-10">
           <motion.div
@@ -85,7 +140,7 @@ export default function Home() {
                 />
               </h1>
               <motion.div style={reduce ? undefined : { opacity: heroFade }}>
-                <FadeUp delay={0.82}>
+                <FadeUp delay={0.62}>
                   <p className="mt-10 max-w-xl text-lg md:text-xl leading-[1.65] text-[var(--sakura-ink-soft)]">
                     Master&apos;s student at the University of Sydney, finishing December 2026.
                     Recent work: coding-agent post-training and OpenClaw runtime compression. Last
@@ -93,8 +148,8 @@ export default function Home() {
                     types.
                   </p>
                 </FadeUp>
-                <FadeUp delay={0.96}>
-                  <div className="mt-10 flex flex-wrap gap-3">
+                <FadeUp delay={0.76}>
+                  <div ref={ctaRef} className="mt-10 flex flex-wrap gap-3">
                     <Magnetic>
                       <a href="#work" onClick={handleViewWork} className="button-primary">
                         View work <ArrowUpRight size={15} />
@@ -196,18 +251,7 @@ export default function Home() {
           </Reveal>
           <div className="grid md:grid-cols-3 gap-px bg-[var(--sakura-line-soft)] border border-[var(--sakura-line-soft)] rounded-[2rem] overflow-hidden">
             {focus.map(([number, title, copy], i) => (
-              <Reveal key={number} delay={i * 0.08}>
-                <div className="group relative bg-[var(--sakura-bg-deep)]/80 p-8 md:p-10 h-full">
-                  <span className="pointer-events-none absolute right-7 top-7 text-[var(--sakura-accent)] opacity-0 transition-opacity duration-300 group-hover:opacity-80">
-                    <Pearl size={7} />
-                  </span>
-                  <span className="font-display text-4xl tabular-nums text-[var(--sakura-muted-soft)] transition-colors duration-300 group-hover:text-[var(--sakura-accent-deep)]">
-                    {number}
-                  </span>
-                  <h3 className="font-display text-2xl mt-12">{title}</h3>
-                  <p className="mt-4 text-sm leading-[1.65] text-[var(--sakura-ink-soft)]">{copy}</p>
-                </div>
-              </Reveal>
+              <FocusTile key={number} number={number} title={title} copy={copy} delay={i * 0.08} />
             ))}
           </div>
         </Container>

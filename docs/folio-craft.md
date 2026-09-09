@@ -2,14 +2,14 @@
 
 > 自然，但有设计感、美感和科技感。  
 > **不换皮。** 现有 blush folio / 手帐是皮肤；科技感只加在交互、节奏和「进门」上。  
-> **只这一份方向稿。** 封面拉近、中英旁白、光标物理按下面同一条顺序做，不要另开第二份 plan。  
+> **只这一份方向稿。** 封面拉近、封面中文格言、光标物理按下面同一条顺序做，不要另开第二份 plan。  
 > 不替代 [pink-style DESIGN-SYSTEM](../.cursor/skills/pink-style/DESIGN-SYSTEM.md) 的 token，也不替代 [sakura-layout](../.cursor/skills/sakura-layout/SKILL.md) 的结构。
 
 ---
 
 ## 1. 一句话
 
-这是一本会呼吸的粉瓷手帐：衬线标题、玻璃、蕾丝、花瓣。进门是走进书里（拉近），读的时候是两声（英文标题 + 中文斜体），碰的时候光标会推光——不是黑底、粒子球或 SaaS 落地页。
+这是一本会呼吸的粉瓷手帐：衬线标题、玻璃、蕾丝、花瓣。进门是走进书里（拉近），封面一句中文格言，碰的时候光标会推光——不是黑底、粒子球或 SaaS 落地页。
 
 ---
 
@@ -18,7 +18,7 @@
 | 你要的 | 真正来源 | 不是 |
 |--------|----------|------|
 | **美感** | 低对比 ink、留白、Cormorant、玻璃、一层签名装饰 | 热粉、Barbie、满屏花 |
-| **自然** | 慢背景（8s+）不抢读；中文只出现在重点句；动效像翻页 | 整站 i18n 开关、循环打字抢标题、Idle 自动拉近 |
+| **自然** | 慢背景（8s+）不抢读；中文只留封面格言；动效像翻页 | 整站 i18n 开关、循环打字抢标题、Idle 自动拉近 |
 | **科技感** | 光标是力；等宽标签；`01 / 02`；磁吸弹簧；细光标竖线；进门 dolly | 暗色网格、波形剧场、15° 卡倾斜 |
 
 好看站的共性（NEXUS、Brittany Chiang、中文樱花博客、Nocturne dashboard）不是同一套皮肤，而是：
@@ -71,7 +71,7 @@ Nocturne 的科技感是：**记忆仪器长在瓷器上**。你的科技感应�
 
 | 来源 | 借 | 不借 |
 |------|----|------|
-| [NEXUS / meoo demo](https://s9tyjhgv9g8p.meoo.info) | 英文主句 + 中文斜体第二声；物体钉在 CTA 后；打字机当旁白 | 黑底、4500 点粒子球、15° 卡、Agent 命令框 |
+| [NEXUS / meoo demo](https://s9tyjhgv9g8p.meoo.info) | 物体钉在 CTA 后；打字机当旁白（只封面） | 黑底、4500 点粒子球、15° 卡、Agent 命令框；首页中英第二声 |
 | Mashiro / Sakurairo 封面公式 | 词标 + motto；进门像翻页 / 走近纸面 | 落花雨、看板娘、pjax |
 | [astro-koharu](https://github.com/cosZone/astro-koharu) · [Shoka](https://github.com/amehime/hexo-theme-shoka) | 中英并置、留白、「架 / 章」 | 粉蓝第二色、密侧栏 |
 
@@ -100,7 +100,7 @@ Appwrite Pink、落花 canvas、y2k 粗描边、Bruno 式 3D、Awwwards 整页 W
 **可动（都穿 sakura，按 §6 同一条顺序）**
 
 1. 封面 Enter dolly-in + Hero 接戏  
-2. 重点句中文斜体旁白  
+2. 封面中文格言（只封面；首页不加第二声）  
 3. Focus / 作品卡光标物理 + HeroGlow 钉 CTA  
 4. 封面格言一次打字机（可砍）  
 5. Logo 回封面反向拉远（第二轮）
@@ -127,26 +127,21 @@ Idle：**不要** `scale 1→1.03` 循环（会晕）。呼吸 orb + 花瓣漂�
 
 文件：[`EntryGate.tsx`](../components/motion/EntryGate.tsx)、[`CoverAtmosphere.tsx`](../components/motion/CoverAtmosphere.tsx)、[`HeroReveal.tsx`](../components/motion/HeroReveal.tsx)。
 
-### 6.2 重点句双语
+### 6.2 封面中文格言（只这一处）
 
-英文标题字号不动。下一行 Cormorant italic、`--sakura-ink-soft`、小一档。按钮和 eyebrow 不改。首页带进视口：标题先、中文旁白晚 80–120ms。
+中文只留封面。Hero / Featured / Focus / Now / Contact **不要**再加中文第二声。按钮和 eyebrow 继续英文。英文格言仍是 Cormorant italic；封面中文用 `next/font` 的宋体（Noto Serif SC），不要套 Latin italic。
 
-| 位置 | 英文（已有） | 中文旁白 |
-|------|----------------|----------|
+| 位置 | 英文（已有） | 中文 |
+|------|----------------|------|
 | 封面 | Desire is the prophet of the soul. | 「欲望是灵魂的先知。」 |
-| Hero | LLM Agents, / Post-training, / and AI Systems. | 「让 agent 更稳，也把底下的系统搭结实。」 |
-| Featured | Featured projects | 「一篇在投的论文，一次 coding-agent 训练，一次 runtime 压缩。」 |
-| Focus | What I work on | 「三件事，彼此重叠。」 |
-| Now | Internship and graduation | 「毕业设计，和一次实习。」 |
-| Contact | Get in touch | 「写信给我。」 |
 
-小组件挂进 `SectionHeader` 与首页 Hero；封面句写在 `EntryGate`。窄屏中文可换行；封面英文格言的 `whitespace-nowrap` 不要套到中文上。
+封面句写在 `CoverTypewriter` / `EntryGate`。窄屏中文可换行；英文格言的 `whitespace-nowrap` 不要套到中文上。
 
 封面词标可加与 Hero 同级的 1–2px `hoverLift`，不要整页晃。
 
 ### 6.3 打字机只放封面（可砍）
 
-英文格言先出 → 中文逐字打完 → **停住**。reduced-motion 时整行出现。光标：细 `--sakura-accent-deep` 竖线。不要做成 Agent 命令框，也不进 Hero（会和 `HeroLine` 抢）。封面若已够静，砍此项，双语仍做。
+英文格言先出 → 中文逐字打完 → **停住**。reduced-motion / 回封面时整行出现。光标：细 `--sakura-accent-deep` 竖线。不要做成 Agent 命令框，也不进 Hero（会和 `HeroLine` 抢）。封面若已够静，砍打字机，格言仍留。
 
 ### 6.4 Hover：补物理，不补倾斜
 
@@ -182,11 +177,11 @@ Idle：**不要** `scale 1→1.03` 循环（会晕）。呼吸 orb + 花瓣漂�
 
 ## 9. 文件（点头后按 §6 改代码）
 
-- 新：`components/BilingualLead.tsx`；可选 `components/motion/CoverTypewriter.tsx`
+- 新：`components/motion/CoverTypewriter.tsx`（封面中文 + Noto Serif SC）
 - 改：`EntryGate.tsx`、`CoverAtmosphere.tsx`、`HeroReveal.tsx`、`app/page.tsx`、`SectionHeader.tsx`、`HeroGlow.tsx`、`ProjectCard.tsx`
 - 不动：按钮 class、eyebrow、封面花瓣/蕾丝素材、`/work/[slug]` 结构、token 名
 
-浏览器验：封面 Enter 拉近 → Hero 接戏 → 旁白出现 → Focus / 作品卡 hover → reduced-motion 只淡出 → 窄屏中文折行。第二轮再验 Logo 回封面。
+浏览器验：封面 Enter 拉近 → Hero 接戏（无中文旁白）→ Focus / 作品卡 hover → reduced-motion 只淡出。第二轮再验 Logo 回封面。
 
 ---
 

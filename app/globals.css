@@ -46,6 +46,17 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+html.cover-locked {
+  overflow: hidden;
+  overscroll-behavior: none;
+  height: 100%;
+}
+html.cover-locked body {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+  height: 100%;
+  touch-action: none;
+}
 
 body {
   margin: 0;
@@ -89,6 +100,11 @@ a, button, input { outline-color: var(--sakura-accent-deep); outline-offset: 4px
 .font-body { font-family: var(--font-body), "PingFang SC", "Noto Sans SC", system-ui, sans-serif; }
 .font-mono { font-family: var(--font-mono), ui-monospace, monospace; }
 .font-script { font-family: var(--font-script), var(--font-display), cursive; }
+.font-cover-cjk {
+  font-family: var(--font-cover-cjk), "Songti SC", "STSong", "Noto Serif SC", serif;
+  font-style: normal;
+  font-synthesis: none;
+}
 
 .sakura-glass {
   position: relative;

@@ -5,11 +5,19 @@ import type { RefObject } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
-/** Slow blush orb that eases toward the pointer. Hero atmosphere only. */
-export default function HeroGlow({ target }: { target: RefObject<HTMLElement | null> }) {
+/** Slow blush orb. Rests on the CTA row; eases toward the pointer. */
+export default function HeroGlow({
+  target,
+  anchor,
+}: {
+  target: RefObject<HTMLElement | null>;
+  anchor?: RefObject<HTMLElement | null>;
+}) {
   const reduce = usePrefersReducedMotion();
-  const x = useMotionValue(0.72);
-  const y = useMotionValue(0.22);
+  const x = useMotionValue(0.22);
+  const y = useMotionValue(0.78);
+  const restX = useRef(0.22);
+  const restY = useRef(0.78);
   const sx = useSpring(x, { stiffness: 18, damping: 28, mass: 1.4 });
   const sy = useSpring(y, { stiffness: 18, damping: 28, mass: 1.4 });
   const left = useTransform(sx, (v) => `${v * 100}%`);
@@ -20,6 +28,21 @@ export default function HeroGlow({ target }: { target: RefObject<HTMLElement | n
     if (reduce) return;
     const node = target.current;
     if (!node) return;
+
+    const syncRest = () => {
+      const cta = anchor?.current;
+      if (!cta) return;
+      const hero = node.getBoundingClientRect();
+      const box = cta.getBoundingClientRect();
+      if (hero.width < 1 || hero.height < 1) return;
+      restX.current = (box.left + box.width / 2 - hero.left) / hero.width;
+      restY.current = (box.top + box.height / 2 - hero.top) / hero.height;
+    };
+
+    syncRest();
+    x.set(restX.current);
+    y.set(restY.current);
+    const settled = window.setTimeout(syncRest, 200);
 
     const onMove = (event: PointerEvent) => {
       if (ticking.current) return;
@@ -32,9 +55,21 @@ export default function HeroGlow({ target }: { target: RefObject<HTMLElement | n
       });
     };
 
+    const onLeave = () => {
+      x.set(restX.current);
+      y.set(restY.current);
+    };
+
     node.addEventListener("pointermove", onMove, { passive: true });
-    return () => node.removeEventListener("pointermove", onMove);
-  }, [reduce, target, x, y]);
+    node.addEventListener("pointerleave", onLeave);
+    window.addEventListener("resize", syncRest);
+    return () => {
+      window.clearTimeout(settled);
+      node.removeEventListener("pointermove", onMove);
+      node.removeEventListener("pointerleave", onLeave);
+      window.removeEventListener("resize", syncRest);
+    };
+  }, [reduce, target, anchor, x, y]);
 
   if (reduce) return null;
 

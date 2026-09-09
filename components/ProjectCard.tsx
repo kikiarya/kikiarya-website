@@ -37,9 +37,9 @@ export default function ProjectCard({ project, index }: { project: Project; inde
           event.preventDefault();
           navigateWithViewTransition(router, href, reduce);
         }}
-        className="group grid md:grid-cols-[5rem_minmax(0,1fr)_auto] gap-4 md:gap-8 items-start py-8 md:py-10 px-4 -mx-4 rounded-2xl border-t border-[var(--sakura-line-soft)] transition-[background-color,transform] duration-300 hover:bg-[var(--sakura-surface-soft)] hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-[var(--sakura-accent-deep)]"
+        className="group grid md:grid-cols-[5rem_minmax(0,1fr)_auto] gap-4 md:gap-8 items-start py-8 md:py-10 px-4 -mx-4 rounded-2xl border-t border-[var(--sakura-line-soft)] transition-[background-color,transform] duration-300 hover:bg-[var(--sakura-surface-soft)] hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-[var(--sakura-accent-deep)]"
       >
-        <span className="font-display text-3xl tabular-nums text-[var(--sakura-muted-soft)] transition-colors duration-300 group-hover:text-[var(--sakura-accent-deep)]">
+        <span className="font-display text-3xl tabular-nums text-[var(--sakura-muted-soft)] transition-[color,transform] duration-300 group-hover:translate-x-1 group-hover:text-[var(--sakura-accent-deep)]">
           {String(index + 1).padStart(2, "0")}
         </span>
         <div>

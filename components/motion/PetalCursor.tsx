@@ -78,7 +78,7 @@ function TrailPetal({
     <motion.div
       aria-hidden="true"
       className="pointer-events-none fixed left-0 top-0"
-      style={{ x: sx, y: sy, zIndex: 48 - index }}
+      style={{ x: sx, y: sy, zIndex: 88 - index }}
     >
       <motion.div
         style={{
@@ -111,9 +111,9 @@ type Ghost = {
 };
 
 /**
- * Petal Cursor (ui-motion-plan2 §4): desktop-only custom pointer, active once
- * the visitor has entered. Native cursor returns on text-editing surfaces,
- * touch devices, and under prefers-reduced-motion.
+ * Petal Cursor (ui-motion-plan2 §4): desktop-only custom pointer, including Cover.
+ * Native cursor returns on text-editing surfaces, touch devices, and under
+ * prefers-reduced-motion.
  */
 export default function PetalCursor() {
   const { cursorActive } = useMotionScene();
@@ -216,7 +216,7 @@ export default function PetalCursor() {
           <motion.div
             key={ghost.id}
             aria-hidden="true"
-            className="pointer-events-none fixed left-0 top-0 z-[47]"
+            className="pointer-events-none fixed left-0 top-0 z-[87]"
             style={{ marginLeft: -ghost.size / 2, marginTop: -ghost.size / 2 }}
             initial={{ x: ghost.x, y: ghost.y, opacity: 0.35, scale: 1, rotate: 0 }}
             animate={{

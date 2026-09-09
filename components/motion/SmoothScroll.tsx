@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Lenis from "lenis";
 import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
+import { useMotionScene } from "./MotionProvider";
 
 declare global {
   interface Window {
@@ -34,9 +35,10 @@ export function smoothScrollTo(selector: string) {
 /** Lenis inertia scrolling — desktop fine-pointer only, off under reduced motion (§17). */
 export default function SmoothScroll() {
   const reduce = usePrefersReducedMotion();
+  const { isCover } = useMotionScene();
 
   useEffect(() => {
-    if (reduce) return;
+    if (reduce || isCover) return;
     if (!window.matchMedia("(pointer: fine)").matches) return;
 
     const lenis = new Lenis({ lerp: 0.1 });
@@ -54,7 +56,7 @@ export default function SmoothScroll() {
       lenis.destroy();
       window.__lenis = undefined;
     };
-  }, [reduce]);
+  }, [reduce, isCover]);
 
   return null;
 }
