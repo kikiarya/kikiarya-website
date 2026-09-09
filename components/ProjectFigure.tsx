@@ -146,11 +146,11 @@ export default function ProjectFigure({ diagram }: { diagram: ProjectDiagram }) 
         </div>
       ) : null}
       {diagram.bars ? (
-        <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="mt-6 grid grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] gap-3">
           {diagram.bars.map((bar, index) => (
             <motion.div
               key={bar.label}
-              className={`rounded-2xl border px-5 py-5 ${
+              className={`rounded-2xl border px-5 py-6 ${
                 bar.highlight
                   ? "border-[var(--sakura-line)] bg-[var(--sakura-surface-soft)]"
                   : "border-[var(--sakura-line-soft)] bg-[var(--sakura-bg-deep)]/70"
@@ -163,7 +163,9 @@ export default function ProjectFigure({ diagram }: { diagram: ProjectDiagram }) 
               <p className="font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-muted)]">
                 {bar.label}
               </p>
-              <p className="font-display text-2xl mt-3 leading-snug">{bar.caption}</p>
+              <p className="font-display mt-3 text-[1.65rem] leading-snug md:text-3xl">
+                {bar.caption}
+              </p>
             </motion.div>
           ))}
         </div>

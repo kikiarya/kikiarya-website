@@ -88,6 +88,7 @@ a, button, input { outline-color: var(--sakura-accent-deep); outline-offset: 4px
 .font-display { font-family: var(--font-display), "Songti SC", "STSong", "Noto Serif SC", Georgia, serif; }
 .font-body { font-family: var(--font-body), "PingFang SC", "Noto Sans SC", system-ui, sans-serif; }
 .font-mono { font-family: var(--font-mono), ui-monospace, monospace; }
+.font-script { font-family: var(--font-script), var(--font-display), cursive; }
 
 .sakura-glass {
   position: relative;
@@ -275,6 +276,15 @@ a, button, input { outline-color: var(--sakura-accent-deep); outline-offset: 4px
 .silk-flow path:first-of-type {
   stroke-dasharray: 72 220;
   animation: silk-drift 18s linear infinite;
+}
+
+@keyframes silk-sash-drift {
+  to { stroke-dashoffset: -360; }
+}
+
+.silk-sash-flow {
+  stroke-dasharray: 56 300;
+  animation: silk-sash-drift 6.5s linear infinite;
 }
 
 ::view-transition-old(root),

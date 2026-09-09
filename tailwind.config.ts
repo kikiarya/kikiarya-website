@@ -19,6 +19,7 @@ const config: Config = {
         display: ["var(--font-display)", "Songti SC", "STSong", "Noto Serif SC", "Georgia", "serif"],
         body: ["var(--font-body)", "PingFang SC", "Noto Sans SC", "system-ui", "sans-serif"],
         mono: ["var(--font-mono)", "ui-monospace", "monospace"],
+        script: ["var(--font-script)", "var(--font-display)", "cursive"],
       },
       fontSize: {
         hero: ["var(--fs-hero)", { lineHeight: ".92", letterSpacing: "-.045em" }],

@@ -52,6 +52,7 @@ This site is a **personal portfolio**, not the full pink-style desktop shell. Ad
 ## Reference
 
 - Full design spec: [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md)
+- Hierarchy, grids, sticky headers, measure, and which component to reuse: [sakura-layout](../sakura-layout/SKILL.md) — does not change this look
 - Source inspiration: [Nocturne-Memory-Core](https://github.com/Pyruslili/Nocturne-Memory-Core) `dashboard.html` (`sakura-milk` source theme)
 - Current stack: Next.js 16, React 19, Tailwind 3, Framer Motion, Lenis, Lucide icons
 - Existing motion components live in `components/motion/` — extend those before adding new ones

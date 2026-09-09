@@ -1,12 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Pearl from "../decor/Pearl";
+import SilkRibbon from "../decor/SilkRibbon";
+import Sparkle from "../decor/Sparkle";
 import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
 /**
- * Projects scene atmosphere (ui-motion-plan2 §8): extremely subtle rings and
- * blurred sakura glow behind content sections. Decorative only — content
- * stays at 100% prominence, forms at ~8-15%.
+ * Section atmosphere: slow rings and glow, plus a few plate ornaments.
+ * Content stays primary; these sit at ~8–15% presence.
  */
 export default function SceneDecor({ className = "" }: { className?: string }) {
   const reduce = usePrefersReducedMotion();
@@ -38,6 +40,28 @@ export default function SceneDecor({ className = "" }: { className?: string }) {
         animate={reduce ? undefined : { y: [0, 14, 0] }}
         transition={{ duration: 28, repeat: Infinity, ease: "easeInOut" }}
       />
+      <motion.div
+        className="absolute -left-[8%] top-[18%] hidden w-[42%] text-[var(--sakura-accent-deep)] md:block"
+        style={{ opacity: 0.22 }}
+        animate={reduce ? undefined : { x: [0, 8, 0] }}
+        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <SilkRibbon width={220} flowing={!reduce} />
+      </motion.div>
+      <motion.span
+        className="absolute right-[12%] top-[22%] text-[var(--sakura-accent)]"
+        animate={reduce ? { opacity: 0.35 } : { opacity: [0.28, 0.55, 0.28] }}
+        transition={reduce ? undefined : { duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <Pearl size={8} />
+      </motion.span>
+      <motion.span
+        className="absolute bottom-[18%] left-[14%] text-[var(--sakura-accent)]"
+        animate={reduce ? { opacity: 0.3 } : { opacity: [0.22, 0.5, 0.22], y: [0, -6, 0] }}
+        transition={reduce ? undefined : { duration: 7, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <Sparkle size={11} points={4} />
+      </motion.span>
     </div>
   );
 }

@@ -1,8 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import type { ProjectMetric } from "../lib/projects";
 import { usePrefersReducedMotion } from "./motion/usePrefersReducedMotion";
+
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
@@ -11,7 +17,15 @@ function format(metric: ProjectMetric, current: number) {
   return `${metric.prefix}${n}${metric.suffix}`;
 }
 
-function MetricValue({ metric, active }: { metric: ProjectMetric; active: boolean }) {
+export function MetricValue({
+  metric,
+  active,
+  size = "card",
+}: {
+  metric: ProjectMetric;
+  active: boolean;
+  size?: "card" | "folio" | "seal";
+}) {
   const reduce = usePrefersReducedMotion();
   const [display, setDisplay] = useState(() =>
     reduce ? format(metric, metric.numeric) : format(metric, 0)
@@ -36,13 +50,29 @@ function MetricValue({ metric, active }: { metric: ProjectMetric; active: boolea
   }, [active, metric, reduce]);
 
   return (
-    <span className="font-display text-2xl md:text-[1.65rem] tabular-nums leading-none text-[var(--sakura-accent-deep)]">
+    <span
+      className={`font-display tabular-nums leading-none text-[var(--sakura-accent-deep)] ${
+        size === "folio"
+          ? "text-[clamp(1.85rem,3.2vw,2.75rem)]"
+          : size === "seal"
+            ? "text-[1.15rem] md:text-[1.25rem]"
+            : "text-2xl md:text-[1.65rem]"
+      }`}
+    >
       {display}
     </span>
   );
 }
 
-export default function MetricRow({ metrics }: { metrics: ProjectMetric[] }) {
+export default function MetricRow({
+  metrics,
+  className = "mt-6",
+  size = "card",
+}: {
+  metrics: ProjectMetric[];
+  className?: string;
+  size?: "card" | "folio";
+}) {
   const ref = useRef<HTMLUListElement>(null);
   const [active, setActive] = useState(false);
 
@@ -65,12 +95,12 @@ export default function MetricRow({ metrics }: { metrics: ProjectMetric[] }) {
   return (
     <ul
       ref={ref}
-      className="mt-6 flex flex-wrap gap-x-8 gap-y-4"
+      className={cn("flex flex-wrap gap-x-8 gap-y-4", className)}
       aria-label="Key results"
     >
       {metrics.map((metric) => (
         <li key={metric.label} className="flex flex-col gap-1.5 min-w-[5.5rem]">
-          <MetricValue metric={metric} active={active} />
+          <MetricValue metric={metric} active={active} size={size} />
           <span className="font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-muted)]">
             {metric.label}
           </span>

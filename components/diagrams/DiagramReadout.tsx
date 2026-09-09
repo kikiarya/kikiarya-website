@@ -16,7 +16,7 @@ export default function DiagramReadout({
 }) {
   return (
     <div
-      className="diagram-readout mt-6 rounded-[1.15rem] border border-[var(--sakura-line)] bg-[var(--sakura-paper-soft)] px-5 py-4"
+      className="diagram-readout mt-6 max-w-xl rounded-[1.15rem] border border-[var(--sakura-line)] bg-[var(--sakura-paper-soft)] px-5 py-4"
       aria-live="polite"
     >
       <p className="font-display text-xl leading-snug text-[var(--sakura-ink)]">{copy.title}</p>
@@ -29,7 +29,7 @@ export default function DiagramReadout({
       {copy.evaluationHref ? (
         <button
           type="button"
-          className="mt-3 font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-accent-deep)] underline-offset-4 hover:underline"
+          className="button-ghost mt-4 min-h-10 px-4 py-2"
           onClick={(event) => {
             event.stopPropagation();
             smoothScrollTo(copy.evaluationHref!);

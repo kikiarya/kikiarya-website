@@ -99,7 +99,7 @@ export const projects: Project[] = [
       "Qwen3-8B TriviaQA: 67.40% → 80.09% accuracy, action tokens −27.1%, throughput +17.5%",
     ],
     results:
-      "Qwen3-8B on TriviaQA: accuracy 67.40% → 80.09%, action tokens −27.1%, throughput 127.8 → 150.2 tokens/s (+17.5%). Transfers to HumanEval and Qwen3-32B.",
+      "Qwen3-8B LAR: TriviaQA 80.09% (action tokens −27.1%), KodCode 54.30% (−9.2%), Mind2Web 39.84% (−2.9%). TriviaQA throughput 127.8 → 150.2 tokens/s. Transfers to HumanEval, MBPP, and Qwen3-32B.",
     bibtex: `@misc{lar2026,
   title={Latent Action Reparameterization for Efficient Agent Inference},
   author={Kikiarya},
@@ -111,8 +111,8 @@ export const projects: Project[] = [
 }`,
     metrics: [
       { numeric: 80.09, prefix: "", suffix: "%", decimals: 2, label: "TriviaQA" },
-      { numeric: 27.1, prefix: "−", suffix: "%", decimals: 1, label: "action tokens" },
-      { numeric: 17.5, prefix: "+", suffix: "%", decimals: 1, label: "throughput" },
+      { numeric: 54.3, prefix: "", suffix: "%", decimals: 2, label: "KodCode" },
+      { numeric: 39.84, prefix: "", suffix: "%", decimals: 2, label: "Mind2Web" },
     ],
     diagrams: [
       {
@@ -122,11 +122,11 @@ export const projects: Project[] = [
       },
       {
         kind: "evaluation",
-        caption: "Qwen3-8B on TriviaQA, before → after LAR.",
+        caption: "Qwen3-8B LAR on the three held-in agent benchmarks.",
         bars: [
-          { label: "Accuracy", caption: "67.40% → 80.09%", highlight: true },
-          { label: "Action tokens", caption: "−27.1%" },
-          { label: "Throughput", caption: "+17.5%" },
+          { label: "TriviaQA", caption: "67.40% → 80.09%", highlight: true },
+          { label: "KodCode", caption: "34.44% → 54.30%" },
+          { label: "Mind2Web", caption: "36.73% → 39.84%" },
         ],
       },
     ],

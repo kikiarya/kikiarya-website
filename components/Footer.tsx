@@ -5,6 +5,7 @@ import Container from "./Container";
 import { useMotionScene } from "./motion/MotionProvider";
 import ShortcutHint from "./ShortcutHint";
 import { site } from "../lib/site";
+import OrnamentRule from "./decor/OrnamentRule";
 
 export default function Footer() {
   const { isCover, returnToCover } = useMotionScene();
@@ -21,7 +22,9 @@ export default function Footer() {
       aria-hidden={isCover}
       style={{ pointerEvents: isCover ? "none" : "auto" }}
     >
-      <Container className="py-10 flex flex-col sm:flex-row justify-between gap-4 text-[var(--sakura-muted)]">
+      <Container className="py-10">
+        <OrnamentRule className="mb-8 max-w-xs" />
+        <div className="flex flex-col sm:flex-row justify-between gap-4 text-[var(--sakura-muted)]">
         <a
           href="/"
           onClick={handleCover}
@@ -50,6 +53,7 @@ export default function Footer() {
           </span>
           <span className="tabular-nums">© 2026</span>
           <span className="tabular-nums">Updated Aug 2026</span>
+        </div>
         </div>
       </Container>
     </footer>

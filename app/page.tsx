@@ -13,6 +13,11 @@ import { FadeUp, HeroLine } from "../components/motion/HeroReveal";
 import { smoothScrollTo } from "../components/motion/SmoothScroll";
 import HeroGlow from "../components/motion/HeroGlow";
 import HeroStatusCard from "../components/HeroStatusCard";
+import FolioCorners from "../components/decor/FolioCorners";
+import Bow from "../components/decor/Bow";
+import LaceDivider from "../components/decor/LaceDivider";
+import Pearl from "../components/decor/Pearl";
+import Magnetic from "../components/motion/Magnetic";
 import { getFeaturedProjects } from "../lib/projects";
 import { site } from "../lib/site";
 import { usePrefersReducedMotion } from "../components/motion/usePrefersReducedMotion";
@@ -46,7 +51,7 @@ export default function Home() {
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  const heroY = useTransform(scrollYProgress, [0.2, 0.65], [0, -12]);
+  const heroY = useTransform(scrollYProgress, [0.2, 0.65], [0, -32]);
   const heroFade = useTransform(scrollYProgress, [0.2, 0.45], [1, 0]);
 
   const handleViewWork = (event: MouseEvent<HTMLAnchorElement>) => {
@@ -58,6 +63,7 @@ export default function Home() {
     <>
       <section ref={heroRef} className="relative min-h-[92vh] pt-36 md:pt-44 flex items-center">
         <HeroGlow target={heroRef} />
+        <FolioCorners className="mx-[min(4vw,2.5rem)] my-8" />
         <Container className="relative z-10">
           <motion.div
             className="grid lg:grid-cols-[minmax(0,1fr)_6.25rem_17.5rem] gap-8 xl:gap-10 items-end"
@@ -80,7 +86,7 @@ export default function Home() {
               </h1>
               <motion.div style={reduce ? undefined : { opacity: heroFade }}>
                 <FadeUp delay={0.82}>
-                  <p className="mt-10 max-w-2xl text-lg md:text-xl leading-8 text-[var(--sakura-ink-soft)]">
+                  <p className="mt-10 max-w-xl text-lg md:text-xl leading-[1.65] text-[var(--sakura-ink-soft)]">
                     Master&apos;s student at the University of Sydney, finishing December 2026.
                     Recent work: coding-agent post-training and OpenClaw runtime compression. Last
                     summer at AIsphere on PixVerse Game — live video that follows what the player
@@ -89,20 +95,26 @@ export default function Home() {
                 </FadeUp>
                 <FadeUp delay={0.96}>
                   <div className="mt-10 flex flex-wrap gap-3">
-                    <a href="#work" onClick={handleViewWork} className="button-primary">
-                      View work <ArrowUpRight size={15} />
-                    </a>
-                    <a
-                      href={site.githubUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="button-ghost"
-                    >
-                      <Github size={15} /> GitHub
-                    </a>
-                    <Link href="/resume" className="button-ghost">
-                      Resume
-                    </Link>
+                    <Magnetic>
+                      <a href="#work" onClick={handleViewWork} className="button-primary">
+                        View work <ArrowUpRight size={15} />
+                      </a>
+                    </Magnetic>
+                    <Magnetic>
+                      <a
+                        href={site.githubUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="button-ghost"
+                      >
+                        <Github size={15} /> GitHub
+                      </a>
+                    </Magnetic>
+                    <Magnetic>
+                      <Link href="/resume" className="button-ghost">
+                        Resume
+                      </Link>
+                    </Magnetic>
                   </div>
                 </FadeUp>
               </motion.div>
@@ -185,12 +197,15 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-px bg-[var(--sakura-line-soft)] border border-[var(--sakura-line-soft)] rounded-[2rem] overflow-hidden">
             {focus.map(([number, title, copy], i) => (
               <Reveal key={number} delay={i * 0.08}>
-                <div className="group bg-[var(--sakura-bg-deep)]/80 p-8 md:p-10 h-full">
+                <div className="group relative bg-[var(--sakura-bg-deep)]/80 p-8 md:p-10 h-full">
+                  <span className="pointer-events-none absolute right-7 top-7 text-[var(--sakura-accent)] opacity-0 transition-opacity duration-300 group-hover:opacity-80">
+                    <Pearl size={7} />
+                  </span>
                   <span className="font-display text-4xl tabular-nums text-[var(--sakura-muted-soft)] transition-colors duration-300 group-hover:text-[var(--sakura-accent-deep)]">
                     {number}
                   </span>
-                  <h3 className="font-display text-card-title mt-12">{title}</h3>
-                  <p className="mt-4 text-sm leading-7 text-[var(--sakura-ink-soft)]">{copy}</p>
+                  <h3 className="font-display text-2xl mt-12">{title}</h3>
+                  <p className="mt-4 text-sm leading-[1.65] text-[var(--sakura-ink-soft)]">{copy}</p>
                 </div>
               </Reveal>
             ))}
@@ -198,8 +213,9 @@ export default function Home() {
         </Container>
       </section>
 
-      <section className="py-24 md:py-36">
-        <Container>
+      <section className="relative py-24 md:py-36">
+        <SceneDecor />
+        <Container className="relative">
           <div className="grid lg:grid-cols-2 gap-16">
             <Reveal>
               <SectionHeader
@@ -245,14 +261,25 @@ export default function Home() {
       <section className="py-24 md:py-36 section-rule">
         <Container>
           <Reveal>
-            <div className="sakura-glass rounded-[2rem] md:rounded-[3rem] p-8 md:p-16 flex flex-col md:flex-row justify-between md:items-end gap-10">
+            <div className="relative sakura-glass rounded-[2rem] md:rounded-[3rem] px-8 pb-8 pt-14 md:px-16 md:pb-16 md:pt-20 flex flex-col md:flex-row justify-between md:items-end gap-10 overflow-hidden">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute left-1/2 top-1 z-[1] -translate-x-1/2 text-[var(--sakura-accent-deep)]"
+              >
+                <Bow size={36} variant="soft" />
+              </div>
+              <div aria-hidden="true" className="pointer-events-none absolute inset-x-10 top-7 opacity-45">
+                <LaceDivider scallop={16} picots />
+              </div>
               <div>
                 <p className="eyebrow">Contact</p>
                 <h2 className="font-display text-chapter mt-5">Get in touch</h2>
               </div>
-              <a href={`mailto:${site.email}`} className="button-primary">
-                {site.email} <ArrowUpRight size={15} />
-              </a>
+              <Magnetic>
+                <a href={`mailto:${site.email}`} className="button-primary">
+                  {site.email} <ArrowUpRight size={15} />
+                </a>
+              </Magnetic>
             </div>
           </Reveal>
         </Container>

@@ -3,7 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import Container from "../../components/Container";
 import Reveal from "../../components/motion/Reveal";
 import SceneDecor from "../../components/motion/SceneDecor";
-import FloralSprig from "../../components/decor/FloralSprig";
+import Bow from "../../components/decor/Bow";
 
 export const metadata = { title: "Notes" };
 
@@ -22,9 +22,10 @@ export default function NotesPage() {
 
         <Reveal>
           <div className="sakura-glass rounded-[2rem] p-8 md:p-12 max-w-xl">
-            <FloralSprig
-              size={56}
-              className="text-[var(--sakura-accent)] mb-8"
+            <Bow
+              size={48}
+              variant="soft"
+              className="mb-8 text-[var(--sakura-accent-deep)]"
             />
             <p className="eyebrow">Seed</p>
             <p className="font-display text-2xl md:text-3xl mt-4 leading-snug">

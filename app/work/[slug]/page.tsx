@@ -10,6 +10,8 @@ import WorkEditorialFigure from "../../../components/diagrams/WorkEditorialFigur
 import TrajectoryReplay from "../../../components/TrajectoryReplay";
 import CopyBibtex from "../../../components/CopyBibtex";
 import WorkChapters from "../../../components/WorkChapters";
+import HighlightBoard from "../../../components/HighlightBoard";
+import OrnamentRule from "../../../components/decor/OrnamentRule";
 import { getProjectBySlug, getAllProjectSlugs } from "../../../lib/projects";
 import { site } from "../../../lib/site";
 import { workTitleVtName } from "../../../lib/workTitle";
@@ -55,7 +57,7 @@ export default async function WorkDetail({
   const title = project.cardTitle ?? project.title;
 
   return (
-    <article className="pt-32 md:pt-40 pb-20">
+    <article className="pt-28 md:pt-32 pb-20">
       {project.arxivId ? (
         <script
           type="application/ld+json"
@@ -75,27 +77,77 @@ export default async function WorkDetail({
         />
       ) : null}
       <Container>
-        <Link href="/work" className="button-ghost mb-14">
+        <Link href="/work" className="button-ghost mb-8">
           <ArrowLeft size={14} /> Back to work
         </Link>
-        <header className="max-w-5xl">
-          <p className="eyebrow">{project.venue ?? project.categoryTags.join(" · ")}</p>
-          <h1
-            className="font-display text-hero font-light text-balance mt-6"
-            style={{ viewTransitionName: workTitleVtName(project.slug) }}
-          >
-            {title}
-          </h1>
-          {project.cardTitle ? (
-            <p className="mt-5 max-w-3xl font-display text-2xl italic leading-snug text-[var(--sakura-ink-soft)]">
-              {project.title}
+        <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_16.5rem]">
+          <header>
+            <p className="eyebrow">{project.venue ?? project.categoryTags.join(" · ")}</p>
+            <div className="mt-5">
+              <h1
+                className="font-display text-hero font-light text-balance"
+                style={{ viewTransitionName: workTitleVtName(project.slug) }}
+              >
+                {title}
+              </h1>
+            </div>
+            {project.cardTitle ? (
+              <p className="mt-5 max-w-3xl font-display text-2xl italic leading-snug text-[var(--sakura-ink-soft)]">
+                {project.title}
+              </p>
+            ) : null}
+            <p className="mt-6 max-w-2xl text-xl leading-[1.65] text-[var(--sakura-ink-soft)]">
+              {project.shortDescription}
             </p>
-          ) : null}
-          <p className="mt-8 max-w-3xl text-xl leading-8 text-[var(--sakura-ink-soft)]">
-            {project.shortDescription}
-          </p>
-        </header>
-        <div className="my-20 grid sm:grid-cols-3 gap-px bg-[var(--sakura-line-soft)] border border-[var(--sakura-line-soft)] rounded-3xl overflow-hidden">
+            <OrnamentRule className="mt-8 max-w-sm" />
+          </header>
+          <aside>
+            <div className="sakura-glass rounded-3xl p-6">
+              {project.venue ? (
+                <>
+                  <p className="eyebrow">Venue</p>
+                  <p className="font-display text-xl mt-3 leading-snug">{project.venue}</p>
+                </>
+              ) : (
+                <p className="eyebrow">Technology</p>
+              )}
+              <div className="flex flex-wrap gap-2 mt-5">
+                {project.techStack.map((item) => (
+                  <Tag key={item} label={item} />
+                ))}
+              </div>
+              <div className="mt-6 space-y-3">
+                {arxivUrl ? (
+                  <a className="button-primary w-full" href={arxivUrl} target="_blank" rel="noreferrer">
+                    <ExternalLink size={14} /> arXiv:{project.arxivId}
+                  </a>
+                ) : null}
+                {project.bibtex ? <CopyBibtex bibtex={project.bibtex} /> : null}
+                {project.repoUrl ? (
+                  <a
+                    className="button-ghost w-full"
+                    href={project.repoUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Github size={14} /> Repository
+                  </a>
+                ) : null}
+                {project.demoUrl ? (
+                  <a
+                    className="button-primary w-full"
+                    href={project.demoUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <ExternalLink size={14} /> Live demo
+                  </a>
+                ) : null}
+              </div>
+            </div>
+          </aside>
+        </div>
+        <div className="my-12 grid sm:grid-cols-3 gap-px bg-[var(--sakura-line-soft)] border border-[var(--sakura-line-soft)] rounded-3xl overflow-hidden">
           <Meta
             label="Role"
             value={project.role || "Student project · contribution documented below"}
@@ -103,9 +155,8 @@ export default async function WorkDetail({
           <Meta label="Type" value={project.categoryTags.join(" / ")} />
           <Meta label="Core stack" value={project.techStack.slice(0, 3).join(" · ")} />
         </div>
-        <div className="grid lg:grid-cols-[minmax(0,1fr)_20rem] gap-16">
-          <WorkChapters>
-            <div className="space-y-20">
+        <WorkChapters>
+          <div className="space-y-16">
               {theater && project.trajectory ? (
                 <Content title="Eval theater" chapter="01 Loop">
                   <TrajectoryReplay trajectory={project.trajectory} featured />
@@ -158,16 +209,7 @@ export default async function WorkDetail({
                 title="Key implementation"
                 chapter={theater ? "04 Build" : "03 Build"}
               >
-                <ol className="space-y-5">
-                  {project.highlights.map((item, index) => (
-                    <li key={item} className="grid grid-cols-[2rem_1fr] gap-4">
-                      <span className="font-display text-2xl text-[var(--sakura-accent-deep)]">
-                        {index + 1}
-                      </span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ol>
+                <HighlightBoard items={project.highlights} metrics={project.metrics} />
               </Content>
               {evaluation.length || project.results ? (
                 <Content
@@ -192,52 +234,6 @@ export default async function WorkDetail({
               ) : null}
             </div>
           </WorkChapters>
-          <aside>
-            <div className="sticky top-28 sakura-glass rounded-3xl p-7">
-              {project.venue ? (
-                <>
-                  <p className="eyebrow">Venue</p>
-                  <p className="font-display text-2xl mt-3 leading-snug">{project.venue}</p>
-                </>
-              ) : (
-                <p className="eyebrow">Technology</p>
-              )}
-              <div className="flex flex-wrap gap-2 mt-5">
-                {project.techStack.map((item) => (
-                  <Tag key={item} label={item} />
-                ))}
-              </div>
-              <div className="mt-8 space-y-3">
-                {arxivUrl ? (
-                  <a className="button-primary w-full" href={arxivUrl} target="_blank" rel="noreferrer">
-                    <ExternalLink size={14} /> arXiv:{project.arxivId}
-                  </a>
-                ) : null}
-                {project.bibtex ? <CopyBibtex bibtex={project.bibtex} /> : null}
-                {project.repoUrl ? (
-                  <a
-                    className="button-ghost w-full"
-                    href={project.repoUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <Github size={14} /> Repository
-                  </a>
-                ) : null}
-                {project.demoUrl ? (
-                  <a
-                    className="button-primary w-full"
-                    href={project.demoUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <ExternalLink size={14} /> Live demo
-                  </a>
-                ) : null}
-              </div>
-            </div>
-          </aside>
-        </div>
       </Container>
     </article>
   );
@@ -264,9 +260,16 @@ function Content({
   children: React.ReactNode;
 }) {
   return (
-    <section data-chapter={chapter} id={id}>
-      <h2 className="font-display text-chapter font-light mb-8">{title}</h2>
-      <div className="space-y-6 leading-8 text-[var(--sakura-ink-soft)]">{children}</div>
+    <section data-chapter={chapter} id={id} className="scroll-mt-24">
+      <header className="mb-5">
+        <p className="eyebrow">{chapter}</p>
+        <h2 className="mt-1.5 font-display text-[clamp(1.7rem,2.6vw,2.35rem)] font-light leading-tight">
+          {title}
+        </h2>
+      </header>
+      <div className="space-y-6 leading-[1.65] text-[var(--sakura-ink-soft)] [&>p]:max-w-2xl [&>ol]:max-w-3xl [&>blockquote]:max-w-3xl">
+        {children}
+      </div>
     </section>
   );
 }

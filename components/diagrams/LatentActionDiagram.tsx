@@ -43,12 +43,26 @@ const EDGES: GraphEdge[] = [
   { id: "latent2-toolB", from: "latent2", to: "toolB" },
 ];
 
+function nodeOnly(id: string, edges: string[]): HoverOverride {
+  return { nodes: [id], edges };
+}
+
 const reparamOverride: HoverOverride = {
   nodes: [...REPARAM_NODES, "tool2", "latent1"],
   edges: ["before-reparam", "reparam-after"],
 };
 
 const OVERRIDES: Record<string, HoverOverride> = {
+  think1: nodeOnly("think1", ["think1-text1"]),
+  text1: nodeOnly("text1", ["think1-text1", "text1-tool1"]),
+  tool1: nodeOnly("tool1", ["text1-tool1", "tool1-think2"]),
+  think2: nodeOnly("think2", ["tool1-think2", "think2-text2"]),
+  text2: nodeOnly("text2", ["think2-text2", "text2-tool2"]),
+  tool2: nodeOnly("tool2", ["text2-tool2", "before-reparam"]),
+  latent1: nodeOnly("latent1", ["latent1-toolA"]),
+  toolA: nodeOnly("toolA", ["latent1-toolA", "toolA-latent2"]),
+  latent2: nodeOnly("latent2", ["toolA-latent2", "latent2-toolB"]),
+  toolB: nodeOnly("toolB", ["latent2-toolB"]),
   before: {
     nodes: ["before", ...BEFORE_NODES],
     edges: BEFORE_EDGES,
