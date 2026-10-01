@@ -6,7 +6,7 @@ import {
   checkVisitorLimit,
   claimModelBudget,
   getCachedAnswer,
-  isRedisConfigured,
+  isRedisAvailable,
   normalizeQuestion,
   setCachedAnswer,
   visitorId,
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
   const chunks = retrieveKnowledge(question);
   const local = buildLocalAnswer(question, chunks, previousTurn);
   const key = cacheKey(
-    normalizeQuestion(question),
+    `${normalizeQuestion(question)}:${isModelConfigured() && isRedisAvailable() ? "ai" : "local"}`,
     knowledgeVersion,
     previousTurn?.sourceIds ?? []
   );
@@ -80,7 +80,7 @@ export async function POST(request: Request) {
 
   let response = local;
   let globalRemaining: number | undefined;
-  if (chunks.length && isModelConfigured() && isRedisConfigured()) {
+  if (chunks.length && isModelConfigured() && isRedisAvailable()) {
     try {
       const budget = await claimModelBudget();
       globalRemaining = budget.remaining;
@@ -97,4 +97,3 @@ export async function POST(request: Request) {
   await setCachedAnswer(key, result, previousTurn ? 3_600 : 604_800);
   return NextResponse.json(result);
 }
-

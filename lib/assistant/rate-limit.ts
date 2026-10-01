@@ -9,19 +9,30 @@ type Bucket = { minute: number[]; day: number[] };
 
 const localVisitors = new Map<string, Bucket>();
 const localCache = new Map<string, { expiresAt: number; value: AssistantResponse }>();
-const localUsage = new Map<string, number>();
 
 let redis: Redis | null | undefined;
-let minuteLimiter: Ratelimit | null;
-let dayLimiter: Ratelimit | null;
+let minuteLimiter: Ratelimit | null = null;
+let dayLimiter: Ratelimit | null = null;
+let redisDisabled = false;
 
 export function isRedisConfigured() {
   return Boolean(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
 }
 
+export function isRedisAvailable() {
+  return isRedisConfigured() && !redisDisabled;
+}
+
+function disableRedis() {
+  redisDisabled = true;
+  redis = null;
+  minuteLimiter = null;
+  dayLimiter = null;
+}
+
 function getRedis() {
   if (redis !== undefined) return redis;
-  if (!isRedisConfigured()) {
+  if (!isRedisAvailable()) {
     redis = null;
     return redis;
   }
@@ -62,11 +73,15 @@ export function visitorId(request: Request) {
 export async function checkVisitorLimit(identifier: string) {
   const limiters = getLimiters();
   if (limiters) {
-    const minute = await limiters.minuteLimiter.limit(identifier);
-    if (!minute.success) return { ok: false, retryAfter: minute.reset, remaining: { minute: 0 } };
-    const day = await limiters.dayLimiter.limit(identifier);
-    if (!day.success) return { ok: false, retryAfter: day.reset, remaining: { minute: minute.remaining, day: 0 } };
-    return { ok: true, remaining: { minute: minute.remaining, day: day.remaining } };
+    try {
+      const minute = await limiters.minuteLimiter.limit(identifier);
+      if (!minute.success) return { ok: false, retryAfter: minute.reset, remaining: { minute: 0 } };
+      const day = await limiters.dayLimiter.limit(identifier);
+      if (!day.success) return { ok: false, retryAfter: day.reset, remaining: { minute: minute.remaining, day: 0 } };
+      return { ok: true, remaining: { minute: minute.remaining, day: day.remaining } };
+    } catch {
+      disableRedis();
+    }
   }
 
   const now = Date.now();
@@ -95,7 +110,13 @@ export function cacheKey(normalizedQuestion: string, version: string, previousSo
 
 export async function getCachedAnswer(key: string) {
   const client = getRedis();
-  if (client) return client.get<AssistantResponse>(`portfolio-assistant:cache:${key}`);
+  if (client) {
+    try {
+      return await client.get<AssistantResponse>(`portfolio-assistant:cache:${key}`);
+    } catch {
+      disableRedis();
+    }
+  }
   const cached = localCache.get(key);
   if (!cached || cached.expiresAt < Date.now()) {
     localCache.delete(key);
@@ -107,8 +128,12 @@ export async function getCachedAnswer(key: string) {
 export async function setCachedAnswer(key: string, value: AssistantResponse, seconds = 604_800) {
   const client = getRedis();
   if (client) {
-    await client.set(`portfolio-assistant:cache:${key}`, value, { ex: seconds });
-    return;
+    try {
+      await client.set(`portfolio-assistant:cache:${key}`, value, { ex: seconds });
+      return;
+    } catch {
+      disableRedis();
+    }
   }
   localCache.set(key, { value, expiresAt: Date.now() + seconds * 1000 });
 }
@@ -135,15 +160,19 @@ export async function claimModelBudget() {
   const dayLimit = Number(process.env.ASSISTANT_DAILY_GLOBAL_LIMIT ?? 100);
   const monthLimit = Number(process.env.ASSISTANT_MONTHLY_LIMIT ?? 2500);
 
-  const [dayCount, monthCount] = await Promise.all([client.incr(dayKey), client.incr(monthKey)]);
-  if (dayCount === 1) await client.expire(dayKey, secondsUntilUtcDayEnds());
-  if (monthCount === 1) await client.expire(monthKey, secondsUntilUtcMonthEnds());
+  try {
+    const [dayCount, monthCount] = await Promise.all([client.incr(dayKey), client.incr(monthKey)]);
+    if (dayCount === 1) await client.expire(dayKey, secondsUntilUtcDayEnds());
+    if (monthCount === 1) await client.expire(monthKey, secondsUntilUtcMonthEnds());
 
-  const allowed = dayCount <= dayLimit && monthCount <= monthLimit;
-  return { allowed, remaining: Math.max(0, dayLimit - dayCount) };
+    const allowed = dayCount <= dayLimit && monthCount <= monthLimit;
+    return { allowed, remaining: Math.max(0, dayLimit - dayCount) };
+  } catch (error) {
+    disableRedis();
+    throw error;
+  }
 }
 
 export function normalizeQuestion(question: string) {
   return question.toLocaleLowerCase().normalize("NFKC").replace(/\s+/g, " ").trim();
 }
-

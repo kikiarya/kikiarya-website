@@ -9,6 +9,7 @@ import Container from "./Container";
 import { useVeilNavigate } from "./motion/RouteVeil";
 import { useMotionScene } from "./motion/MotionProvider";
 import { usePrefersReducedMotion } from "./motion/usePrefersReducedMotion";
+import { smoothScrollTo } from "./motion/SmoothScroll";
 import SearchTrigger from "./SearchTrigger";
 
 const workLinks = [
@@ -16,6 +17,13 @@ const workLinks = [
   { number: "02", name: "Work", detail: "Projects & Research", href: "/work" },
   { number: "03", name: "Resume", detail: "Education & Experience", href: "/resume" },
   { number: "04", name: "Contact", detail: "Get in Touch", href: "/contact" },
+];
+
+const homeLinks = [
+  { number: "01", name: "Work", detail: "Selected work / 精选项目", href: "#work" },
+  { number: "02", name: "Experience", detail: "Experience / 经历", href: "#experience" },
+  { number: "03", name: "Mechanism", detail: "How I work / 方法", href: "#mechanism" },
+  { number: "04", name: "Contact", detail: "Get in touch / 联系", href: "#contact" },
 ];
 
 const personalLinks = [
@@ -32,13 +40,15 @@ export default function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("#work");
   const reduce = usePrefersReducedMotion();
   const { sceneReady, isCover, returnToCover } = useMotionScene();
   const navigate = useVeilNavigate();
   const isPersonal = PERSONAL_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
   );
-  const links = isPersonal ? personalLinks : workLinks;
+  const isHome = pathname === "/";
+  const links = isPersonal ? personalLinks : isHome ? homeLinks : workLinks;
   const worldLabel = isPersonal ? "Personal" : "Work";
 
   const handleNav =
@@ -55,6 +65,18 @@ export default function Navbar() {
     returnToCover();
   };
 
+  const handleSectionNav =
+    (href: string) => (event: MouseEvent<HTMLAnchorElement>) => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const target = document.querySelector<HTMLElement>(href);
+      if (!target) return;
+      event.preventDefault();
+      setOpen(false);
+      setActiveSection(href);
+      window.history.replaceState(null, "", href);
+      window.requestAnimationFrame(() => smoothScrollTo(href));
+    };
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     onScroll();
@@ -65,6 +87,26 @@ export default function Navbar() {
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!isHome || isCover) return;
+    const sections = homeLinks
+      .map((link) => document.querySelector<HTMLElement>(link.href))
+      .filter((section): section is HTMLElement => Boolean(section));
+    if (!sections.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible?.target.id) setActiveSection(`#${visible.target.id}`);
+      },
+      { rootMargin: "-18% 0px -62% 0px", threshold: [0, 0.15, 0.4, 0.7] }
+    );
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [isCover, isHome]);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -89,7 +131,10 @@ export default function Navbar() {
             : { opacity: 0, y: -14 }
         }
         transition={{ duration: reduce ? 0.15 : 0.7, ease }}
-        style={{ pointerEvents: sceneReady && !isCover ? "auto" : "none" }}
+        style={{
+          pointerEvents: sceneReady && !isCover ? "auto" : "none",
+          position: "fixed",
+        }}
         aria-hidden={isCover || !sceneReady}
       >
         <Container className="h-20 flex items-center justify-between">
@@ -104,23 +149,20 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-6 lg:gap-8">
             <nav aria-label={`${worldLabel} navigation`} className="flex items-center gap-8">
             {links.map((link) => {
-              const active =
-                link.href === "/"
+              const isSection = link.href.startsWith("#");
+              const active = isSection
+                ? activeSection === link.href
+                : link.href === "/"
                   ? pathname === "/"
                   : pathname.startsWith(link.href) ||
                     (link.href === "/work" && pathname.startsWith("/projects"));
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={handleNav(link.href)}
-                  aria-current={active ? "page" : undefined}
-                  className={`group relative py-2 font-mono text-meta uppercase tracking-[.12em] transition-colors duration-200 ${
-                    active
-                      ? "text-[var(--sakura-accent-deep)]"
-                      : "text-[var(--sakura-muted)] hover:text-[var(--sakura-ink)]"
-                  }`}
-                >
+              const className = `group relative py-2 font-mono text-meta uppercase tracking-[.12em] transition-colors duration-200 ${
+                active
+                  ? "text-[var(--sakura-accent-deep)]"
+                  : "text-[var(--sakura-muted)] hover:text-[var(--sakura-ink)]"
+              }`;
+              const content = (
+                <>
                   <span className="mr-2 tabular-nums opacity-60 transition-opacity duration-200 group-hover:opacity-100">
                     {link.number}
                   </span>
@@ -132,6 +174,27 @@ export default function Navbar() {
                       transition={{ duration: 0.45, ease }}
                     />
                   ) : null}
+                </>
+              );
+              return isSection ? (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={handleSectionNav(link.href)}
+                  aria-current={active ? "location" : undefined}
+                  className={className}
+                >
+                  {content}
+                </a>
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={handleNav(link.href)}
+                  aria-current={active ? "page" : undefined}
+                  className={className}
+                >
+                  {content}
                 </Link>
               );
             })}
@@ -205,8 +268,26 @@ export default function Navbar() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.55, delay: 0.15 + i * 0.07, ease }}
                   >
+                    {link.href.startsWith("#") ? (
+                    <a
+                      href={link.href}
+                      onClick={handleSectionNav(link.href)}
+                      className="group grid grid-cols-[3rem_1fr] gap-4 py-5 border-b border-[var(--sakura-line-soft)]"
+                    >
+                      <span className="font-mono text-meta tabular-nums text-[var(--sakura-accent-deep)] transition-transform duration-200 group-hover:translate-x-1">
+                        {link.number}
+                      </span>
+                      <span>
+                        <strong className="font-display text-4xl font-normal block">
+                          {link.name}
+                        </strong>
+                        <small className="text-[var(--sakura-muted)]">{link.detail}</small>
+                      </span>
+                    </a>
+                    ) : (
                     <Link
                       href={link.href}
+                      onClick={handleNav(link.href)}
                       className="group grid grid-cols-[3rem_1fr] gap-4 py-5 border-b border-[var(--sakura-line-soft)]"
                     >
                       <span className="font-mono text-meta tabular-nums text-[var(--sakura-accent-deep)] transition-transform duration-200 group-hover:translate-x-1">
@@ -219,6 +300,7 @@ export default function Navbar() {
                         <small className="text-[var(--sakura-muted)]">{link.detail}</small>
                       </span>
                     </Link>
+                    )}
                   </motion.div>
                 ))}
               </nav>

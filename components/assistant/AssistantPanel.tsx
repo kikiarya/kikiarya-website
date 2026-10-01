@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Send, X } from "lucide-react";
 import type {
   AssistantResponse,
@@ -29,7 +29,13 @@ function claimClientRequest() {
   const key = "portfolio-assistant-rate-v1";
   const now = Date.now();
   const stored = window.localStorage.getItem(key);
-  const values = stored ? (JSON.parse(stored) as number[]) : [];
+  let values: number[] = [];
+  try {
+    const parsed = stored ? (JSON.parse(stored) as unknown) : [];
+    values = Array.isArray(parsed) && parsed.every((value) => typeof value === "number") ? parsed : [];
+  } catch {
+    window.localStorage.removeItem(key);
+  }
   const day = values.filter((value) => now - value < 86_400_000);
   const minute = day.filter((value) => now - value < 60_000);
   if (minute.length >= 2) return { ok: false, message: "请求有点快，请一分钟后再试。" };
@@ -54,7 +60,7 @@ export default function AssistantPanel({
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const counter = useMemo(() => Array.from(question).length, [question]);
+  const counter = Array.from(question).length;
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -190,4 +196,3 @@ export default function AssistantPanel({
     </section>
   );
 }
-

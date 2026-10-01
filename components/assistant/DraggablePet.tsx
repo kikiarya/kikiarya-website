@@ -73,6 +73,8 @@ export default function DraggablePet() {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ dock: next.dock, yRatio }));
   }, []);
 
+  const closeAssistant = useCallback(() => setOpen(false), []);
+
   useEffect(() => {
     setPosition(restorePosition());
     setMounted(true);
@@ -153,6 +155,7 @@ export default function DraggablePet() {
         style={{ transform: `translate3d(${position.x}px, ${position.y}px, 0)` }}
         aria-label={open ? "Close portfolio assistant" : "Open portfolio assistant. Drag to move."}
         aria-expanded={open}
+        aria-haspopup="dialog"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -169,7 +172,7 @@ export default function DraggablePet() {
         <>
           <AssistantPanel
             side={position.dock}
-            onClose={() => setOpen(false)}
+            onClose={closeAssistant}
             onStatus={setStatus}
           />
           <button type="button" className="assistant-reset" onClick={resetPosition}>
@@ -180,4 +183,3 @@ export default function DraggablePet() {
     </div>
   );
 }
-
