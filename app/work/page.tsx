@@ -7,10 +7,10 @@ export const metadata = { title: "Work" };
 
 export default function WorkPage() {
   return (
-    <div className="relative pt-36 md:pt-44 pb-20">
+    <div className="relative pt-28 md:pt-32 pb-20">
       <SceneDecor />
       <Container className="relative">
-        <header className="max-w-4xl mb-20">
+        <header className="max-w-4xl mb-12">
           <p className="eyebrow">02 · Work</p>
           <div className="mt-6">
             <h1 className="font-display text-hero font-light text-balance">Projects</h1>

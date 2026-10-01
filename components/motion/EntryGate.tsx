@@ -171,7 +171,7 @@ export default function EntryGate() {
                   }
                   transition={{ duration: 0.28, ease }}
                 >
-                  Enter
+                  Explore my work
                   <ArrowDownRight
                     size={15}
                     className="transition-transform duration-300 ease-out group-hover:translate-x-[3px] group-hover:translate-y-[3px]"
@@ -196,7 +196,7 @@ export default function EntryGate() {
               animate={{ opacity: 1 }}
               transition={{ duration: reduce ? 0.25 : 0.55, delay: introDelay(0.28), ease }}
             >
-              <WorldEntry onNavigate={goWorld} />
+              <div className="flex flex-col items-center gap-3"><WorldEntry onNavigate={goWorld} /><button onClick={() => goWorld("/life")} className="text-sm text-[var(--sakura-ink-soft)]">Personal space ↗</button></div>
             </motion.div>
           </motion.div>
 

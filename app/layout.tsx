@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Great_Vibes, Inter, JetBrains_Mono, Noto_Serif_SC } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -12,47 +11,8 @@ import SmoothScroll from "../components/motion/SmoothScroll";
 import SpecularRoot from "../components/motion/SpecularRoot";
 import CommandPalette from "../components/CommandPalette";
 import SiteFrame from "../components/SiteFrame";
+import DraggablePet from "../components/assistant/DraggablePet";
 import { site } from "../lib/site";
-
-const display = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
-  display: "swap",
-});
-
-const body = Inter({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  variable: "--font-body",
-  display: "swap",
-});
-
-const mono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-mono",
-  display: "swap",
-});
-
-const script = Great_Vibes({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-script",
-  display: "swap",
-});
-
-/** Cover Chinese motto only — Song serif, not applied site-wide. */
-const coverCjk = Noto_Serif_SC({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-cover-cjk",
-  display: "swap",
-  preload: false,
-  adjustFontFallback: false,
-  fallback: ["Songti SC", "STSong"],
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -84,11 +44,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${display.variable} ${body.variable} ${mono.variable} ${script.variable} ${coverCjk.variable}`}
-      suppressHydrationWarning
-    >
+    <html lang="en" suppressHydrationWarning>
       <body className="noise font-body">
         <MotionProvider>
           <RouteVeilProvider>
@@ -103,6 +59,7 @@ export default function RootLayout({
               <Footer />
             </SiteFrame>
             <CommandPalette />
+            <DraggablePet />
           </RouteVeilProvider>
         </MotionProvider>
       </body>

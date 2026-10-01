@@ -18,7 +18,6 @@ import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
  * ENTER → Work home (/). ✿ → Personal (/notes, /life, /bookshelf).
  *
  * `/` SSRs as Cover so the first paint is never an empty background.
- * A full reload of `/` always starts on Cover. Enter is in-session only.
  */
 export type ScenePhase = "entry" | "entering" | "ready";
 

@@ -86,6 +86,7 @@ export default function ProjectIndex() {
           />
         </label>
       </div>
+      <p className="mb-5 text-sm text-[var(--sakura-muted)]" role="status">{filtered.length} {filtered.length === 1 ? "project" : "projects"}</p>
       <div aria-live="polite">
         <AnimatePresence mode="popLayout" initial={false}>
           {filtered.length ? (

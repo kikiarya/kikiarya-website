@@ -87,7 +87,7 @@ export const projects: Project[] = [
       "Fine-grained text actions make agent trajectories long and expensive. LAR folds high-frequency, low-entropy action spans into learnable latent actions, while query parameters and tool calls stay in plain text so they remain executable.",
     techStack: ["Python", "PyTorch", "LoRA", "GRPO", "KL distillation", "Qwen3-8B"],
     context:
-      "Agent traces spend most of their tokens on repeated, low-entropy verbs. Those spans are expensive to generate and boring to supervise. The question is whether they can be reparameterized without breaking the tools that still need exact arguments.",
+      "Agent trajectories can contain repeated, low-entropy action spans. Those spans are expensive to generate and boring to supervise. The question is whether they can be reparameterized without breaking the tools that still need exact arguments.",
     systemDesign:
       "A latent-action vocabulary is mined from trajectories by frequency and entropy filters. LoRA plus trajectory-level KL distillation maps those spans onto learned tokens; GRPO probes whether the compressed policy stays stable. Query params and tool calls are left in text so the runtime can still execute them.",
     llmWorkflow: "Filter actions → distill latents → keep tools executable → transfer",
@@ -96,10 +96,10 @@ export const projects: Project[] = [
       "LoRA + trajectory-level KL distillation against the full-text teacher",
       "GRPO runs to check training stability after compression",
       "Evaluated on TriviaQA, KodCode, Mind2Web — equivalence, compression, transfer",
-      "Qwen3-8B TriviaQA: 67.40% → 80.09% accuracy, action tokens −27.1%, throughput +17.5%",
+      "Qwen3-8B TriviaQA: ReAct 77.84% → LAR 80.09% strict EM (Vanilla 67.40%), action tokens −27.1%, throughput +17.5%",
     ],
     results:
-      "Qwen3-8B LAR: TriviaQA 80.09% (action tokens −27.1%), KodCode 54.30% (−9.2%), Mind2Web 39.84% (−2.9%). TriviaQA throughput 127.8 → 150.2 tokens/s. Transfers to HumanEval, MBPP, and Qwen3-32B.",
+      "Qwen3-8B LAR: TriviaQA strict EM 80.09% (action tokens −27.1%), KodCode 54.30% (−9.2%), Mind2Web 39.84% (−2.9%). TriviaQA throughput 127.8 → 150.2 tokens/s. Transfers to HumanEval, MBPP, and Qwen3-32B.",
     bibtex: `@misc{lar2026,
   title={Latent Action Reparameterization for Efficient Agent Inference},
   author={Kikiarya},
@@ -249,63 +249,34 @@ export const projects: Project[] = [
     },
   },
   {
-    slug: "openclaw-stateful-agent-runtime",
-    title: "OpenClaw Stateful Agent Runtime",
-    featured: true,
-    categoryTags: ["AI / Agent", "Research"],
-    role: "Mar – Jul 2026",
-    shortDescription:
-      "Compress long OpenClaw runs into task state — fewer tokens, better recovery after a crash.",
-    longDescription:
-      "OpenClaw sessions balloon: every tool result and turn sits in context until something breaks. Here, history is folded into executable task state. Important checkpoints stay; the rest compresses. Repeated system prompts go through a LoRA-distilled shortcut on Qwen3-8B.",
-    techStack: ["Python", "PyTorch", "LoRA", "KL distillation", "Qwen3-8B", "Node.js"],
-    context:
-      "Long-horizon agents pay twice — token cost while running, and a full restart when context compaction or a network blip loses state. Same research line as LAR, but at the session layer.",
-    systemDesign:
-      "Task state is rebuilt from trajectory: progress and dependencies decide what to keep. Checkpoints before compression; on failure, recover from the last good state. System-prompt spans that repeat every turn are replaced with a learned token via LoRA + KL distillation against the full-prompt teacher. Compared against native OpenClaw, hard truncation, and summarization.",
-    llmWorkflow:
-      "Track task state → compress context → checkpoint → recover on fault → continue",
-    highlights: [
-      "State-aware context compression keyed on task progress and dependencies",
-      "Checkpoint recovery instead of restarting a long run from scratch",
-      "LoRA + KL distillation on Qwen3-8B for repeated system prompts",
-      "Benchmarked against truncation and summarization baselines",
-      "Fault injection to measure whether the session actually survives",
+    "slug": "openclaw-stateful-agent-runtime",
+    "title": "OpenClaw Static Context Compression",
+    "cardTitle": "OpenClaw Compression",
+    "featured": true,
+    "categoryTags": [
+      "AI / Agent",
+      "Research"
     ],
-    results:
-      "Context tokens down 46.7% vs. native OpenClaw. Task success after compression up 8.4pp. Recovery rate up 83.3pp under injected faults.",
-    metrics: [
-      { numeric: 46.7, prefix: "−", suffix: "%", decimals: 1, label: "tokens" },
-      { numeric: 8.4, prefix: "+", suffix: "pp", decimals: 1, label: "success" },
-      { numeric: 83.3, prefix: "+", suffix: "pp", decimals: 1, label: "recovery" },
+    "role": "Mar – Jul 2026",
+    "shortDescription": "Learn compact representations of repeated static prompts, and measure the quality–cost trade-off.",
+    "longDescription": "The local implementation extracts real OpenClaw inputs, prepares static content for mining, builds a segment vocabulary and distills a compressed student. Dynamic checkpoint recovery is a separate, unverified claim.",
+    "techStack": [
+      "Python",
+      "PyTorch",
+      "LoRA",
+      "KL distillation",
+      "Qwen3-8B"
     ],
-    diagrams: [
-      {
-        kind: "editorial",
-        figure: "latent-memory",
-        caption: "History folds into task state; checkpoints sit in front of compression.",
-      },
-      {
-        kind: "pipeline",
-        caption: "Compress, then survive the fault.",
-        steps: [
-          { label: "Compress", detail: "Drop what the task no longer needs" },
-          { label: "Checkpoint", detail: "Snapshot before the risky step" },
-          { label: "Recover", detail: "Resume instead of restarting" },
-        ],
-      },
-      {
-        kind: "evaluation",
-        caption: "Against native OpenClaw, truncation, and summarization.",
-        bars: [
-          { label: "Native", caption: "Full context" },
-          { label: "Truncation", caption: "Hard cut" },
-          { label: "Summarize", caption: "Lossy recap" },
-          { label: "Ours", caption: "−46.7% · +8.4pp · +83.3pp", highlight: true },
-        ],
-      },
+    "systemDesign": "Static input extraction → segment mining → vocabulary mapping → paired distillation → controlled evaluation.",
+    "llmWorkflow": "Extract → mine → distill → evaluate",
+    "highlights": [
+      "Separate static mining input from dynamic workspace context",
+      "Compare compression settings under the reported strict EM metric",
+      "Inspect tool parsing separately from final-answer correctness"
     ],
+    "results": "Reported strict EM: Vanilla 42.18%; Short 53.58% at 6.7% compression; AllStatic 43.08% at 45.3% compression. The checked-in substring scorer differs from the reported strict EM protocol; reproducing the numbers requires the matching evaluator version."
   },
+
   {
     slug: "hsc-power-ai-learning",
     title: "HSC Power",
@@ -326,6 +297,7 @@ export const projects: Project[] = [
       "Supabase",
     ],
     demoUrl: "https://ai-hsc-passion-oriented-study-plann.vercel.app/",
+    repoUrl: "https://github.com/kikiarya/AI-HSC-Passion-Oriented-Study-Planner",
     context:
       "One chatbot prompt cannot do diagnosis and marking well at the same time. Splitting into agents with explicit handoffs made failures easier to trace.",
     systemDesign:
@@ -342,35 +314,41 @@ export const projects: Project[] = [
       "End-to-end loop from subject selection to graded feedback. Live demo linked on this page.",
   },
   {
-    slug: "distributed-ecommerce-microservices",
-    title: "E-commerce Microservices",
-    featured: false,
-    categoryTags: ["Distributed", "Backend"],
-    role: "Course project · Sep – Nov 2025",
-    shortDescription:
-      "Four Spring Boot services — Saga rollback when payment, stock, or delivery fails mid-order.",
-    longDescription:
-      "Store, Bank, DeliveryCo, Email. REST and gRPC between services. Orders cross service boundaries; Saga compensation rolls back when any step fails.",
-    techStack: ["Java", "Spring Boot", "gRPC", "RabbitMQ", "Docker", "Docker Compose"],
-    context:
-      "Distributed systems coursework. The point is cross-service consistency, not catalog CRUD.",
-    systemDesign:
-      "Saga pattern for payment, inventory, and delivery with compensating actions. RabbitMQ for async notifications — persistent messages, ack, retry, idempotent consumers. Docker Compose for local multi-service deploy.",
-    highlights: [
-      "Saga compensation across order, payment, inventory, and delivery",
-      "RabbitMQ with persistence, ack, retry, and idempotent consumption",
-      "REST + gRPC service mesh",
-      "Docker Compose deployment",
+    "slug": "distributed-ecommerce-microservices",
+    "title": "Commerce Agent & Transaction Boundaries",
+    "featured": false,
+    "categoryTags": [
+      "Distributed",
+      "Backend",
+      "AI / Agent"
     ],
-    results:
-      "Full stack runs from one compose file. Mid-flow payment failure triggers compensation on the rest.",
+    "role": "Course project · Sep – Nov 2025",
+    "shortDescription": "Rule-based support orchestration alongside explicit checkout, payment and Outbox state transitions.",
+    "longDescription": "The support path routes intents, queries FAQ or business data, and optionally uses an LLM to phrase the result. The transaction path tracks quotes, confirmation, payment uncertainty and asynchronous event delivery.",
+    "techStack": [
+      "Java",
+      "Spring Boot",
+      "RabbitMQ",
+      "Node.js",
+      "Docker Compose"
+    ],
+    "systemDesign": "Separate conversational responses from the transaction state machine. Payment UNKNOWN stays pending for reconciliation; Outbox delivery can repeat after a crash.",
+    "highlights": [
+      "Checkout lifecycle with quote expiration and invalidation on edits",
+      "Payment UNKNOWN distinguished from confirmed failure",
+      "Database Outbox with publisher confirmation",
+      "Explicit review of outer transaction scope and duplicate delivery windows"
+    ],
+    "results": "Source review establishes the control flow, not a production throughput result. Quote-version fencing, completion replay semantics and the physical transaction boundary remain explicit review points."
   },
+
   {
     slug: "reinforcement-learning-network-defense",
     title: "RL for Network Attack–Defense",
     featured: false,
     categoryTags: ["AI/ML", "Research"],
     role: "Undergraduate thesis · Oct 2023 – Apr 2024",
+    repoUrl: "https://github.com/kikiarya/NASim-DQN-Agent",
     shortDescription:
       "NASim attack paths as an MDP — DQN learns scan, exploit, and privilege escalation.",
     longDescription:
@@ -429,6 +407,7 @@ export const projects: Project[] = [
     featured: false,
     categoryTags: ["Full-Stack"],
     role: "Course project · MEAN",
+    repoUrl: "https://github.com/kikiarya/OldPhoneStore",
     shortDescription: "MEAN storefront — auth, cart, orders, payment, admin.",
     longDescription:
       "MongoDB, Express, Vue, Node. Customer checkout flow plus admin for products, users, and orders.",
@@ -450,6 +429,57 @@ export const projects: Project[] = [
     context: "Course teaching-assistant Q&A system.",
     highlights: ["Three roles with different permissions", "Subject threads and replies"],
     results: "Course demo. Not deployed.",
+  },
+  {
+    "slug": "pixverse-realtime-agent",
+    "title": "PixVerse Real-time Interaction",
+    "featured": false,
+    "categoryTags": [
+      "AI / Agent",
+      "Full-Stack"
+    ],
+    "role": "AIsphere internship · Dec 2025 – Feb 2026",
+    "shortDescription": "Connect user interactions, session state and generation tasks across an asynchronous video pipeline.",
+    "longDescription": "My work covered WebSocket / Session / GenerationTask synchronization, Suggestion frontend and backend, and LLM task-branch context and output handling. These diagrams reconstruct historical internship notes; the company source is not available in this checkout.",
+    "techStack": [
+      "WebSocket",
+      "Session lifecycle",
+      "WebRTC",
+      "LLM integration"
+    ],
+    "systemDesign": "Control messages and video transport have different responsibilities. Track which session and generation task owns each update.",
+    "highlights": [
+      "Session and generation-task lifecycle synchronization",
+      "Suggestion flow across frontend and backend",
+      "LLM task-branch context and output adaptation"
+    ],
+    "results": "The delayed-result diagram is an interview design scenario, not a claim of a deployed generation-fencing mechanism or measured latency improvement."
+  },
+  {
+    "slug": "ai-career-copilot",
+    "title": "AI Career Copilot",
+    "featured": false,
+    "categoryTags": [
+      "AI / Agent",
+      "Full-Stack"
+    ],
+    "role": "Personal project",
+    "shortDescription": "Turn candidate evidence into career preparation artifacts through a durable, inspectable workflow.",
+    "longDescription": "A five-step workflow analyzes requirements, matches candidate evidence, diagnoses gaps, creates a plan and drafts an artifact. The local matcher uses keywords; references are checked against confirmed evidence IDs.",
+    "techStack": [
+      "JavaScript",
+      "Worker leases",
+      "Structured output",
+      "Evidence validation"
+    ],
+    "systemDesign": "Persist the run input, claim work with a lease, execute structured steps and constrain artifact references. Whole-run retry does not imply step-level checkpoint recovery.",
+    "highlights": [
+      "Input snapshots and user-scoped idempotency keys",
+      "Structured model outputs with validation and retries",
+      "Confirmed evidence references separated from partial or missing evidence",
+      "Lease recovery analyzed against stale-worker completion"
+    ],
+    "results": "Reference membership validation does not prove semantic faithfulness. The architecture explicitly identifies the missing execution-owner fence as a reliability improvement."
   },
 ];
 

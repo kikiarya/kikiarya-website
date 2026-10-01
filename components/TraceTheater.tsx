@@ -10,7 +10,13 @@ import {
   type RefObject,
 } from "react";
 import Link from "next/link";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useMotionValueEvent,
+  useScroll,
+  useSpring,
+} from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import DiagramPlate from "./diagrams/DiagramPlate";
@@ -29,8 +35,6 @@ import { navigateWithViewTransition } from "./motion/viewTransitionNav";
 import type { ProjectMetric } from "../lib/projects";
 
 const ease = [0.16, 1, 0.3, 1] as const;
-const STEP_MS = 2100;
-const HOLD_MS = 2800;
 const PATH = "M80,118 C168,48 208,48 280,52 S412,138 500,132 S638,52 720,56 S848,118 920,112";
 const LAR_HREF = "/work/latent-action-reparameterization";
 
@@ -148,10 +152,13 @@ export default function TraceTheater() {
   const glowId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
-  const userStopped = useRef(false);
   const [index, setIndex] = useState(0);
-  const [playing, setPlaying] = useState(false);
+  const [manual, setManual] = useState(false);
   const progress = useSpring(0, { stiffness: 48, damping: 18, mass: 0.7 });
+  const { scrollYProgress } = useScroll({
+    target: rootRef,
+    offset: ["start 56%", "end 56%"],
+  });
   const station = STATIONS[index] ?? STATIONS[0];
   const drawn = LAST > 0 ? index / LAST : 1;
 
@@ -159,39 +166,14 @@ export default function TraceTheater() {
     progress.set(reduce ? 1 : drawn);
   }, [drawn, progress, reduce]);
 
-  useEffect(() => {
-    if (reduce) return;
-    const node = rootRef.current;
-    if (!node) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry || userStopped.current) return;
-        setPlaying(entry.isIntersecting && entry.intersectionRatio >= 0.32);
-      },
-      { threshold: [0.2, 0.32, 0.55] }
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [reduce]);
-
-  useEffect(() => {
-    if (reduce || !playing) return;
-    if (index >= LAST) {
-      const hold = window.setTimeout(() => {
-        if (userStopped.current) return;
-        setIndex(0);
-      }, HOLD_MS);
-      return () => window.clearTimeout(hold);
-    }
-    const id = window.setTimeout(() => {
-      setIndex((value) => Math.min(value + 1, LAST));
-    }, STEP_MS);
-    return () => window.clearTimeout(id);
-  }, [index, playing, reduce]);
+  useMotionValueEvent(scrollYProgress, "change", (value) => {
+    if (reduce || manual) return;
+    const next = Math.min(LAST, Math.max(0, Math.round(value * LAST)));
+    setIndex((current) => (current === next ? current : next));
+  });
 
   const jump = (next: number) => {
-    userStopped.current = true;
-    setPlaying(false);
+    setManual(true);
     setIndex(next);
   };
 
@@ -206,8 +188,9 @@ export default function TraceTheater() {
   };
 
   return (
-    <div ref={rootRef}>
-      <DiagramPlate
+    <div ref={rootRef} className="trace-scroll-stage">
+      <div className="trace-scroll-sticky">
+        <DiagramPlate
         eyebrow="Fig. A run"
         title="Compress the verbs. Keep the tools."
         subtitle="An illustrative agent trace — played on paper, not a log."
@@ -221,7 +204,7 @@ export default function TraceTheater() {
         >
           <div className="flex flex-wrap items-end justify-between gap-3">
             <p className="font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-muted)]">
-              {reduce ? "Still" : playing ? "Playing" : "Paused"}
+              {reduce ? "Still" : manual ? "Manual" : "Scroll"}
               <span className="mx-2 text-[var(--sakura-line-strong)]">·</span>
               {station.time} {station.title}
             </p>
@@ -372,7 +355,8 @@ export default function TraceTheater() {
             </Magnetic>
           </div>
         </div>
-      </DiagramPlate>
+        </DiagramPlate>
+      </div>
     </div>
   );
 }

@@ -10,7 +10,9 @@ import WorkEditorialFigure from "../../../components/diagrams/WorkEditorialFigur
 import TrajectoryReplay from "../../../components/TrajectoryReplay";
 import CopyBibtex from "../../../components/CopyBibtex";
 import WorkChapters from "../../../components/WorkChapters";
-import HighlightBoard from "../../../components/HighlightBoard";
+import RecoveryPlayground from "../../../components/RecoveryPlayground";
+import ProjectSystemAtlas from "../../../components/ProjectSystemAtlas";
+import atlas from "../../../lib/project-atlas.json";
 import OrnamentRule from "../../../components/decor/OrnamentRule";
 import { getProjectBySlug, getAllProjectSlugs } from "../../../lib/projects";
 import { site } from "../../../lib/site";
@@ -42,6 +44,7 @@ export default async function WorkDetail({
   const { slug } = await params;
   const project = getProjectBySlug(slug);
   if (!project) notFound();
+  const hasAtlas = atlas.some((item) => item.slug === project.slug);
 
   const architecture =
     project.diagrams?.filter(
@@ -149,17 +152,17 @@ export default async function WorkDetail({
         </div>
         <div className="my-12 grid sm:grid-cols-3 gap-px bg-[var(--sakura-line-soft)] border border-[var(--sakura-line-soft)] rounded-3xl overflow-hidden">
           <Meta
-            label="Role"
+            label="Period / contribution"
             value={project.role || "Student project · contribution documented below"}
           />
           <Meta label="Type" value={project.categoryTags.join(" / ")} />
-          <Meta label="Core stack" value={project.techStack.slice(0, 3).join(" · ")} />
+          <Meta label="Focus" value={project.llmWorkflow || project.shortDescription} />
         </div>
         <WorkChapters>
           <div className="space-y-16">
               {theater && project.trajectory ? (
                 <Content title="Eval theater" chapter="01 Loop">
-                  <TrajectoryReplay trajectory={project.trajectory} featured />
+                  <RecoveryPlayground />
                 </Content>
               ) : null}
               <Content
@@ -169,7 +172,12 @@ export default async function WorkDetail({
                 <p>{project.context || project.longDescription}</p>
                 {project.context ? <p>{project.longDescription}</p> : null}
               </Content>
-              {architecture.length || pipelineFigures.length || (!theater && project.trajectory) ? (
+              {hasAtlas ? (
+                <Content title="System approach" chapter="02 System">
+                  {project.systemDesign ? <p>{project.systemDesign}</p> : null}
+                  <ProjectSystemAtlas slug={project.slug} />
+                </Content>
+              ) : architecture.length || pipelineFigures.length || (!theater && project.trajectory) ? (
                 <Content
                   title="System approach"
                   chapter={theater ? "03 System" : "02 System"}
@@ -209,7 +217,7 @@ export default async function WorkDetail({
                 title="Key implementation"
                 chapter={theater ? "04 Build" : "03 Build"}
               >
-                <HighlightBoard items={project.highlights} metrics={project.metrics} />
+                <ul className="space-y-4 list-disc pl-5">{project.highlights.map(item => <li key={item}>{item}</li>)}</ul>
               </Content>
               {evaluation.length || project.results ? (
                 <Content

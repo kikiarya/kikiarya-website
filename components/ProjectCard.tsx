@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import Tag from "./Tag";
+import ProjectArtwork from "./ProjectArtwork";
 import MetricRow from "./MetricRow";
 import type { Project } from "../lib/projects";
 import { usePrefersReducedMotion } from "./motion/usePrefersReducedMotion";
@@ -15,11 +16,64 @@ import { workTitleVtName } from "../lib/workTitle";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
+function evidenceStrip(project: Project) {
+  return [
+    { label: "Problem / 问题", value: project.context ?? project.shortDescription },
+    { label: "Mechanism / 机制", value: project.llmWorkflow ?? project.highlights[0] },
+    { label: "Evidence / 证据", value: project.results ?? project.highlights.at(-1) ?? "See case study" },
+  ];
+}
+
 export default function ProjectCard({ project, index }: { project: Project; index: number }) {
   const router = useRouter();
   const reduce = usePrefersReducedMotion();
   const href = `/work/${project.slug}`;
   const title = project.cardTitle ?? project.title;
+
+  if (project.featured) {
+    const artworkIndex =
+      project.slug === "latent-action-reparameterization"
+        ? 0
+        : project.slug === "coding-agent-policy-optimization"
+          ? 1
+          : 2;
+
+    return (
+      <motion.article
+        className="project-featured-shell"
+        initial={reduce ? { opacity: 0 } : { opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.24 }}
+        transition={{ duration: reduce ? 0.15 : 0.72, delay: Math.min(index * 0.08, 0.16), ease }}
+      >
+        <Link href={href} className="project-featured group">
+          <ProjectArtwork index={artworkIndex} />
+          <div>
+            <p className="eyebrow mb-4">{project.venue ?? project.categoryTags.join(" / ")}</p>
+            <h3>{title}</h3>
+            {project.cardTitle ? (
+              <p className="mt-2 text-sm text-[var(--sakura-muted)]">{project.title}</p>
+            ) : null}
+            <p className="mt-4 text-[var(--sakura-ink-soft)]">{project.shortDescription}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {project.techStack.slice(0, 3).map((item) => (
+                <Tag key={item} label={item} />
+              ))}
+            </div>
+            <dl className="project-evidence-strip">
+              {evidenceStrip(project).map((item) => (
+                <div key={item.label}>
+                  <dt>{item.label}</dt>
+                  <dd>{item.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <span className="studio-link mt-4">Read the case study ↗</span>
+          </div>
+        </Link>
+      </motion.article>
+    );
+  }
 
   return (
     <motion.article
