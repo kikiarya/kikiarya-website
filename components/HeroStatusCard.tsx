@@ -20,7 +20,7 @@ const rows = [
   },
   {
     label: "Paper",
-    value: "LAR · NeurIPS 2026 under review",
+    value: "LAR · NeurIPS 2026 main conference poster",
     href: "/work/latent-action-reparameterization",
     preview: "TriviaQA 80.09%",
   },
@@ -32,7 +32,7 @@ const rows = [
   },
   {
     label: "Graduation",
-    value: "December 2026",
+    value: "November 2026",
   },
 ];
 

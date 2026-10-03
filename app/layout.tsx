@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -46,6 +47,24 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="noise font-body">
+        <Script
+          id="kikiarya-theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(() => {
+              const key = "kikiarya-color-theme-v1";
+              let saved = null;
+              try { saved = localStorage.getItem(key); } catch {}
+              const theme = saved === "light" || saved === "dark"
+                ? saved
+                : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+              const root = document.documentElement;
+              root.dataset.theme = theme;
+              root.dataset.themeReady = "true";
+              root.style.colorScheme = theme;
+            })();`,
+          }}
+        />
         <MotionProvider>
           <RouteVeilProvider>
             <SmoothScroll />

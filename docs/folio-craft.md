@@ -21,45 +21,22 @@
 | **自然** | 慢背景（8s+）不抢读；中文只留封面格言；动效像翻页 | 整站 i18n 开关、循环打字抢标题、Idle 自动拉近 |
 | **科技感** | 光标是力；等宽标签；`01 / 02`；磁吸弹簧；细光标竖线；进门 dolly | 暗色网格、波形剧场、15° 卡倾斜 |
 
-好看站的共性（NEXUS、Brittany Chiang、中文樱花博客、Nocturne dashboard）不是同一套皮肤，而是：
+好看站的共性（NEXUS、Brittany Chiang、中文樱花博客）不是同一套皮肤，而是：
 
 1. **一层慢、一层快。** 氛围 Ignorable；指针碰到的东西 200–300ms 内必须感觉到。
 2. **光标改形状或光，不只改字色。** 下划线长出、编号平移、高光跟着走。
 3. **一个签名物体。** 你已经是封面花瓣 + `Kikiarya.`。不要再加第二套（粒子半球）。
 4. **两套字体当两个声音。** 大标题冷静；下面一句斜体旁白。
-5. **克制的强调色。** Nocturne sakura-milk 整页只有一组 blush；hover 是 `rgba(216,132,159,.09)`，不是第二套蓝。
+5. **克制的强调色。** 全站保持一组 blush 强调色；hover 是 `rgba(216,132,159,.09)`，不是第二套蓝。
 6. **进门是阈值，不是淡出。** 点 Enter = 走进纸面；词标不要往上飘走。
 
 ---
 
-## 3. Nocturne-Memory-Core：源头，不是整页模板
+## 3. 当前色板与交互规范
 
-仓库：[Pyruslili/Nocturne-Memory-Core](https://github.com/Pyruslili/Nocturne-Memory-Core)（约 80★）
+保持现有 `--sakura-*` 色板、乳白玻璃表面和柔和墨色。强调色使用 `#d8849f` / `#ca6f91`。
 
-这是 **AI 连续性记忆系统** 的 Dashboard，默认主题偏暗琥珀。我们用的是它的伴生主题 **`sakura-milk`**（`dashboard.html` 里 `html[data-theme="sakura-milk"]`）。现站 `--sakura-*` 已经从这里来，**不要换盘，也不要把 Dashboard 壳（侧栏、记忆树、Reverie 面板）搬进个人主页。**
-
-同族 [P0luz/Ombre-Brain](https://github.com/P0luz/Ombre-Brain) 是功能面板，不是 Unseen 粉色。不要当视觉参考。
-
-### 已在用（对照即可）
-
-- 底：`#fff7f8 → #f9e7ec → #f4dce4` + 三枚径向 orb + noise `multiply`
-- 表面：乳白玻璃 `rgba(255,249,250,.72)`，线 `rgba(214,132,159,.13–.22)`
-- 字：ink `rgba(82,58,68,.94)`，软墨 `rgba(92,65,76,.84)`
-- 强调：`#d8849f` / `#ca6f91`，连续性暖色 `#c98763` 极少用
-
-### 还没学到位的手艺
-
-从 `dashboard.html` 的列表行、tab、按钮里抽，**改成 folio 语言**：
-
-| Nocturne 做法 | 转译到 kikiarya |
-|---------------|-----------------|
-| `button:hover` = 边框加深 + `background: rgba(216,132,159,.09)`，几乎不放大 | Ghost / 卡 hover 先填一层 9% accent，再谈位移 |
-| `.bucket-row:hover` 内边距微涨 + 行内径向高光 + 序号 `translateX(.12rem)` | Focus / 作品行：光斑 + 编号轻轻外移，**不 tilt** |
-| `.flow-step::after` 底线从 `scaleX(.15)` 长到满，easing `cubic-bezier(.16,1,.3,1)` | 已有 ProjectCard 下划线；保持这根曲线 |
-| 数字用 display 衬线、300 weight | 已有 `01 / 02 / 03`；hover 时变 accent-deep |
-| sakura 花瓣是主题装饰，dashboard 里可关 | 封面 / `PetalField` 已够；**不要再叠一层落花雨** |
-
-Nocturne 的科技感是：**记忆仪器长在瓷器上**。你的科技感应是：**agent 工作长在手帐上**。两边都是「温柔的系统」，不是「赛博产品页」。
+列表、按钮与卡片悬停时，以边框加深、淡粉背景、高光和编号轻移提供反馈。下划线沿现有缓动曲线展开；封面花瓣保持克制，不叠加第二层装饰。
 
 ---
 
@@ -190,4 +167,3 @@ Idle：**不要** `scale 1→1.03` 循环（会晕）。呼吸 orb + 花瓣漂�
 - Token：[DESIGN-SYSTEM.md](../.cursor/skills/pink-style/DESIGN-SYSTEM.md)
 - 结构：[sakura-layout SKILL](../.cursor/skills/sakura-layout/SKILL.md)
 - 已实现动效基线：[ui-motion-plan2.md](./ui-motion-plan2.md)
-- 源头 CSS：[Nocturne dashboard.html](https://github.com/Pyruslili/Nocturne-Memory-Core/blob/main/dashboard.html) `sakura-milk`

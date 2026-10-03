@@ -1,2 +1,2 @@
 import { redirect } from "next/navigation";
-export default function BlogRedirect() { redirect("/"); }
+export default function BlogRedirect() { redirect("/notes"); }

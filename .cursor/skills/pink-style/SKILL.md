@@ -4,7 +4,7 @@ description: >-
   Apply the pink-style "Unseen" / pink-style frontend design system when
   styling or redesigning kikiarya-website. Use when the user mentions pink-style,
   Unseen style, pink-style theme, pink glassmorphism UI, or asks to restyle
-  the portfolio to match the Xiaohongshu / Nocturne-Memory-Core aesthetic.
+  the portfolio with a soft blush palette and glass surfaces.
 ---
 
 # pink-style UI Design Skill
@@ -53,6 +53,5 @@ This site is a **personal portfolio**, not the full pink-style desktop shell. Ad
 
 - Full design spec: [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md)
 - Hierarchy, grids, sticky headers, measure, and which component to reuse: [sakura-layout](../sakura-layout/SKILL.md) — does not change this look
-- Source inspiration: [Nocturne-Memory-Core](https://github.com/Pyruslili/Nocturne-Memory-Core) `dashboard.html` (`sakura-milk` source theme)
 - Current stack: Next.js 16, React 19, Tailwind 3, Framer Motion, Lenis, Lucide icons
 - Existing motion components live in `components/motion/` — extend those before adding new ones

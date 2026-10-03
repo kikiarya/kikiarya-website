@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "content:sync": "node --env-file-if-exists=.env.local scripts/sync-notion.mjs",
+    "content:build": "npm run content:sync && next build",
+    "test:content": "node --test scripts/sync-notion.test.mjs",
+    "test:assistant": "node --test scripts/assistant.test.cjs"
   },
   "dependencies": {
     "@upstash/ratelimit": "^2.1.0",

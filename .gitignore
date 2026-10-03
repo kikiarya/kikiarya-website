@@ -29,3 +29,14 @@ resume/
 *.docx
 *.doc
 _resume_extract.txt
+
+.env*
+!.env.example
+lib/content/*.tmp
+
+# Generated caches and local review artifacts
+__pycache__/
+*.pyc
+*.tsbuildinfo
+.audit-npm-cache/
+audit/

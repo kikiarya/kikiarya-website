@@ -2,7 +2,7 @@
   {
     "slug": "latent-action-reparameterization",
     "title": "LAR · 动作表示学习",
-    "status": "源码机制 + 本人确认的研究贡献",
+    "status": "从动作词表构建、蒸馏训练到工具可执行性",
     "repo": "OpenClaw_LAR",
     "diagrams": [
       {
@@ -20,7 +20,7 @@
           ],
           [
             "频率与熵",
-            "经验下一词分布"
+            "基于样本统计下一词分布"
           ],
           [
             "片段映射",
@@ -32,7 +32,7 @@
           ],
           [
             "策略优化与评测",
-            "GRPO：本人确认的研究工作"
+            "蒸馏之后继续优化策略"
           ]
         ],
         "edges": [
@@ -62,7 +62,7 @@
             "研究流程"
           ]
         ],
-        "note": "挖掘分数是频率与经验熵的启发式组合，不等同于语义意图识别。GRPO 属于确认的研究贡献，本地训练入口主要支持蒸馏。",
+        "note": "挖掘分数结合频率与经验熵，用来筛选高频、可压缩的动作片段；它并不等同于语义意图识别。当前公开训练入口以蒸馏流程为主。",
         "sources": [
           "identify_segments.py",
           "create_token_mapping.py",
@@ -84,8 +84,8 @@
             "提供参考分布"
           ],
           [
-            "共享位置对齐",
-            "仅比较对应文本位置"
+            "共有文本位置",
+            "只比较能够对应的位置"
           ],
           [
             "压缩文本",
@@ -170,7 +170,7 @@
             "反馈进入后续轨迹"
           ]
         ],
-        "note": "边界分析：压缩率不能替代可执行性验证。应分别统计解析失败、参数错误和任务失败；本图不表示已实现自动纠错。",
+        "note": "需要注意：压缩率不能替代可执行性验证。应分别统计解析失败、参数错误和任务失败；本图不表示已经实现自动纠错。",
         "sources": [
           "evaluate_triviaqa.py"
         ],
@@ -181,7 +181,7 @@
   {
     "slug": "pixverse-realtime-agent",
     "title": "PixVerse · 实时交互链路",
-    "status": "历史实习资料；未找到当前源码",
+    "status": "依据历史实习资料整理；当前未找到源码",
     "repo": null,
     "diagrams": [
       {
@@ -304,7 +304,7 @@
             "同步"
           ]
         ],
-        "note": "重点讲清本人负责的 Suggestion、LLM 分支和 Session / Task 同步。具体状态枚举与消息字段需要原始源码确认。",
+        "note": "图中重点展示 Suggestion、LLM 分支和 Session / Task 同步。具体状态枚举与消息字段仍需结合原始源码确认。",
         "sources": [
           "历史实习笔记：LLM 模块与 Session 映射"
         ],
@@ -312,7 +312,7 @@
       },
       {
         "key": "failure",
-        "title": "迟到结果：面试设计推演",
+        "title": "晚到结果：并发任务设计推演",
         "kind": "sequence",
         "actors": [
           "前端",
@@ -328,7 +328,7 @@
           [
             1,
             2,
-            "启动 A"
+            "启动任务 A"
           ],
           [
             0,
@@ -338,15 +338,15 @@
           [
             2,
             1,
-            "A 的结果迟到"
+            "任务 A 的结果晚到"
           ],
           [
             1,
             0,
-            "建议：校验任务归属后再展示"
+            "建议：确认任务归属后再展示"
           ]
         ],
-        "note": "待验证设计：可用任务标识或代次过滤旧结果。不能把本图描述为已上线的版本围栏，更不能虚构一次线上事故。",
+        "note": "待验证设计：可以通过任务标识或执行代次过滤旧结果。这不代表相关隔离机制已经上线，也不代表线上发生过这类事故。",
         "sources": [
           "设计推演；非已实现证明"
         ],
@@ -386,7 +386,7 @@
             "保持行为分布"
           ],
           [
-            "评估组合",
+            "对照组合",
             "Short / Medium / Long / All"
           ]
         ],
@@ -417,7 +417,7 @@
             "对照"
           ]
         ],
-        "note": "Project Context / Workspace Files 边界裁剪发生在挖掘准备阶段，不能画成运行时删除动态上下文。当前源码不证明动态检查点恢复。",
+        "note": "Project Context / Workspace Files 的边界裁剪发生在片段挖掘的准备阶段，不能把它画成运行时删除动态上下文。当前源码也不能证明已经实现动态检查点恢复。",
         "sources": [
           "scripts/extract_openclaw_tracer_llm_inputs.py",
           "scripts/prepare_openclaw_system_for_segment_mining.py",
@@ -482,11 +482,11 @@
             "对照"
           ]
         ],
-        "note": "报告口径按本人确认使用严格 EM。当前 evaluate_triviaqa.py 的 substring scorer 与报告口径不一致，复现实验前需定位严格 EM 对应版本。",
+        "note": "报告结果采用严格 EM；当前 evaluate_triviaqa.py 的 substring 评分方式与该口径不一致，复现实验前需要先找到对应版本的评测脚本。",
         "sources": [
           "README.md",
           "evaluate_triviaqa.py",
-          "本人确认：严格 EM"
+          "实验记录：严格 EM"
         ],
         "asset": "/diagrams/openclaw-stateful-agent-runtime-mechanism.svg"
       },
@@ -551,7 +551,7 @@
             "岗位输入 / 候选经历"
           ],
           [
-            "持久化 Run",
+            "持久化任务记录",
             "输入快照与幂等键"
           ],
           [
@@ -603,7 +603,7 @@
             "生成"
           ]
         ],
-        "note": "本地工作流含关键词证据匹配与模型步骤。不能据此写成已实现的向量检索、Reranker 或 LangGraph 多 Agent。",
+        "note": "本地工作流包含关键词证据匹配和模型处理步骤，但不能因此视为已经实现向量检索、Reranker 或 LangGraph 多 Agent。",
         "sources": [
           "apps/worker/src/workflow.js",
           "packages/persistence/src/index.js"
@@ -672,7 +672,7 @@
             "引用白名单"
           ]
         ],
-        "note": "引用 ID 属于白名单，只能证明引用存在；不能证明生成的每一句话都受到证据语义支持。",
+        "note": "引用 ID 采用白名单约束，只能证明引用确实存在；不能据此认定生成内容的每一句话都有对应证据支持。",
         "sources": [
           "apps/worker/src/workflow.js"
         ],
@@ -684,7 +684,7 @@
         "kind": "sequence",
         "actors": [
           "Worker A",
-          "Run 存储",
+          "任务记录",
           "Worker B"
         ],
         "messages": [
@@ -701,20 +701,20 @@
           [
             0,
             1,
-            "迟到的完成写入"
+            "旧 Worker 晚到的完成写入"
           ],
           [
             1,
             1,
-            "仅检查 running 无法区分执行代次"
+            "只检查 running 无法区分执行代次"
           ],
           [
             2,
             1,
-            "建议：写入携带 attempt / owner"
+            "建议：写入时携带 attempt / owner"
           ]
         ],
-        "note": "当前边界：重新领取不等于旧 Worker 已停止。完成写入应有执行代次围栏；本图最后一步是改进建议，不是现有保证。",
+        "note": "当前边界：任务被重新领取，不代表旧 Worker 已经停止。完成写入还需要校验执行代次；图中的最后一步是改进建议，并非现有保证。",
         "sources": [
           "apps/worker/src/index.js",
           "packages/persistence/src/index.js"
@@ -786,7 +786,7 @@
             "事件"
           ]
         ],
-        "note": "客服链路不是模型自主多工具循环。SSE 将完成后的文本分块发送，不能标注为模型 token 原生流式输出。",
+        "note": "客服链路并不是由模型自主完成的多工具循环。SSE 只是把完整文本分块发送，不能称为模型 token 的原生流式输出。",
         "sources": [
           "storefront/server/services/chatService.js",
           "CheckoutService.java",
@@ -820,7 +820,7 @@
             "关联订单"
           ],
           [
-            "待加强的校验",
+            "仍需加强的校验",
             "确认版本 / 完成幂等"
           ]
         ],
@@ -880,7 +880,7 @@
           [
             1,
             0,
-            "结果未知 UNKNOWN"
+            "UNKNOWN（结果未知）"
           ],
           [
             0,
@@ -900,10 +900,10 @@
           [
             2,
             2,
-            "发布确认后标记 sentAt"
+            "确认发布后写入 sentAt"
           ]
         ],
-        "note": "UNKNOWN 不等于失败，不应直接补库存。Outbox 存在确认后、标记前崩溃的重投窗口；另外 Checkout 外层事务可能覆盖银行调用，不能声称网络调用已在物理事务外。",
+        "note": "UNKNOWN 不等于失败，因此不应直接回补库存。Outbox 在消息确认后、状态标记前仍存在崩溃重投窗口；另外，Checkout 的外层事务范围可能包含银行调用，不能声称网络调用已经位于物理事务之外。",
         "sources": [
           "OrderService.java",
           "MessagePublisher.java",

@@ -23,10 +23,11 @@ type PaletteItem = {
 
 const pages: PaletteItem[] = [
   { href: "/", title: "Index", hint: "Home" },
-  { href: "/work", title: "Work", hint: "All projects" },
-  { href: "/resume", title: "Resume", hint: "Education and experience" },
-  { href: "/contact", title: "Contact", hint: "Email" },
-  { href: "/notes", title: "Notes", hint: "Writing" },
+  { href: "/work", title: "Work / 项目", hint: "All projects / 全部项目" },
+  { href: "/resume", title: "Resume / 简历", hint: "Education and experience / 教育与经历" },
+  { href: "/contact", title: "Contact / 联系", hint: "Email / 邮箱" },
+  { href: "/notes", title: "Notes / 博客", hint: "项目记录与随想" },
+  { href: "/bookshelf", title: "Bookshelf / 阅读札记", hint: "摘抄、读书笔记与阅读分享" },
 ];
 
 const citations: PaletteItem[] = [
@@ -34,7 +35,7 @@ const citations: PaletteItem[] = [
     href: "/work/latent-action-reparameterization",
     title: "LAR",
     hint: "Paper",
-    answer: "LAR is under review at NeurIPS 2026.",
+    answer: "LAR was accepted to the NeurIPS 2026 main conference as a poster.",
     keywords: ["lar", "neurips", "paper", "arxiv", "latent"],
   },
   {
@@ -55,7 +56,7 @@ const citations: PaletteItem[] = [
     href: "/resume",
     title: "Resume",
     hint: "Graduation",
-    answer: "Master's at the University of Sydney, graduating December 2026.",
+    answer: "Master's at the University of Sydney, graduating November 2026.",
     keywords: ["resume", "cv", "graduation", "graduating", "sydney", "intern"],
   },
   {

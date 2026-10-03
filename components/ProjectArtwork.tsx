@@ -1,122 +1,68 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { ReactNode } from "react";
 import { usePrefersReducedMotion } from "./motion/usePrefersReducedMotion";
 
-const PLATES = [
-  "01 / LATENT ACTIONS",
-  "02 / EXECUTE · RECOVER",
-  "03 / STATIC COMPRESSION",
+const COVERS = [
+  {
+    label: "01 / RESEARCH PAPER",
+    identity: "NEURIPS 2026 · POSTER",
+    footer: "TEXT ACTIONS → LATENT ACTIONS",
+    metric: "−27.1% action tokens",
+  },
+  {
+    label: "02 / AGENT RUNTIME",
+    identity: "FAILURE-AWARE",
+    footer: "FAIL → REPLAN → VERIFY",
+    metric: "+6pp resolve rate",
+  },
+  {
+    label: "03 / CONTEXT STUDY",
+    identity: "OPENCLAW",
+    footer: "REPEATED CONTEXT → COMPACT TOKENS",
+    metric: "quality / cost",
+  },
 ] as const;
-
-function Chip({
-  children,
-  tone = "plain",
-}: {
-  children: ReactNode;
-  tone?: "plain" | "fill" | "soft";
-}) {
-  const toneClass =
-    tone === "fill"
-      ? "border-transparent bg-[var(--sakura-accent-deep)] text-white"
-      : tone === "soft"
-        ? "border-[var(--sakura-line)] bg-[color-mix(in_srgb,var(--sakura-accent)_14%,white)] text-[var(--sakura-accent-deep)]"
-        : "border-[var(--sakura-line-soft)] bg-[var(--sakura-bg-deep)] text-[var(--sakura-ink)]";
-
-  return (
-    <span
-      className={`inline-flex min-h-8 items-center justify-center rounded-xl border px-2.5 font-mono text-[0.62rem] uppercase tracking-[.08em] ${toneClass}`}
-    >
-      {children}
-    </span>
-  );
-}
-
-function Arrow() {
-  return (
-    <span aria-hidden="true" className="font-mono text-[0.7rem] text-[var(--sakura-muted)]">
-      →
-    </span>
-  );
-}
-
-function MotionPanel({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
-  const reduce = usePrefersReducedMotion();
-
-  return (
-    <motion.div
-      className={`project-art-panel${wide ? " project-art-panel-wide" : ""}`}
-      whileInView={reduce ? undefined : { y: [0, -5, 0] }}
-      viewport={{ amount: 0.6 }}
-      transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut" }}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 function LarPreview() {
   return (
-    <div className="project-art-scene">
-      <div className="project-art-col">
-        <p className="project-art-label">Before</p>
-        <Chip>Think</Chip>
-        <Chip>Text</Chip>
-        <Chip>Tool</Chip>
-        <p className="project-art-note">long verbs</p>
-      </div>
-
-      <div className="project-art-bridge">
-        <Arrow />
-        <MotionPanel>
-          <p className="project-art-label">Reparam</p>
-          <Chip tone="soft">Filter</Chip>
-          <Chip tone="fill">Distill</Chip>
-          <Chip tone="soft">Keep args</Chip>
-        </MotionPanel>
-        <Arrow />
-      </div>
-
-      <div className="project-art-col">
-        <p className="project-art-label">After</p>
-        <Chip tone="fill">Latent</Chip>
-        <Chip>Tool</Chip>
-        <Chip tone="fill">Latent</Chip>
-        <Chip>Tool</Chip>
-        <p className="project-art-note">−27.1% tokens</p>
+    <div className="project-cover project-cover-lar">
+      <p className="project-cover-kicker">Compress the verbs. Keep the tools.</p>
+      <motion.div
+        className="project-cover-monogram"
+        initial={{ opacity: 0.28, y: 6 }}
+        whileInView={{ opacity: 0.72, y: 0 }}
+        viewport={{ once: true, amount: 0.7 }}
+        transition={{ duration: 0.9 }}
+      >
+        LAR
+      </motion.div>
+      <div className="trajectory-glimpse">
+        <span>THINK</span><span>READ</span><span>RETRIEVE</span><i />
+        <strong>LATENT</strong><b>TOOL</b><strong>LATENT</strong><b>TOOL</b>
       </div>
     </div>
   );
 }
 
 function CodingPreview() {
+  const reduce = usePrefersReducedMotion();
+
   return (
-    <div className="project-art-scene">
-      <div className="project-art-col">
-        <p className="project-art-label">Execute</p>
-        <Chip>Task</Chip>
-        <Chip tone="fill">Policy</Chip>
-        <Chip>Tool</Chip>
-        <Chip>Repo</Chip>
-      </div>
-
-      <div className="project-art-bridge">
-        <Arrow />
-        <MotionPanel>
-          <p className="project-art-label">On fail</p>
-          <Chip tone="soft">Observation</Chip>
-          <Chip tone="fill">Recover</Chip>
-          <p className="project-art-note">↺ back to policy</p>
-        </MotionPanel>
-        <Arrow />
-      </div>
-
-      <div className="project-art-col">
-        <p className="project-art-label">Result</p>
-        <Chip>Complete</Chip>
-        <p className="project-art-note">+6pp resolve</p>
-        <p className="project-art-note">−15% calls</p>
+    <div className="project-cover project-cover-coding">
+      <p className="project-cover-kicker">A failed run still has useful state.</p>
+      <div className="recovery-window">
+        <div className="recovery-window-bar"><i /><i /><i /><span>agent-run / 004</span></div>
+        <div className="recovery-log">
+          <span><b>01</b> locate failing test</span>
+          <span className="is-failed"><b>02</b> test failed</span>
+          <motion.span
+            className="is-recovery"
+            animate={reduce ? undefined : { opacity: [0.55, 1, 0.55] }}
+            transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+          ><b>03</b> restore checkpoint · replan</motion.span>
+          <span className="is-passed"><b>04</b> verification passed</span>
+        </div>
       </div>
     </div>
   );
@@ -124,46 +70,56 @@ function CodingPreview() {
 
 function MemoryPreview() {
   return (
-    <div className="project-art-scene">
-      <div className="project-art-col">
-        <Chip>Static prompt</Chip>
-        <span aria-hidden="true" className="text-center text-[var(--sakura-muted)]">
-          ↓
-        </span>
-        <Chip tone="soft">Repeated spans</Chip>
-      </div>
-
-      <div className="project-art-bridge">
-        <Arrow />
-        <MotionPanel wide>
-          <p className="project-art-label">OpenClaw Compression</p>
-          <div className="project-art-row">
-            <Chip>Mine</Chip>
-            <Chip tone="fill">Compress</Chip>
-          </div>
-          <div className="project-art-row">
-            <Chip tone="soft">LoRA + KL</Chip>
-            <Chip tone="soft">Evaluate</Chip>
-          </div>
-        </MotionPanel>
-        <Arrow />
-      </div>
-
-      <div className="project-art-col">
-        <Chip tone="fill">Strict EM</Chip>
-        <p className="project-art-note">Quality / token cost</p>
+    <div className="project-cover project-cover-compression">
+      <p className="project-cover-kicker">The prompt repeats. The representation does not.</p>
+      <div className="compression-contrast">
+        <div className="context-stack" aria-hidden="true">
+          <i /><i /><i /><i /><i />
+          <span>STATIC CONTEXT</span>
+        </div>
+        <span className="compression-mark">→</span>
+        <div className="compact-stack" aria-hidden="true">
+          <strong>&lt;seg_1&gt;</strong>
+          <strong>&lt;seg_2&gt;</strong>
+          <span>TOOL ARGS STAY TEXT</span>
+        </div>
       </div>
     </div>
   );
 }
 
-export default function ProjectArtwork({ index }: { index: number }) {
-  const plate = index % 3;
+function OverviewCover({ index }: { index: number }) {
+  const captions = ["更短的动作，照常执行", "失败之后，接着做", "把重复的上下文收起来"];
+  return <div className={`project-art overview-art overview-art-${index}`} aria-hidden="true">
+    <span className="overview-art-number">0{index + 1}</span>
+    <div className="overview-art-symbol">
+      {index === 0 ? <span className="overview-lar">LAR<span className="overview-lar-rule" /></span>
+        : index === 1 ? <svg viewBox="0 0 240 160" fill="none"><path d="M65 45 25 80l40 35M175 45l40 35-40 35" className="overview-code-bracket" /><path d="M143 59a31 31 0 1 0 5 37M143 59v-20M143 59h-20" className="overview-code-recovery" /></svg>
+        : <div className="overview-paper-stack"><span /><span /><span><i /><i /><i /></span></div>}
+    </div>
+    <p className="overview-art-caption">{captions[index]}</p>
+  </div>;
+}
+
+export default function ProjectArtwork({ index, minimal = false }: { index: number; minimal?: boolean }) {
+  if (minimal) return <OverviewCover index={index % 3} />;
+  const plate = index % COVERS.length;
+  const meta = COVERS[plate];
 
   return (
-    <div className={`project-art art-${plate}`} aria-hidden="true">
-      {plate === 0 ? <LarPreview /> : plate === 1 ? <CodingPreview /> : <MemoryPreview />}
-      <span>{PLATES[plate]}</span>
+    <div className={`project-art art-${plate}`} data-art={plate} aria-hidden="true">
+      <div className="project-art-grid" />
+      <div className="project-art-topline">
+        <span>{meta.label}</span>
+        <span>{meta.identity}</span>
+      </div>
+      <div className="project-art-body">
+        {plate === 0 ? <LarPreview /> : plate === 1 ? <CodingPreview /> : <MemoryPreview />}
+      </div>
+      <div className="project-art-caption">
+        <span>{meta.footer}</span>
+        <strong>{meta.metric}</strong>
+      </div>
     </div>
   );
 }

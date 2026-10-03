@@ -82,8 +82,7 @@ export default function RouteVeilProvider({ children }: { children: ReactNode })
         className="fixed inset-0 z-[55]"
         style={{
           pointerEvents: state === "cover" ? "auto" : "none",
-          background:
-            "radial-gradient(circle at 50% 44%, rgba(255,247,249,.99) 0%, rgba(249,231,236,.97) 52%, rgba(244,220,228,.95) 100%)",
+          background: "var(--sakura-route-veil)",
         }}
         initial={false}
         animate={{ opacity: state === "cover" ? 1 : 0 }}

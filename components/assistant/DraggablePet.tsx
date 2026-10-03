@@ -52,6 +52,7 @@ export default function DraggablePet() {
   const reduce = usePrefersReducedMotion();
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
+  const [hintDismissed, setHintDismissed] = useState(false);
   const [status, setStatus] = useState<PetStatus>("idle");
   const [position, setPosition] = useState<Position>({ x: 0, y: 0, dock: "right" });
   const positionRef = useRef(position);
@@ -149,11 +150,23 @@ export default function DraggablePet() {
 
   return (
     <div className="assistant-shell" data-open={open} data-dock={position.dock}>
+      {!open && !hintDismissed ? (
+        <div className="assistant-hint" style={{
+          left: clamp(position.x + PET_WIDTH / 2 - 110, EDGE, window.innerWidth - 220 - EDGE),
+          top: position.y >= TOP_SAFE + 110 ? position.y - 100 : position.y + PET_HEIGHT + 8,
+        }}>
+          <button type="button" className="assistant-hint-close" aria-label="收起提示" onClick={() => setHintDismissed(true)}>×</button>
+          <button type="button" className="assistant-hint-open" onClick={() => setOpen(true)}>
+            <span aria-hidden="true">💬</span> 想了解 Kikiarya 的项目？
+            <span className="assistant-hint-detail">问我做了什么、怎么实现，也可以聊聊技术方向。</span>
+          </button>
+        </div>
+      ) : null}
       <button
         type="button"
         className="assistant-pet-button"
         style={{ transform: `translate3d(${position.x}px, ${position.y}px, 0)` }}
-        aria-label={open ? "Close portfolio assistant" : "Open portfolio assistant. Drag to move."}
+        aria-label={open ? "关闭个人助手" : "打开个人助手，可拖动调整位置"}
         aria-expanded={open}
         aria-haspopup="dialog"
         onPointerDown={onPointerDown}
@@ -165,7 +178,7 @@ export default function DraggablePet() {
         }}
       >
         <span className={`assistant-pet-sprite pet-${status}`} aria-hidden="true" />
-        <span className="assistant-pet-label">Ask Kiki · 问项目</span>
+        <span className="assistant-pet-label">Ask Kiki · 项目问答</span>
       </button>
 
       {open ? (

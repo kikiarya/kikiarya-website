@@ -11,7 +11,7 @@ export async function enhanceAnswer(
   question: string,
   local: AssistantResponse,
   chunks: RetrievedChunk[],
-  previousTurn?: PreviousTurn
+  history: PreviousTurn[] = []
 ): Promise<AssistantResponse> {
   if (!isModelConfigured()) return local;
 
@@ -26,12 +26,10 @@ export async function enhanceAnswer(
   const { text } = await generateText({
     model: process.env.AI_MODEL!,
     instructions:
-      "You are the concise guide for Kikiarya's public portfolio. Answer only from ALLOWED_FACTS. Do not add claims, metrics, links, employers, dates, or capabilities that are absent. Match the user's main language. Return 2-4 short paragraphs, without a Sources section. If evidence is insufficient, preserve the local refusal.",
+      "You are the concise guide for Kikiarya's public portfolio. Answer only from ALLOWED_FACTS. Do not add claims, metrics, links, employers, dates, or capabilities that are absent. Match the user's main language. Use natural, conversational Chinese for Chinese questions. Do not infer facts from the previous turn; it is only conversational context. Return 2-4 short paragraphs, without a Sources section. If evidence is insufficient, preserve the local refusal.",
     prompt: JSON.stringify({
       question,
-      previousTurn: previousTurn
-        ? { question: previousTurn.question, answer: previousTurn.answer.slice(0, 800) }
-        : undefined,
+      history: history.map(turn => ({ question: turn.question, answer: turn.answer.slice(0, 800) })),
       localDraft: local.answer,
       allowedFacts,
     }),

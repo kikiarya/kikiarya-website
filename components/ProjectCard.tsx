@@ -24,7 +24,13 @@ function evidenceStrip(project: Project) {
   ];
 }
 
-export default function ProjectCard({ project, index }: { project: Project; index: number }) {
+const overviewDescriptions: Record<string, string> = {
+  "latent-action-reparameterization": "将重复的 Agent 动作压缩为潜在表示，减少生成开销，并保留工具执行所需的参数。",
+  "coding-agent-policy-optimization": "一起优化代码 Agent 的模型与运行环境，让失败后的重试、重新规划和恢复更有效。",
+  "openclaw-stateful-agent-runtime": "压缩反复出现的静态提示词，观察生成成本与回答质量之间的取舍。",
+};
+
+export default function ProjectCard({ project, index, compact = false }: { project: Project; index: number; compact?: boolean }) {
   const router = useRouter();
   const reduce = usePrefersReducedMotion();
   const href = `/work/${project.slug}`;
@@ -46,29 +52,31 @@ export default function ProjectCard({ project, index }: { project: Project; inde
         viewport={{ once: true, amount: 0.24 }}
         transition={{ duration: reduce ? 0.15 : 0.72, delay: Math.min(index * 0.08, 0.16), ease }}
       >
-        <Link href={href} className="project-featured group">
-          <ProjectArtwork index={artworkIndex} />
+        <Link href={href} className={`project-featured group ${compact ? "project-featured-overview" : ""}`}>
+          <ProjectArtwork index={artworkIndex} minimal={compact} />
           <div>
             <p className="eyebrow mb-4">{project.venue ?? project.categoryTags.join(" / ")}</p>
             <h3>{title}</h3>
-            {project.cardTitle ? (
+            {project.cardTitle && !compact ? (
               <p className="mt-2 text-sm text-[var(--sakura-muted)]">{project.title}</p>
             ) : null}
-            <p className="mt-4 text-[var(--sakura-ink-soft)]">{project.shortDescription}</p>
+            <p className="mt-4 text-[var(--sakura-ink-soft)]">{compact ? overviewDescriptions[project.slug] ?? project.shortDescription : project.shortDescription}</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {project.techStack.slice(0, 3).map((item) => (
                 <Tag key={item} label={item} />
               ))}
             </div>
-            <dl className="project-evidence-strip">
+            {!compact ? <dl className="project-evidence-strip">
               {evidenceStrip(project).map((item) => (
                 <div key={item.label}>
                   <dt>{item.label}</dt>
                   <dd>{item.value}</dd>
                 </div>
               ))}
-            </dl>
-            <span className="studio-link mt-4">Read the case study ↗</span>
+            </dl> : null}
+            <span className="studio-link mt-4">
+              Read case study · <span lang="zh-CN">阅读案例</span> ↗
+            </span>
           </div>
         </Link>
       </motion.article>
@@ -124,7 +132,7 @@ export default function ProjectCard({ project, index }: { project: Project; inde
           </div>
         </div>
         <span className="hidden md:flex items-center gap-3 font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-muted)] transition-colors duration-300 group-hover:text-[var(--sakura-accent-deep)]">
-          Open{" "}
+          Open / <span lang="zh-CN">查看</span>{" "}
           <ArrowUpRight
             size={15}
             className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"

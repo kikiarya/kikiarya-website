@@ -59,7 +59,7 @@ export default function OpenGraphImage() {
               color: "#a9476d",
             }}
           >
-            NeurIPS 2026 · Under Review
+            NeurIPS 2026 · Main Conference · Poster
           </div>
         </div>
       </div>

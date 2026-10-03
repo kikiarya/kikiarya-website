@@ -12,7 +12,7 @@ import {
   visitorId,
 } from "../../../lib/assistant/rate-limit";
 import { knowledgeVersion } from "../../../lib/assistant/knowledge";
-import { retrieveKnowledge } from "../../../lib/assistant/retrieve";
+import { retrieveConversation } from "../../../lib/assistant/retrieve";
 import type { AssistantRequest, PreviousTurn } from "../../../lib/assistant/types";
 
 export const runtime = "nodejs";
@@ -44,17 +44,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid JSON." }, { status: 400 });
   }
 
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return NextResponse.json({ error: "Expected a JSON object." }, { status: 400 });
+  }
   const question = typeof body.question === "string" ? body.question.trim() : "";
-  if (!question || question.length > 300) {
+  if (!question || Array.from(question).length > 300) {
     return NextResponse.json({ error: "Question must contain 1–300 characters." }, { status: 400 });
   }
-  const previousTurn = isPreviousTurn(body.previousTurn)
-    ? {
-        question: body.previousTurn.question.slice(0, 300),
-        answer: body.previousTurn.answer.slice(0, 1_200),
-        sourceIds: body.previousTurn.sourceIds.slice(0, 4),
-      }
-    : undefined;
+  const submitted = Array.isArray(body.history) ? body.history.slice(-3) : body.previousTurn ? [body.previousTurn] : [];
+  const history = submitted.filter(isPreviousTurn).map(turn => ({
+    question: turn.question.slice(0, 300), answer: turn.answer.slice(0, 1200),
+    sourceIds: turn.sourceIds.slice(0, 4).map(id => id.slice(0, 200)),
+  }));
 
   const limit = await checkVisitorLimit(visitorId(request));
   if (!limit.ok) {
@@ -68,12 +69,14 @@ export async function POST(request: Request) {
     );
   }
 
-  const chunks = retrieveKnowledge(question);
-  const local = buildLocalAnswer(question, chunks, previousTurn);
+  const { chunks, needsClarification } = retrieveConversation(question, history);
+  const local = needsClarification ? {
+    mode: "local" as const, answer: "你想继续了解哪个项目或哪篇文章？告诉我名称，我就沿着它继续查找。", sources: [],
+  } : buildLocalAnswer(question, chunks);
   const key = cacheKey(
-    `${normalizeQuestion(question)}:${isModelConfigured() && isRedisAvailable() ? "ai" : "local"}`,
+    `${normalizeQuestion(question)}:${JSON.stringify(history)}:${isModelConfigured() && isRedisAvailable() ? "ai" : "local"}`,
     knowledgeVersion,
-    previousTurn?.sourceIds ?? []
+    []
   );
   const cached = await getCachedAnswer(key);
   if (cached) return NextResponse.json({ ...cached, remaining: limit.remaining });
@@ -84,7 +87,7 @@ export async function POST(request: Request) {
     try {
       const budget = await claimModelBudget();
       globalRemaining = budget.remaining;
-      if (budget.allowed) response = await enhanceAnswer(question, local, chunks, previousTurn);
+      if (budget.allowed) response = await enhanceAnswer(question, local, chunks.filter(chunk => local.sources.some(source => source.id === chunk.id)), history);
     } catch {
       response = local;
     }
@@ -92,8 +95,9 @@ export async function POST(request: Request) {
 
   const result = {
     ...response,
+    knowledgeVersion,
     remaining: { ...limit.remaining, global: globalRemaining },
   };
-  await setCachedAnswer(key, result, previousTurn ? 3_600 : 604_800);
+  await setCachedAnswer(key, result, history.length ? 3_600 : 604_800);
   return NextResponse.json(result);
 }

@@ -4,7 +4,7 @@ export type AssistantSource = {
   id: string;
   title: string;
   href: string;
-  kind: "project" | "experience" | "profile" | "navigation";
+  kind: "project" | "experience" | "profile" | "navigation" | "article";
 };
 
 export type KnowledgeFact = {
@@ -34,12 +34,14 @@ export type PreviousTurn = {
 export type AssistantRequest = {
   question: string;
   previousTurn?: PreviousTurn;
+  history?: PreviousTurn[];
 };
 
 export type AssistantResponse = {
   answer: string;
   mode: AssistantMode;
   sources: AssistantSource[];
+  knowledgeVersion?: string;
   remaining?: {
     minute?: number;
     day?: number;

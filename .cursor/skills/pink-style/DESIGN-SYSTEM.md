@@ -2,7 +2,6 @@
 
 > **Purpose:** Single source of truth for restyling `kikiarya-website` to the pink-style "Unseen" / pink-style aesthetic.
 >
-> **Inspiration:** Xiaohongshu post by Pyruslili · [Nocturne-Memory-Core](https://github.com/Pyruslili/Nocturne-Memory-Core) `dashboard.html` theme `sakura-milk`
 
 ---
 
@@ -48,7 +47,7 @@ Dreamy · soft · feminine · artistic · deliberate · unhurried · literary
 
 ## 2. Color System
 
-Theme name: **`pink-style`** (adapted from the Nocturne Memory Core `sakura-milk` palette)
+Theme name: **`pink-style`**
 
 ### CSS Variables (copy into `globals.css`)
 
@@ -647,4 +646,4 @@ Fonts: Cormorant Garamond + Inter + JetBrains Mono
 
 | Date | Note |
 |------|------|
-| 2026-08-12 | Initial spec from Xiaohongshu screenshots + Nocturne-Memory-Core `sakura-milk` CSS tokens |
+| 2026-08-12 | Initial design specification |

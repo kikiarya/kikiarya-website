@@ -104,8 +104,7 @@ export default function EntryGate() {
               aria-hidden="true"
               className="absolute inset-[-12%]"
               style={{
-                background:
-                  "radial-gradient(circle at 24% 24%, rgba(255,255,255,.72), transparent 22%), radial-gradient(circle at 72% 28%, rgba(216,132,159,.26), transparent 30%), radial-gradient(circle at 62% 78%, rgba(255,221,230,.6), transparent 32%)",
+                background: "var(--sakura-cover-atmosphere)",
                 filter: "blur(36px)",
                 animation: reduce ? undefined : "sakura-breath 14s ease-in-out infinite alternate",
               }}
@@ -115,8 +114,7 @@ export default function EntryGate() {
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 z-[5]"
               style={{
-                background:
-                  "radial-gradient(ellipse at center, transparent 42%, rgba(82, 58, 68, 0.1) 100%)",
+                background: "var(--sakura-cover-vignette)",
               }}
               animate={{ opacity: entering ? 0.45 : 0.14 }}
               transition={{ duration: reduce ? 0.2 : 0.7, ease }}

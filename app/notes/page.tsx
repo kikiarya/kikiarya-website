@@ -3,67 +3,73 @@ import { ArrowUpRight } from "lucide-react";
 import Container from "../../components/Container";
 import Reveal from "../../components/motion/Reveal";
 import SceneDecor from "../../components/motion/SceneDecor";
-import Bow from "../../components/decor/Bow";
+import { notes } from "../../lib/notes";
 
-export const metadata = { title: "Notes" };
+export const metadata = {
+  title: "Notes",
+  description: "Field notes on agents, recovery, post-training, and reliable AI systems.",
+};
 
-export default function NotesPage() {
+export default async function NotesPage({ searchParams }: { searchParams: Promise<{ tag?: string }> }) {
+  const { tag } = await searchParams;
+  const filtered = tag ? notes.filter(note => note.tags.includes(tag)) : notes;
+  const [featured, ...rest] = filtered;
+
   return (
-    <div className="relative pt-36 md:pt-44 pb-20">
+    <div className="notes-page relative pb-24 pt-36 md:pt-44">
       <SceneDecor />
       <Container className="relative">
-        <header className="max-w-4xl mb-16">
-          <p className="eyebrow">Notes · What I think</p>
-          <h1 className="font-display text-hero font-light text-balance mt-6">Notes</h1>
-          <p className="mt-9 max-w-2xl text-lg leading-8 text-[var(--sakura-ink-soft)]">
-            A garden, not a blog. Empty until something is worth planting.
+        <header className="notes-header">
+          <div>
+            <p className="eyebrow">Notes / 个人博客</p>
+            <h1>Working notes,<br />kept in public.</h1>
+          </div>
+          <p>
+            写写做项目时遇到的问题、试过的方法，以及后来想明白的事。也聊 Agent、后训练和研究之外的日常。
           </p>
         </header>
 
-        <Reveal>
-          <div className="sakura-glass rounded-[2rem] p-8 md:p-12 max-w-xl">
-            <Bow
-              size={48}
-              variant="soft"
-              className="mb-8 text-[var(--sakura-accent-deep)]"
-            />
-            <p className="eyebrow">Seed</p>
-            <p className="font-display text-2xl md:text-3xl mt-4 leading-snug">
-              Nothing planted yet.
-            </p>
-            <p className="mt-4 text-base leading-7 text-[var(--sakura-ink-soft)]">
-              When the first note exists, it will grow a line to Work.
-            </p>
-            <svg
-              className="mt-8 mb-2 text-[var(--sakura-line)]"
-              width="2"
-              height="48"
-              aria-hidden="true"
-            >
-              <line
-                x1="1"
-                y1="0"
-                x2="1"
-                y2="48"
-                stroke="currentColor"
-                strokeWidth="1.25"
-                strokeDasharray="3 5"
-              />
-            </svg>
-            <Link
-              href="/work/latent-action-reparameterization"
-              className="font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-muted)] transition-colors duration-200 hover:text-[var(--sakura-accent-deep)]"
-            >
-              Will connect to Work · LAR
+        <nav aria-label="按标签浏览" className="flex flex-wrap gap-4 mb-10"><Link href="/notes" aria-current={!tag ? "page" : undefined}>全部</Link>{[...new Set(notes.flatMap(note => note.tags))].map(item => <Link key={item} href={`/notes?tag=${encodeURIComponent(item)}`} aria-current={tag === item ? "page" : undefined}>{item}</Link>)}<a href="/rss.xml">RSS ↗</a></nav>
+        {!filtered.length ? <p>这个标签下还没有文章。</p> : null}
+        {featured ? (
+          <Reveal>
+            <Link href={`/notes/${featured.slug}`} className="note-featured group">
+              <div className="note-index-mark">{featured.number}</div>
+              <div className="note-featured-copy">
+                <div className="note-meta">
+                  <span>{featured.dateLabel}</span>
+                  <span>{featured.readingTime}</span>
+                </div>
+                <p className="note-signal">{featured.signal}</p>
+                <h2>{featured.title}</h2>
+                <p className="note-title-zh">{featured.titleZh}</p>
+                <p className="note-excerpt">{featured.excerpt}</p>
+                <div className="note-tags">
+                  {featured.tags.map((tag) => <span key={tag}>{tag}</span>)}
+                </div>
+              </div>
+              <span className="note-open">阅读全文 <ArrowUpRight size={15} /></span>
             </Link>
-          </div>
-        </Reveal>
+          </Reveal>
+        ) : null}
 
-        <Reveal delay={0.12}>
-          <Link href="/bookshelf" className="button-ghost mt-10">
-            Visit the bookshelf <ArrowUpRight size={15} />
-          </Link>
-        </Reveal>
+        <div className="notes-grid">
+          {rest.map((note, index) => (
+            <Reveal key={note.slug} delay={0.08 + index * 0.07}>
+              <Link href={`/notes/${note.slug}`} className="note-card group">
+                <div className="note-meta"><span>{note.number}</span><span>{note.dateLabel}</span></div>
+                <p className="note-signal">{note.signal}</p>
+                <h2>{note.title}</h2>
+                <p className="note-title-zh">{note.titleZh}</p>
+                <p className="note-excerpt">{note.excerpt}</p>
+                <div className="note-card-footer">
+                  <span>{note.readingTime}</span>
+                  <ArrowUpRight size={15} />
+                </div>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
       </Container>
     </div>
   );

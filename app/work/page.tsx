@@ -11,9 +11,11 @@ export default function WorkPage() {
       <SceneDecor />
       <Container className="relative">
         <header className="max-w-4xl mb-12">
-          <p className="eyebrow">02 · Work</p>
+          <p className="eyebrow">02 · Work / 项目</p>
           <div className="mt-6">
-            <h1 className="font-display text-hero font-light text-balance">Projects</h1>
+            <h1 className="font-display text-hero font-light text-balance">
+              Projects <small className="page-title-zh" lang="zh-CN">项目与研究</small>
+            </h1>
           </div>
           <p className="mt-9 max-w-xl text-lg leading-[1.65] text-[var(--sakura-ink-soft)]">
             Agent training, runtime compression, multi-agent apps, and a few systems projects.

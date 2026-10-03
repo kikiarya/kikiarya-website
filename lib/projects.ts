@@ -78,11 +78,11 @@ export const projects: Project[] = [
     cardTitle: "LAR",
     featured: true,
     categoryTags: ["AI / Agent", "Research"],
-    venue: "NeurIPS 2026 · Under Review",
+    venue: "NeurIPS 2026 · Main Conference · Poster",
     arxivId: "2605.18597",
     role: "Feb – Jul 2026 · third author",
     shortDescription:
-      "Compress high-frequency text actions into latent actions — cheaper inference, tools still executable.",
+      "NeurIPS 2026 main conference poster. Compress high-frequency text actions into latent actions while keeping tools executable.",
     longDescription:
       "Fine-grained text actions make agent trajectories long and expensive. LAR folds high-frequency, low-entropy action spans into learnable latent actions, while query parameters and tool calls stay in plain text so they remain executable.",
     techStack: ["Python", "PyTorch", "LoRA", "GRPO", "KL distillation", "Qwen3-8B"],
@@ -107,7 +107,7 @@ export const projects: Project[] = [
   eprint={2605.18597},
   archivePrefix={arXiv},
   primaryClass={cs.LG},
-  note={NeurIPS 2026 under review}
+  note={Accepted to the NeurIPS 2026 main conference as a poster}
 }`,
     metrics: [
       { numeric: 80.09, prefix: "", suffix: "%", decimals: 2, label: "TriviaQA" },
@@ -167,6 +167,7 @@ export const projects: Project[] = [
     featured: true,
     categoryTags: ["AI / Agent", "Research"],
     role: "May – Aug 2026",
+    repoUrl: "https://github.com/kikiarya/Coding-Agent",
     shortDescription:
       "Repository-level coding agent — model post-training and harness policy tuned together.",
     longDescription:
@@ -258,6 +259,7 @@ export const projects: Project[] = [
       "Research"
     ],
     "role": "Mar – Jul 2026",
+    "repoUrl": "https://github.com/kikiarya/OpenClaw_LAR",
     "shortDescription": "Learn compact representations of repeated static prompts, and measure the quality–cost trade-off.",
     "longDescription": "The local implementation extracts real OpenClaw inputs, prepares static content for mining, builds a segment vocabulary and distills a compressed student. Dynamic checkpoint recovery is a separate, unverified claim.",
     "techStack": [
@@ -323,6 +325,7 @@ export const projects: Project[] = [
       "AI / Agent"
     ],
     "role": "Course project · Sep – Nov 2025",
+    "repoUrl": "https://github.com/kikiarya/Agent-Commerce-Platform",
     "shortDescription": "Rule-based support orchestration alongside explicit checkout, payment and Outbox state transitions.",
     "longDescription": "The support path routes intents, queries FAQ or business data, and optionally uses an LLM to phrase the result. The transaction path tracks quotes, confirmation, payment uncertainty and asynchronous event delivery.",
     "techStack": [
@@ -464,6 +467,7 @@ export const projects: Project[] = [
       "Full-Stack"
     ],
     "role": "Personal project",
+    "repoUrl": "https://github.com/kikiarya/AI-Career-Copilot",
     "shortDescription": "Turn candidate evidence into career preparation artifacts through a durable, inspectable workflow.",
     "longDescription": "A five-step workflow analyzes requirements, matches candidate evidence, diagnoses gaps, creates a plan and drafts an artifact. The local matcher uses keywords; references are checked against confirmed evidence IDs.",
     "techStack": [

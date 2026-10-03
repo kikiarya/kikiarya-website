@@ -1,4 +1,5 @@
-import { Mail, MapPin } from "lucide-react";
+import Link from "next/link";
+import { ArrowUpRight, Github, Mail, MapPin } from "lucide-react";
 import Container from "../../components/Container";
 import Tag from "../../components/Tag";
 import Reveal from "../../components/motion/Reveal";
@@ -36,7 +37,7 @@ export default function ResumePage() {
         <ResumeUnfold>
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-16 border-b border-[var(--sakura-line-soft)]">
           <div>
-            <p className="eyebrow">03 · Resume</p>
+            <p className="eyebrow">03 · Resume / 简历</p>
             <h1 className="font-display text-hero font-light mt-5">Kikiarya</h1>
             <div className="mt-7 flex flex-wrap gap-5 text-sm text-[var(--sakura-ink-soft)]">
               <span className="flex items-center gap-2">
@@ -58,12 +59,12 @@ export default function ResumePage() {
               aria-label="Resume sections"
               className="lg:sticky lg:top-28 flex lg:flex-col flex-wrap gap-3 font-mono text-meta uppercase tracking-[.12em] text-[var(--sakura-muted)] [&>a]:transition-colors [&>a]:duration-200 [&>a:hover]:text-[var(--sakura-accent-deep)]"
             >
-              <a href="#profile">Profile</a>
-              <a href="#education">Education</a>
-              <a href="#experience">Experience</a>
-              <a href="#research">Research</a>
-              <a href="#projects">Projects</a>
-              <a href="#skills">Skills</a>
+              <a href="#profile">Profile / 简介</a>
+              <a href="#education">Education / 教育</a>
+              <a href="#experience">Experience / 经历</a>
+              <a href="#research">Research / 研究</a>
+              <a href="#projects">Projects / 项目</a>
+              <a href="#skills">Skills / 技能</a>
             </nav>
           </aside>
 
@@ -71,17 +72,17 @@ export default function ResumePage() {
             <ResumeSection id="profile" title="Profile">
               <p className="font-display text-2xl md:text-3xl italic leading-snug text-[var(--sakura-ink-soft)]">
                 Master&apos;s student in computer science at the University of Sydney, graduating
-                December 2026. Recent work: agent post-training, harness policy for coding agents,
-                long-horizon runtime compression — plus the full-stack side that ships prompts and
-                keeps sessions alive over a bad network.
+                November 2026. Recent work spans agent post-training, harness policy for coding
+                agents, and runtime compression. LAR was accepted to the NeurIPS 2026 main
+                conference as a poster.
               </p>
             </ResumeSection>
 
             <ResumeSection id="education" title="Education">
               <Entry
-                meta="Jul 2024 – Dec 2026 · Sydney"
+                meta="Feb 2025 – Nov 2026 · Sydney"
                 title="University of Sydney"
-                subtitle="Master of Computer Science — software engineering, and data science & AI. Coursework in enterprise architecture, model-based software engineering, web apps, software quality, machine learning, and data engineering."
+                subtitle="Master of Computer Science — Software Engineering and Data Science & AI. WAM 80+, top 10% in the program."
               />
               <Entry
                 meta="Sep 2020 – Jun 2024"
@@ -112,7 +113,11 @@ export default function ResumePage() {
               <Entry
                 meta="Feb – Jul 2026 · third author"
                 title="Latent Action Reparameterization for Efficient Agent Inference"
-                subtitle="NeurIPS 2026 under review · arXiv:2605.18597. Fine-grained text actions make agent trajectories long and expensive. LAR compresses high-frequency, low-entropy action spans into learnable latent actions while keeping query params and tool calls executable. Built latent-action vocabulary from trajectories via frequency/entropy filtering; LoRA + trajectory-level KL distillation; GRPO experiments on training stability. Evaluated on TriviaQA, KodCode, Mind2Web — action equivalence, compression strength, unseen-task transfer, Qwen3-32B scaling. Qwen3-8B on TriviaQA: accuracy 67.40% → 80.09%, action tokens −27.1%; throughput 127.8 → 150.2 tokens/s (+17.5%). Transfers to HumanEval and Qwen3-32B."
+                subtitle="Accepted to the NeurIPS 2026 main conference as a poster · arXiv:2605.18597. LAR compresses high-frequency, low-entropy text actions into learnable latent actions while keeping query parameters and tool calls executable. Qwen3-8B on TriviaQA: ReAct accuracy 77.84% → 80.09%, action tokens −27.1%, throughput +17.5%."
+                links={[
+                  { label: "Case study", href: "/work/latent-action-reparameterization" },
+                  { label: "arXiv:2605.18597", href: "https://arxiv.org/abs/2605.18597" },
+                ]}
               />
             </ResumeSection>
 
@@ -121,21 +126,37 @@ export default function ResumePage() {
                 meta="May – Aug 2026"
                 title="Coding Agent Policy Optimization"
                 subtitle="Repo-level coding agent. LoRA-SFT + GRPO on Qwen2.5-Coder-7B from failure-aware trajectories; harness adjusts tools, context, and verification by state. Joint optimization on SWE-bench Verified: +6pp resolve rate, ~10pp recovery, −15% tool calls."
+                links={[
+                  { label: "Case study", href: "/work/coding-agent-policy-optimization" },
+                  { label: "GitHub", href: "https://github.com/kikiarya/Coding-Agent" },
+                ]}
               />
               <Entry
                 meta="Mar – Jul 2026"
-                title="OpenClaw Stateful Agent Runtime"
-                subtitle="Task-state compression and checkpoint recovery for long OpenClaw runs. LoRA/KL system-prompt compression on Qwen3-8B. Context tokens −46.7%, post-compression success +8.4pp, recovery +83.3pp vs. baselines."
+                title="OpenClaw Static Context Compression"
+                subtitle="The public implementation extracts repeated static prompt segments, builds a compact vocabulary, and distills a Qwen3-8B student with LoRA/KL. The case study keeps dynamic checkpoint recovery separate from the verified repository scope."
+                links={[
+                  { label: "Case study", href: "/work/openclaw-stateful-agent-runtime" },
+                  { label: "GitHub", href: "https://github.com/kikiarya/OpenClaw_LAR" },
+                ]}
               />
               <Entry
-                meta="Sep – Dec 2025"
-                title="HSC Power"
-                subtitle="LangGraph multi-agent tutoring: diagnosis → plan → practice → evaluation. RAG + tool calling with schema constraints. React, Express, Supabase."
+                meta="Dec 2025 – Jun 2026"
+                title="AI Career Copilot"
+                subtitle="Evidence-driven career workflow for requirement analysis, experience matching, gap diagnosis, preparation plans, and artifact drafting. The public implementation keeps confirmed evidence references and durable run state explicit."
+                links={[
+                  { label: "Case study", href: "/work/ai-career-copilot" },
+                  { label: "GitHub", href: "https://github.com/kikiarya/AI-Career-Copilot" },
+                ]}
               />
               <Entry
-                meta="Sep – Nov 2025"
-                title="E-commerce Microservices"
-                subtitle="Four Spring Boot services, Saga compensation, gRPC, RabbitMQ, Docker Compose."
+                meta="Sep 2025 – Feb 2026"
+                title="Commerce Agent & Transaction Boundaries"
+                subtitle="Shopping-agent support flow alongside explicit checkout, payment uncertainty, idempotency, and Outbox delivery boundaries."
+                links={[
+                  { label: "Case study", href: "/work/distributed-ecommerce-microservices" },
+                  { label: "GitHub", href: "https://github.com/kikiarya/Agent-Commerce-Platform" },
+                ]}
               />
             </ResumeSection>
 
@@ -177,10 +198,12 @@ function Entry({
   meta,
   title,
   subtitle,
+  links = [],
 }: {
   meta: string;
   title: string;
   subtitle: string;
+  links?: { label: string; href: string }[];
 }) {
   return (
     <article className="grid md:grid-cols-[12rem_1fr] gap-3 md:gap-8 border-t border-[var(--sakura-line-soft)] pt-7">
@@ -190,6 +213,23 @@ function Entry({
       <div>
         <h3 className="font-display text-card-title">{title}</h3>
         <p className="mt-2 leading-7 text-[var(--sakura-ink-soft)]">{subtitle}</p>
+        {links.length ? (
+          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+            {links.map((link) => {
+              const external = link.href.startsWith("http");
+              const content = <>{external && link.label === "GitHub" ? <Github size={14} /> : <ArrowUpRight size={14} />}{link.label}</>;
+              return external ? (
+                <a key={link.href} href={link.href} target="_blank" rel="noreferrer" className="studio-link">
+                  {content}
+                </a>
+              ) : (
+                <Link key={link.href} href={link.href} className="studio-link">
+                  {content}
+                </Link>
+              );
+            })}
+          </div>
+        ) : null}
       </div>
     </article>
   );

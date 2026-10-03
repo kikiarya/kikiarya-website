@@ -39,10 +39,10 @@ export default function LifePage() {
             <section>
               <p className="eyebrow mb-7">Favorites</p>
               <p className="text-base leading-8 text-[var(--sakura-ink-soft)]">
-                Books live on their own shelf.
+                读到喜欢的文字，或者有了新的想法，就记在阅读札记里。
               </p>
               <Link href="/bookshelf" className="button-ghost mt-6">
-                Visit the bookshelf <ArrowUpRight size={15} />
+                看看阅读札记 <ArrowUpRight size={15} />
               </Link>
             </section>
           </Reveal>

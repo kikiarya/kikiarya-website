@@ -41,8 +41,8 @@ export default function TechnicalThroughline() {
   return (
     <div className="technical-throughline" aria-label="Technical growth throughline">
       <div className="throughline-intro">
-        <p className="eyebrow">Technical throughline / 技术成长主线</p>
-        <p>从研究问题，到可运行系统，再到恢复与可信评估。</p>
+        <p className="eyebrow">Technical throughline / 我关注的问题</p>
+        <p>从一个具体问题出发，把想法做成能运行的系统，再看看它哪里会失败、怎样恢复，以及结果是否可信。</p>
       </div>
       <div className="throughline-stages">
         {stages.map((stage, index) => (
@@ -65,4 +65,3 @@ export default function TechnicalThroughline() {
     </div>
   );
 }
-

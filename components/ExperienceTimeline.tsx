@@ -41,13 +41,13 @@ const entries: ExperienceEntry[] = [
     },
   },
   {
-    date: "Jul 2024 — Dec 2026",
+    date: "Feb 2025 — Nov 2026",
     title: "University of Sydney",
     copy: "Master of Computer Science. Software engineering, data science & AI. Currently exploring how agents learn better actions and retain useful state.",
     facts: [
       "Master of Computer Science",
       "Software Engineering + Data Science & AI",
-      "Graduating December 2026",
+      "Graduating November 2026",
     ],
     detail: {
       problem: "Connect model-level research with the software and data systems needed to make agent behavior observable and recoverable.",

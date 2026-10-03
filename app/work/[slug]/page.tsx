@@ -1,3 +1,4 @@
+import { publishedContent, contentHref } from "../../../lib/notes";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -242,6 +243,7 @@ export default async function WorkDetail({
               ) : null}
             </div>
           </WorkChapters>
+          {publishedContent.some(note => note.linkedProject?.href === `/work/${project.slug}`) ? <section className="mt-16 border-t border-[var(--sakura-line-soft)] pt-8"><h2 className="text-2xl">相关博客与札记</h2><div className="mt-5 space-y-4">{publishedContent.filter(note => note.linkedProject?.href === `/work/${project.slug}`).map(note => <Link key={note.slug} className="block" href={contentHref(note)}>{note.titleZh || note.title} ↗</Link>)}</div></section> : null}
       </Container>
     </article>
   );
