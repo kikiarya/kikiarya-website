@@ -14,15 +14,10 @@ import CommandPalette from "../components/CommandPalette";
 import SiteFrame from "../components/SiteFrame";
 import DraggablePet from "../components/assistant/DraggablePet";
 import { site } from "../lib/site";
+import { siteUrl } from "../lib/content/metadata";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.VERCEL_PROJECT_PRODUCTION_URL
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-      : process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000"
-  ),
+  metadataBase: new URL(siteUrl()),
   title: {
     default: `${site.name} — ${site.tagline}`,
     template: `%s — ${site.name}`,

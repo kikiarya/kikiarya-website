@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Container from "./Container";
+import ContentBlocks from "./ContentBlocks";
 import { contentHref, type Note } from "../lib/notes";
 export default function NoteArticle({ note }: { note: Note }) {
   const reading = note.kind === "reading";
@@ -13,9 +14,14 @@ export default function NoteArticle({ note }: { note: Note }) {
       <div className="note-tags">{note.tags.map(tag => <Link key={tag} href={`${reading ? "/bookshelf" : "/notes"}?tag=${encodeURIComponent(tag)}`}>{tag}</Link>)}</div>
     </header>
     <div className="note-article-layout">
-      <div className="note-prose">{note.sections.map((section, index) => <section key={index} id={`section-${index + 1}`} className="scroll-mt-28"><h2>{section.heading}</h2>{section.paragraphs.map((paragraph, i) => <p key={i} className="whitespace-pre-wrap">{paragraph}</p>)}</section>)}</div>
+      <div className="note-prose">{note.sections.map((section, index) => <section key={section.id || index} id={section.id || `section-${index + 1}`} className={`scroll-mt-28 article-section ${section.role || ""}`}>
+        {section.id ? <span id={`section-${index + 1}`} className="scroll-mt-28" /> : null}
+        {section.role ? <p className="article-section-label">{section.role === "excerpt" ? "原文摘抄" : "我的感想"}</p> : null}
+        {section.level === 3 ? <h3>{section.heading}</h3> : <h2>{section.heading}</h2>}
+        {section.blocks ? <ContentBlocks blocks={section.blocks} /> : section.paragraphs.map((paragraph, i) => <p key={i} className="whitespace-pre-wrap">{paragraph}</p>)}
+      </section>)}</div>
       <aside className="note-linked-work">
-        <nav aria-label="文章目录"><p className="eyebrow">本文目录</p><ol className="mt-4 space-y-3">{note.sections.map((s, i) => <li key={i}><a href={`${contentHref(note)}#section-${i + 1}`}>{s.heading}</a></li>)}</ol></nav>
+        <nav aria-label="文章目录"><p className="eyebrow">本文目录</p><ol className="mt-4 space-y-3">{note.sections.map((s, i) => <li key={s.id || i}><a href={`${contentHref(note)}#${s.id || `section-${i + 1}`}`}>{s.heading}</a></li>)}</ol></nav>
         {note.linkedProject ? <div className="mt-8"><p className="eyebrow">文中提到的项目</p><Link href={note.linkedProject.href}>{note.linkedProject.label} ↗</Link></div> : null}
         {note.source ? <div className="mt-8"><p className="eyebrow">摘抄来源</p><p>{note.source.title}{note.source.author ? ` · ${note.source.author}` : ""}</p>{note.source.location ? <p>{note.source.location}</p> : null}{note.source.url ? <a href={note.source.url} target="_blank" rel="noreferrer">阅读原文 ↗</a> : null}</div> : null}
       </aside>

@@ -1,11 +1,17 @@
 import snapshot from "./content/notion-snapshot.json";
+import type { ContentBlock } from "./content/blocks";
 
 export type NoteSection = {
+  id?: string;
+  level?: number;
+  role?: "excerpt" | "reflection";
+  blocks?: ContentBlock[];
   heading: string;
   paragraphs: string[];
 };
 
 export type Note = {
+  pageId?: string;
   slug: string;
   number: string;
   title: string;

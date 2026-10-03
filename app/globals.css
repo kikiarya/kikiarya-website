@@ -2314,7 +2314,30 @@ html[data-theme="dark"] .assistant-pet-button {
   align-items: start;
   margin-top: 4rem;
 }
-.note-prose { counter-reset: note-section; }
+.note-prose { counter-reset: note-section; min-width: 0; overflow-wrap: anywhere; }
+.article-block { margin-top: 1.25rem; }
+.note-prose .article-block p { margin-left: 0; }
+.note-prose ul { list-style: disc; padding-left: 1.5rem; }
+.note-prose ol { list-style: decimal; padding-left: 1.5rem; }
+.note-prose li { margin: .5rem 0; line-height: 1.9; }
+.note-prose li ul, .note-prose li ol { margin-top: .5rem; }
+.note-prose a { text-decoration: underline; text-underline-offset: .2em; }
+.note-prose blockquote, .article-callout { border-left: 3px solid var(--sakura-accent-deep); padding: 1rem 1.25rem; background: var(--sakura-surface-soft); line-height: 1.9; }
+.note-prose code { font-family: var(--font-mono), monospace; font-size: .88em; background: var(--sakura-surface-soft); padding: .15em .35em; border-radius: .25rem; }
+.article-code { border: 1px solid var(--sakura-line-soft); border-radius: .6rem; overflow: hidden; }
+.article-code-language { display: block; padding: .5rem 1rem; font-size: .75rem; border-bottom: 1px solid var(--sakura-line-soft); }
+.article-code pre { padding: 1rem; overflow-x: auto; line-height: 1.7; }
+.article-code pre code { padding: 0; background: transparent; white-space: pre; }
+.article-table { overflow-x: auto; }
+.article-table table { width: 100%; border-collapse: collapse; }
+.article-table th, .article-table td { min-width: 8rem; border: 1px solid var(--sakura-line-soft); padding: .75rem; text-align: left; line-height: 1.7; }
+.article-table th { background: var(--sakura-surface-soft); }
+.note-prose figure img { width: 100%; height: auto; border-radius: .5rem; }
+.note-prose figcaption { margin-top: .6rem; font-size: .85rem; color: var(--sakura-ink-soft); text-align: center; }
+.note-prose hr { border-color: var(--sakura-line-soft); margin: 2rem 0; }
+.note-prose h3, .note-prose h4 { margin-top: 1.5rem; font-size: 1.4rem; line-height: 1.5; }
+.note-prose .article-section-label { margin: 0 0 .8rem; font-size: .75rem; letter-spacing: .12em; color: var(--sakura-accent-deep); }
+.article-section.excerpt { border-left: 1px solid var(--sakura-line-soft); padding-left: 1.25rem; }
 .note-prose section {
   counter-increment: note-section;
   padding: 0 0 3.5rem;
